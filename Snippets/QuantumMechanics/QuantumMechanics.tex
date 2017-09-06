@@ -279,7 +279,7 @@ We note that for a infinite dimensional, separable Hilbert space, there exists a
 In the following, we will take $|\psi\rangle$ to denote an abstract state vector. Expanding any such vector in terms of the the basis of position-eigenstates (basically just an enumeration of all possible positions available to the system) yields what we will call the \emph{wave function}: $\psi(x)=\sum_i|x_i\rangle  \langle x_i | \psi \rangle = \sum_i c_i |x_i\rangle$, with $c_i\equiv \langle x_i|\psi\rangle$.
 \end{exframe}
 
-The classical observables, the generalized coordinates and conjugate momenta, are promoted to \emph{operators} acting on state vectors in the aforementioned Hilbert space. Working in the position basis, the position \emph{operator} becomes a simple multiplication operator: $\hat x \psi(x) = x\psi(x)$. The momentum operator becomes a differential operator, $\hat p \psi(x) = -i\hbar (\partial \psi(x) / \partial x)$. In addition, the old Possion brackets for classical mechanics are promoted to \emph{commutator relations},
+The classical observables, the generalized coordinates and conjugate momenta, are promoted to \emph{operators} acting on state vectors in the aforementioned Hilbert space. Working in the position basis, the position \emph{operator} becomes a simple multiplication operator: $\hat x \psi = x\psi$. The momentum operator becomes a differential operator, $\hat p \psi= -i\hbar (\partial \psi / \partial  x)$. In addition, the old Possion brackets for classical mechanics are promoted to \emph{commutator relations},
 \begin{align}
 \left\{ f, g \right\} \ \ \  \rightarrow \ \ \  \frac{1}{i \hbar }\left[ \hat f, \hat g \right].
 \end{align}
@@ -397,15 +397,58 @@ which is called the time independent Schrödinger equation (TISE). This is the s
 \subsection{Theh quantum Hamiltonian}
 Since the Hamiltonian is the fundamental quantity which governs the dynamics of any quantum mechanical system, the natural question is now: What does it look like? In the simplest possible case, a free particle of mass $m$ constrained to move in one spatial dimension, it takes the form 
 \begin{align}
-\hat H_\text{1D free} &= -\frac{\hbar^2}{2m}\pder{}{x}.
+\hat H_\text{free} &= -\frac{\hbar^2}{2m}\pder{}{x},
 \end{align}
-It is straight forward to apply the 
-
-Under first quantization, the classical Hamiltonian changes from \eq{QM4} to 
+a straight forward to application of the operator promotion scheme for $p\rightarrow \hat p=-i\hbar(\partial /\partial x)$. For a particle of mass $m$ moving in a position dependent potential $V(x)$, the Hamiltonian takes the form 
 \begin{align}
-\hat H &= -\sum_{i=1}^N \frac{\hbar}{2m_e}\nabla_i^2 - \sum_{i=1}^N \frac{Ze^2}{|\hat {\bf R} - \hat \r_i|} + \sum_{i=1}^N\sum_{j=i+1}^N \frac{e^2}{|\hat \r_i- \hat \r_j|}, \label{eq:QM5}
+\hat H = -\frac{\hbar^2}{2m}\pder{}{x} + V(x).
 \end{align}
-after promoting the classical observables to operators, ${\bf q}_i \rightarrow \hat \r_i$ and ${\bf p}_i\rightarrow -i\hbar\nabla_i$. The second term is the coulomb attraction between electron $i$ and a stationary nucleus (with charge $Z$) at position ${\bf R}$, while the third term is the electron-electron coulomb repulsion. 
+
+In the present work, we will be focused on systems of interacting electrons in the presence of one or more positively charged nuclei. Under first quantization, the classical Hamiltonian of $N$ particles of mass $m_e$ moving in an external potential  changes from that shown in \eq{QM4}. The total kinetic energy of all $N$ electrons with masses $m_e$ becomes
+\begin{align}
+\hat T = \sum_{i=1}^N -\frac{\hbar^2}{2m_e}\nabla^2_i,
+\end{align}
+where $\nabla_i$ denotes differentiation w.r.t. the coordinates of particle $i$. Since the electrons are negatively charged, the inter-particle potential will be the Coulomb potential 
+\begin{align}
+\hat W=\sum_{i=1}^N \sum_{j=i+1}^N \frac{k_ee^2}{|\hat \r_i-\hat \r_j|},
+\end{align}
+where $k_e=1/4\pi \varepsilon_0$ is the Coulomb constant.  The sum limits ensure no double counting is done. The positive nuclei give rise to a similar Coulomb potential, namely
+\begin{align}
+\hat V = -\sum_{i=1}^N\sum_{A=1}^M \frac{k_eZ_Ae^2}{|\hat \r_A-\hat \r_i|},
+\end{align}
+with $M$ denoting the number of nuclei of (possibly differing) charge(s) $+Z_Ae$. Putting it all together yields the total electron and nuclear Hamiltonian
+\begin{align}
+\hat H &= -\sum_{i=1}^N \frac{\hbar}{2m_e}\nabla_i^2 - \sum_{i=1}^N\sum_{A=1}^M \frac{k_eZe^2}{|\hat {\bf r}_A - \hat \r_i|} + \sum_{i=1}^N\sum_{j=i+1}^N \frac{k_ee^2}{|\hat \r_i- \hat \r_j|}. \label{eq:QM5}
+\end{align}
+
+Of course, there are some imperfections. We have for example not included any relativistic effects. The classical non-relativistic kinetic energy term takes the form $|{\bf p}|^2/2m=m{\bf v}^2/2$. However, in order to account for relativistic effects, we should really use 
+\begin{align}
+T_\text{classical, relativistic} = \frac{mc^2}{\sqrt{1-(v/c)^2}}-mc^2,
+\end{align}
+with $c$ being the vacuum speed of light. Expressing $T$ in terms of the relativistic momentum yields 
+\begin{align}
+T_\text{classical, relativistic} &=\sqrt{p^2c^2-m^2c^4}-mc^2 = mc^2\left[\sqrt{1+\left(\frac{p}{mc}\right)^2}-1 \right] \nn\\
+%
+&= mc^2\left[ 1+\frac{1}{2}\left(\frac{p}{mc}\right)^2 - \frac{1}{8}\left(\frac{p}{mc}\right)^3 + \dots - 1 \right] \nn\\
+%
+&= \frac{p^2}{2m}-\frac{p^4}{8m^3c^2} +\mathcal{O}\left(\frac{p^6}{m^5c^4}\right).
+\end{align}
+Evidently, the first order relativistic correction to the Hamiltonian is on the order of $p^4/m^3c^2$ ((Griffiths p268)). 
+
+We may also consider the charged nuclei moving (in the frame of refence of an electron) setting up a magnetic field ${\bf B}$. The energy involved in the interaction between this magnetic field and the dipole moment of the electron, ${\bf \mu}_e$, is $\hat H_\text{spin-orbit}={\bf \mu}_e\cdot {\bf B}$. This is called spin-orbit coupling. The electron magnetic dipole moment has the magnitude 
+\begin{align}
+{\bf \mu}_e=-\frac{e}{m_e}{\bf S},
+\end{align}
+with ${\bf S}$ being the electron's spin angular momentum. The magnetic field strenght set up by the (apparent) motion of the nucleus (relative to the electron) is
+\begin{align}
+{\bf B}=\frac{Zk_ee}{mc^2r^3}{\bf L},
+\end{align}
+with ${\bf L}$ being the electron's orbital angular momentum. The correction to the Hamiltonian due to this effect becomes ((Griffiths p273))
+\begin{align}
+H_\text{spin-orbit} = \frac{Zk_ee^2}{2m_e^2c^2r^3}{\bf S}\cdot {\bf L}.
+\end{align}
+
+Combining both effects gives what is know as the \emph{fine structure}. We note that both corrections are roughly on the order of $\mathcal{O}(1/[mc]^2)$.
 
 \subsection{Second quantization}
 Let us now consider a system of $N$ \emph{indistinguishable} particles, i.e. particles that are fundamentally identical as to make telling them apart from each other is impossible. If our theory is to handle such a system with any logical consistency, we must require our wave function (and thus also the observables we derive from it) to be \emph{permutation invariant} (up to a phase factor, which does not affect the physics [as per the postulates of QM]). Following (Fys-kjm4480, p8) we may define this mathematically by defining $\sigma\in S_N$, a permutation of the indices in a set of $N$ such indices. $S_N$ here denotes the symmetric group of degree $N$.\footnote{The symmetric group on a finite set $M$ is a mathematical group, and consists of all possible permutations of the elements of the set $M$. Mathematically, these permutations are bijections from $M$ onto $M$ itself. There are $N!$ unique permutations in the group, including the identity permutation (which just leaves the set un-changed).} We must demand that $|\Psi|^2$ be permutation invariant, that is
