@@ -237,6 +237,10 @@ Rynne: Linear Functional Analysis
 
 Sadri Hassani: Mathematical Physics: A modern introduction to its foundations
 
+Gerald D. Mahan: Quantum Mechanics in a Nutshell
+
+Lamb Shift article \url{https://journals.aps.org/pra/pdf/10.1103/PhysRevA.95.022704}
+
 
 \subsection{Review of Hamiltonian classical mechanics}
 Before venturing into the land of quantum mechanics (QM), it is useful to first review the Hamiltonian formulation of classical mechanics (CM). Classical mechanics deals with the dynamics of macroscopic objects. 
@@ -418,9 +422,10 @@ where $k_e=1/4\pi \varepsilon_0$ is the Coulomb constant.  The sum limits ensure
 \end{align}
 with $M$ denoting the number of nuclei of (possibly differing) charge(s) $+Z_Ae$. Putting it all together yields the total electron and nuclear Hamiltonian
 \begin{align}
-\hat H &= -\sum_{i=1}^N \frac{\hbar}{2m_e}\nabla_i^2 - \sum_{i=1}^N\sum_{A=1}^M \frac{k_eZe^2}{|\hat {\bf r}_A - \hat \r_i|} + \sum_{i=1}^N\sum_{j=i+1}^N \frac{k_ee^2}{|\hat \r_i- \hat \r_j|}. \label{eq:QM5}
+\hat H &= -\sum_{i=1}^N \frac{\hbar^2}{2m_e}\nabla_i^2 - \sum_{i=1}^N\sum_{A=1}^M \frac{k_eZe^2}{|\hat {\bf r}_A - \hat \r_i|} + \sum_{i=1}^N\sum_{j=i+1}^N \frac{k_ee^2}{|\hat \r_i- \hat \r_j|}. \label{eq:QM5}
 \end{align}
 
+\subsection{Corrections to the Hamiltonian}
 Of course, there are some imperfections. We have for example not included any relativistic effects. The classical non-relativistic kinetic energy term takes the form $|{\bf p}|^2/2m=m{\bf v}^2/2$. However, in order to account for relativistic effects, we should really use 
 \begin{align}
 T_\text{classical, relativistic} = \frac{mc^2}{\sqrt{1-(v/c)^2}}-mc^2,
@@ -447,8 +452,35 @@ with ${\bf L}$ being the electron's orbital angular momentum. The correction to 
 \begin{align}
 H_\text{spin-orbit} = \frac{Zk_ee^2}{2m_e^2c^2r^3}{\bf S}\cdot {\bf L}.
 \end{align}
+Combining both effects gives what is know as the \emph{fine structure}. 
 
-Combining both effects gives what is know as the \emph{fine structure}. We note that both corrections are roughly on the order of $\mathcal{O}(1/[mc]^2)$.
+There is an additional relativistic effect which is derived by expanding the Dirac equation Hamiltonian in powers of $mc^2$ and taking the non-relativistic limit. This is called the Darwin term, and for a central potential it can be written as ((Mahan pp382))
+\begin{align}
+H_\text{Darwin} = -\frac{\pi\hbar^2}{2m_e^2c^2}\delta^3(\r-\r_A),
+\end{align}
+with $\delta^3(\r-\r_A)$ being a Dirac delta function at the position of the nucleus. Since only $n=1$ (s symmetry) states have a non-vanishing magnitude at the origin, the Darwin term only affects s states. 
+
+Furthermore we may take into account the Lamb shift, that is the splitting of 2s and 2p states which is related to the quantization of the electric field and vacuum fluctuations of the electric and magnetic fields which partially shield the Coulomb interactions between the electrons and the nuclei ((Griffiths p267)). Even though quantum field theory is needed in order to handle this effect for real, we may use an effective Hamiltonian term which generates the shift ((Lamb shift article))
+\begin{align}
+\hat H_\text{Lamb shift} = \frac{4}{3}\alpha^2 m_ec^2 \left(\frac{\hbar}{m_ec}\right)^3 \ln(1/\alpha^2) \delta^3(\r-\r_A),
+\end{align}
+with $\alpha=k_ee^2/\hbar c\simeq 1/137$ denoting the \emph{fine structure constant}.
+
+Finally, let us consider the interaction between the electrons and the magnetic dipoles of the protons. The proton has a magnetic dipole of magnitude ${\bf \mu}_p = (g_pe/2m_p){\bf S}_p$ and sets up the magnetic field (according to classical electrodynamics) ((Griffiths p283))
+\begin{align}
+{\bf B}&= \frac{k_e\mu_0}{r^3}\left[ 3({\bf \mu} \cdot \hat r)\hat r-{\bf \mu} \right] + \frac{2\mu_0}{3}{\bf \mu}\delta^3(\r-\r_A).
+\end{align}
+The Hamiltonian correction term becomes 
+\begin{align}
+\hat H_\text{hyperfine} &= \frac{\mu_0g_pe^2}{8\pi m_pm_e} \frac{\left[3({\bf S}_p\cdot\hat r)({\bf S}_e \cdot \hat r)-{\bf S}_p\cdot {\bf S}_e \right]}{r^3} + \frac{\mu_0g_pe^2}{3m_pm_e}{\bf S}_p\cdot {\bf S}_p \delta^3(\r-\r_A).
+\end{align}
+
+We may now use dimensional analysis in order to work out the rough size of these effects relative to the ground state energies of ordinary atoms. We will take electronic distances to be on the order of the Bohr radius, $r\sim a_0$ and use the natural time scale $t\sim\hbar a_0 /k_e e^2$ in order to work out the typical momentum of an electron as $p\sim m_ek_e e^2 /\hbar$. The hydrogenic radial wave function of principal quantum number $n$ takes the value $R_n({\bf 0})=4Z^3/a_0^3n^3$ ((Griffiths p155)), so we take the delta function to be on the order of $\delta^3(\r)\sim 1/a_0^3$.
+
+
+
+
+
 
 \subsection{Second quantization}
 Let us now consider a system of $N$ \emph{indistinguishable} particles, i.e. particles that are fundamentally identical as to make telling them apart from each other is impossible. If our theory is to handle such a system with any logical consistency, we must require our wave function (and thus also the observables we derive from it) to be \emph{permutation invariant} (up to a phase factor, which does not affect the physics [as per the postulates of QM]). Following (Fys-kjm4480, p8) we may define this mathematically by defining $\sigma\in S_N$, a permutation of the indices in a set of $N$ such indices. $S_N$ here denotes the symmetric group of degree $N$.\footnote{The symmetric group on a finite set $M$ is a mathematical group, and consists of all possible permutations of the elements of the set $M$. Mathematically, these permutations are bijections from $M$ onto $M$ itself. There are $N!$ unique permutations in the group, including the identity permutation (which just leaves the set un-changed).} We must demand that $|\Psi|^2$ be permutation invariant, that is
