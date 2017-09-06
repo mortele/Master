@@ -1,0 +1,579 @@
+\documentclass[a4paper]{article}
+%Included packages ----------------------------------------------------------%
+\usepackage{inputenc}                        % utf-8 encoding, æ, ø , å, etc.
+\usepackage{a4wide}                          % Adjust margins to better fit A4 format.
+\usepackage{array}                           % Matrices.
+\usepackage{amsmath}                         % Math symbols, and enhanced matrices.
+\usepackage{amsfonts}                        % Math fonts.
+\usepackage{amssymb}                         % Additional symbols.
+%\usepackage{wasysym}                         % More additional symbols.
+\usepackage{mathrsfs}                        % Most additional symbols.
+\usepackage[pdftex]{graphicx}                % Improved inclusion of .pdf-graphics files.
+\usepackage{sidecap}                         % Floats with captions to the right/left.
+\usepackage{cancel}                          % Visualize cancellations in equations.
+\usepackage{enumerate}                       % Change counters (arabic, roman, etc.).
+\usepackage{units}                           % Adds better looking fractions (nicefrac).
+\usepackage{floatrow}                        % Multi-figure floats.
+\usepackage{subfig}                          % Multi-figure floats.
+\usepackage{caption}                         % Adds functionality to captions.
+\usepackage{bm}                              % Bolded text in math mode.
+\usepackage{combinedgraphics}                % Figures; let latex handle the text itself.
+\usepackage[framemethod=default]{mdframed}   % Make boxes.
+\usepackage{listings}                        % For including source code.
+\usepackage[colorlinks]{hyperref}            % Interactive references, colored.
+\usepackage{soul}                            % Make vertical bars through text.
+\usepackage{nicefrac}                        % Nice fractions with \nicefrac.
+\usepackage{mathtools}                       % Underbrackets, overbrackets.
+\usepackage{wasysym}                         % \smiley{}-s!
+\usepackage{multicol}                        % Multiple text columns.
+\usepackage{capt-of}                         % Caption things which are not floats.
+\usepackage[url=false]{biblatex}             % Citations (made easy).
+\usepackage{dsfont}
+
+% Differentials -------------------------------------------------------------- %
+\newcommand{\dt}{\,\mathrm{d}t}
+\newcommand{\dx}{\,\mathrm{d}x}
+\newcommand{\dr}{\,\mathrm{d}r}
+
+% Derivatives ---------------------------------------------------------------- %
+\newcommand{\der} [2]{\frac{\mathrm{d} #1}{\mathrm{d} #2}}   % Derivative.
+\newcommand{\pder}[2]{\frac{\partial   #1}{\partial   #2}}   % Partial derivative.
+
+% Matrices ------------------------------------------------------------------- %
+\newcommand{\mat} [2]{\begin{matrix}[#1]  #2 \end{matrix}}   % Nothing enclosing it.
+\newcommand{\pmat}[2]{\begin{pmatrix}[#1] #2 \end{pmatrix}}  % Enclosing parentheses.
+\newcommand{\bmat}[2]{\begin{bmatrix}[#1] #2 \end{bmatrix}}  % Enclosing square brackets.
+\newcommand{\vmat}[2]{\begin{vmatrix}[#1] #2 \end{vmatrix}}  % Enclosing vertical bars.
+\newcommand{\Vmat}[2]{\begin{Vmatrix}[#1] #2 \end{Vmatrix}}  % Enclosing double bars.
+
+% Number sets ---------------------------------------------------------------- %
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\C}{\mathbb{C}}
+
+% Manually set alignment of rows / columns in matrices (mat, pmat, etc.) ----- %
+\makeatletter
+\renewcommand*\env@matrix[1][*\c@MaxMatrixCols c]{%
+  \hskip -\arraycolsep
+  \let\@ifnextchar\new@ifnextchar
+  \array{#1}}
+\makeatother
+
+% References ----------------------------------------------------------------- %
+\newcommand{\Fig}[1]{Fig.\ \ref{fig:#1}}
+\newcommand{\fig}[1]{Fig.\ \ref{fig:#1}}
+\newcommand{\eq} [1]{Eq.\ (\ref{eq:#1})}
+\newcommand{\Eq} [1]{Eq.\ (\ref{eq:#1})}
+\newcommand{\tab}[1]{Table \ref{tab:#1}}
+\newcommand{\Tab}[1]{Table \ref{tab:#1}}
+
+% Paragraph formatting ------------------------------------------------------- %
+\setlength{\parindent}{5.5mm}
+\setlength{\parskip}  {0mm}
+
+% Source code listings ------------------------------------------------------- %
+\definecolor{commentGreen}{RGB}{34,139,34}
+\definecolor{keywordBlue}{RGB}{0,0,255}
+\definecolor{stringPurple}{RGB}{160,32,240}
+\lstset{language=matlab}
+\lstset{basicstyle=\ttfamily\small}
+\lstset{frame=single}
+\lstset{stringstyle=\color{stringPurple}}
+\lstset{keywordstyle=\color{keywordBlue}}
+\lstset{commentstyle=\color{commentGreen}}
+\lstset{morecomment=[l][\color{commentGreen}\bfseries]{\%\%}}
+\lstset{showspaces=false}
+\lstset{showstringspaces=false}
+\lstset{showtabs=true}
+\lstset{columns=fixed}
+\lstset{breaklines}
+\lstset{literate={~} {$\sim$}{1}}
+\lstset{numbers=left}              
+\lstset{stepnumber=1}
+\renewcommand{\ttdefault}{pcr}
+\lstdefinestyle{prt}{frame=none,basicstyle=\ttfamily\small}
+
+% Convenient shorthand notation ---------------------------------------------- %
+\newcommand{\nn}{\nonumber}
+\newcommand{\e}[1]{\cdot10^{#1}}
+\renewcommand{\i}{\hat{\imath}}
+\renewcommand{\j}{\hat{\jmath}}
+\renewcommand{\k}{\hat{k}}
+
+% Caption position of tables at the top -------------------------------------- %
+\floatsetup[table]{capposition=top}
+
+% Black frame with white background ------------------------------------------ %
+\newmdenv[linecolor=black,backgroundcolor=white]{exframe}
+
+% Including vector drawings from inkscape ------------------------------------ %
+\newenvironment{combFig}[5]{
+  \begin{figure}[#1] 
+    \centering 
+    \includecombinedgraphics[vecscale=#2, keepaspectratio]{#3} 
+    \caption{#4 \label{#5}}
+  \end{figure}
+  }
+
+  {
+}
+
+% Including pdf graphics ----------------------------------------------------- %
+\newenvironment{pdfFig}[5]{
+  \begin{figure}[#1] 
+    \centering 
+    \includegraphics[width= #2]{#3} 
+    \caption{#4 \label{#5}}
+  \end{figure}
+  }
+
+  {
+}
+
+% Exercise and subexercise counters ------------------------------------------ %
+\newcounter{excounter}
+\renewcommand\theexcounter{\arabic{excounter}}
+\newcommand\exlabel{\theexcounter}
+\setcounter{excounter}{1}
+
+\newcounter{subexcounter}
+\renewcommand\thesubexcounter{\arabic{subexcounter}}
+\newcommand\subexlabel{\thesubexcounter}
+\setcounter{subexcounter}{1}
+
+% Environments for exercises ------------------------------------------------- %
+\newenvironment{exercise}[1]{
+  \subsection*{Exercise \theexcounter: #1}
+  \setcounter{subexcounter}{1}                      % Reset the subexercise counter to a.
+  \addcontentsline{toc}{section}{\theexcounter: #1} % Add the exercise to TOC
+  }
+      % Exercise text.
+  {
+  \stepcounter{excounter}                           % Add one to the exercise counter.
+  \newpage
+}
+
+% Environment for subexercises ----------------------------------------------- %
+\newenvironment{subexercise}{
+  \begin{exframe}
+    \begin{itemize}  \setlength{\itemindent}{1cm}
+      \item[{\bf Exercise \thesubexcounter}] 
+	}
+	  % Subexercise text.
+	{
+    \end{itemize}
+  \end{exframe}
+  \stepcounter{subexcounter}                        % Add one to the exercise counter.
+}
+
+% Environment for proofs ----------------------------------------------------- %
+\newenvironment{proof}[2]{
+  \begin{exframe}
+    \begin{itemize}  \setlength{\itemindent}{0.6cm}
+      \item[{\bf #1} {\bf #2}] 
+	}
+	  % Subexercise text.
+	{
+    \end{itemize}
+  \end{exframe}
+}
+
+% Environment for answers ---------------------------------------------------- %
+\newenvironment{answer}{}{}
+
+% Set bibliography file and path for images.
+\bibliography{references/fys4180ref.bib}
+\graphicspath{{./images/}}
+\newcommand{\includepdfgraphics}[2]{\includecombinedgraphics[#1]{./images/#2}}
+
+
+
+
+% Title
+\title{}
+\date{}
+\author{}
+% ---------------------------------------------------------------------------- %
+% ---------------------------------------------------------------------------- %
+
+
+\begin{document}
+
+
+\renewcommand{\R}{{\bf R}}
+\renewcommand{\r}{{\bf r}}
+\newcommand{\p}{{\bf p}}
+\newcommand{\q}{{\bf q}}
+\renewcommand{\H}{\mathcal{H}}
+\newcommand{\psit}{\left|\psi(t)\right\rangle}
+
+
+\section{Quantum Mechanics}
+.
+
+Shankar kap. 4: Postulates
+
+Leinaas FYS4110 lecture notes kap. 1
+
+Goldstein, Poole,Safko: Classical Mechanics
+
+Kvaal: FYS-KJM4480 lecture notes
+
+Bondar et. al. (\url{https://journals.aps.org/prl/abstract/10.1103/PhysRevLett.109.190403})
+
+Suomi lecture notes (\url{http://www.oulu.fi/tf/kvmIII/english/2004/03_timeoper.pdf})
+
+Raimes: Many Electron Theory 
+
+Haim Brezis: Functional Analysis, Sobolev Spaces and Partial Differential equations \url{https://link.springer.com/content/pdf/10.1007%2F978-0-387-70914-7.pdf}
+
+J J Sakurai: Modern Quantum Mechanics \url{http://libgen.io/search.php?req=Sakurai+Modern+Quantum+Mechanics&open=0&res=25&view=simple&phrase=1&column=def}
+
+Nick van Remortel, The nature of natural units Nature Physics 12, 1082 (2016) doi:10.1038/nphys3950 \url{http://www.nature.com/nphys/journal/v12/n11/full/nphys3950.html?foxtrotcallback=true}
+
+Rynne: Linear Functional Analysis 
+
+Sadri Hassani: Mathematical Physics: A modern introduction to its foundations
+
+
+\subsection{Review of Hamiltonian classical mechanics}
+Before venturing into the land of quantum mechanics (QM), it is useful to first review the Hamiltonian formulation of classical mechanics (CM). Classical mechanics deals with the dynamics of macroscopic objects. 
+
+Hamilton's classical mechanics formalism revolves centrally around the Hamiltonian function (hereafter just refered to as \emph{the Hamiltonian}), $\H$. In order to define this function, it is necessary to first choose a set of canonical coordinates, $\q_i$ and $\p_i$. Generalized coordinate and momenta pairs are said to be canonical if they satisfy the Poisson bracket\footnote{The Poisson bracket of two functions, $f$ and $g$, w.r.t. the canonical coordinate pair $p$ and $q$, is defined as $\{f,g\}=\pder{f}{q}\pder{g}{p}-\pder{f}{p}\pder{g}{q}$. (Goldstein p388)} $\{q_i,p_j\}=\delta_{ij}$. Examples of such canonical pairs include e.g. the cartesian position and the respective linear momentum, or the polar position and the angular momentum.
+
+The \emph{phase space} of a system is the space of all possible states of the system. A system of $n$ degrees of freedom will have a cooresponding $2n$ dimensional phase space.\footnote{Although we are free to choose a set of generalized coordinates larger than the number of degrees of freedom, such a set will always be reducible to a smaller set of \emph{strictly independent} coordinates with size exactly equal to the number of degrees of freedom. Consider e.g. a point particle constrained to move along the suface of a unit sphere. We may use the three cartesian coordinates to describe the motion, however the system only has two degrees of freedom due to the constraint $x^2+y^2+z^2=r^2$, so the three are not \emph{independent}. It will thus inevitably be more convenient to use e.g. the polar and azimuthal angles, $\theta$ and $\phi$.} A point in phase space, $\xi=(\q,\p)$, specify the generalized coordinates and their respective conjugate momenta and is sufficient to uniqely determine the state of the system as a whole.
+
+Together with a choice of cannonical coordinates and the resulting phase space, the Hamiltonian encodes all information about a classical dynamical system. From the Hamiltonian, we can find the equations of motion in terms of the chosen coordinates by applying the Hamilton equations,
+\begin{align}
+\der{\p_i}{t} = -\pder{\H}{\q_i} \ \ \ \text{and} \ \ \ \der{\q_i}{t} = \pder{\H}{\p_i}. \label{eq:QM1}
+\end{align}
+We may also state Hamilton's equations more concisely in terms of the Poisson brackets as 
+\begin{align}
+\der{\p_i}{t} = \left\{\p_i, \H\right\}  \ \ \ \text{and} \ \ \ \der{\q_i}{t} = \left\{\q_i, \H\right\}. \label{eq:QM2}
+\end{align}
+
+It is useful to note that we may interpret the Hamiltonian as \emph{the total energy of the system}, if and only if the generalized coordinates have no explicit time dependence and the forces acting on it are derivable from a conservative potential (i.e. the work done by the force(s) are independent of the path taken) [Goldstein p339]. 
+
+An important (to us at least) special case of classical Hamiltonian dymanics is the system consisting of $N$ identical particles of equal mass $m$, subject to inter-particle forces stemming from a \emph{central} potential $w(q_{ij})$ with $q_{ij}=|\q_i-\q_j|$, and moving in an external potetial $v(\r)$. We may choose generalized coordinates with no explicit time dependence, and this allows us to identify the Hamiltonian as the total energy of the system. Following [Kvaal kap. 1], we find that $\H=T+V+W$, with $T$, $V$, and $W$, denoting the kinetic, the potential, and the interaction energy respectively. We may write this out as
+\begin{align}
+\H(\p,\q) &= \sum_{i=1}^N \frac{|\p_i|^2}{2m} + \sum_{i=1}^N V(\q_i) + \sum_{i=1}^N\sum_{j=i+1}^N w(q_{ij}). \label{eq:QM4}
+\end{align}
+
+\subsection{Canonical (first) quantization}
+In order to go from a classical description to a quantum mechanical one, the procedure known as canonical quantization is employed. This is sometimes refered to as \emph{first quantization}, to distinguish it from \emph{second quantization}, which we will use later to study many-body quantum systems.
+
+\begin{exframe}
+\subsubsection{Short mathematical interlude \label{math}}
+Under canonical quantization, the state of a system is no longer described by a \emph{point in phase space}, but rather by \emph{a state vector}. The enclosing vector space is a Hilbert space over $\C$, and almost always chosen as the space of square integrable functions\footnote{For any $f\in L^2$, the integral $\int_{-\infty}^{\infty} |f(x)|^2\dx$ must be finite.}, $L^2$. More precisely, the vector space in question is the Sobolev space $H^1$ over $\C$, essentially the subspace of $L^2$ for which the first derivatives are also square integrable. For a mathematically rigorous definition of Sobolev spaces, see e.g. ((Brezis p202)).
+
+Abstract vectors in our Hilbert spaces are denoted using Dirac's bra-ket notation. The state vector $|\psi\rangle$ is a member of $L^2$, while the corresponding Hermitian conjugate, $|\psi\rangle^\dagger= \langle \psi|$ is a member of the $L^2$ dual space. In general, the dual of the Hilbert space $\mathcal{H}$ is a Banach space and the bra corresponding to ket $|\psi\rangle$ is a linear functional, $\langle \cdot|:\mathcal{H}\rightarrow \C$. Luckily, $L^2$ is it's own dual space, and this is usually stated as the combination $\langle \psi|\phi\rangle$ meaning the inner product between the two abstract vectors $|\psi\rangle$ and $|\phi\rangle$. Since the $L^2$ inner product is the familiar integral over space, we have $\langle \psi | \phi \rangle =\int_\R \psi(x)^\dagger \phi(x)\dx$. 
+
+In a finite dimensional space, we may employ an orthonormal basis and express the general vectors in terms of this basis. We can always represent the basis vectors as ordinary $\R^n$ column vectors\footnote{Since the mapping $f:\mathcal{H}\rightarrow \R^n$ defined by $f(|\phi\rangle)=f(c_1|v_1\rangle+c_2|v_2\rangle+\dots+c_n|v_n\rangle) = (c_1,c_2,\dots,c_n)^T$ (with the set $\{|v_i\rangle\}_{i=1}^n$ being a basis for $\mathcal{H}$) is a linear, injective map \emph{onto} $\R^n$ and thus define an isomorphism between $\mathcal{H}$ and $\R^n$.}, $|e_1\rangle=(1,0,\dots,0)^T$, $|e_2\rangle=(0,1,0,\dots,0)^T$, $\dots$. In this case, bra-vectors are simply row vectors with the bra-ket composition understood to be matrix multiplication. It is important to note that \emph{any} vector in such a space can be represented in terms of this basis, $|\psi\rangle = \sum_{i=1}^n c_i |e_1\rangle$ and employing this we may compute any inner product $\langle \psi | \phi\rangle$ as a series of matrix multiplications of the unit colum/row vectors.
+
+When we are not fortunate enought to be able to work in a finite dimensional subspace of $L^2$, we will assume that the infinite space is \emph{separable}. This means there exists a countably infinite set $D=\{|e_i\rangle\}_{i=1}^\infty$ of orthonormal functions which form a basis for $\mathcal{H}$ ((FYS4410 pp9)). In more mathematical terms, we say that $D$ is a countable \emph{dense} subset of $\mathcal H$, and (perhaps anti-intuitively) the existance of such a set is not at all obvious. Although we are guaranteed that \emph{any} Hilbert space (not neccessarily finite dimensional) contains at least one orthonormal sequence, so we can write for any $|\psi\rangle \in \mathcal H: \psi\rangle = \sum_{i=1}^\infty \langle \psi|e_1\rangle |e_1\rangle$. However, we are in no way guaranteed that this converges and if it does, we are in no way guaranteed that it converges to $|\psi\rangle\in \mathcal H$ ((Rynne pp73)). As it turns out, the assumption that $\mathcal H$ be separable is exactly the neccessary and sufficient condition for this sum to behave like we are used to in the finite dimensional case. Perhaps the most important consequence of separability is that we can \emph{realize unity} in terms of this basis, that is the following equation holds $\sum_i |e_i\rangle \langle e_i|=\mathds{1}$ ((Hassani p148)). This is infinitely helpful in deriving all sorts of things in QM.
+
+We note that for a infinite dimensional, separable Hilbert space, there exists an isomorphism between $\mathcal H$ and $\ell^2$, the Hilbert space of \emph{square summable sequences}. 
+
+In the following, we will take $|\psi\rangle$ to denote an abstract state vector. Expanding any such vector in terms of the the basis of position-eigenstates (basically just an enumeration of all possible positions available to the system) yields what we will call the \emph{wave function}: $\psi(x)=\sum_i|x_i\rangle  \langle x_i | \psi \rangle = \sum_i c_i |x_i\rangle$, with $c_i\equiv \langle x_i|\psi\rangle$.
+\end{exframe}
+
+The classical observables, the generalized coordinates and conjugate momenta, are promoted to \emph{operators} acting on state vectors in the aforementioned Hilbert space. Working in the position basis, the position \emph{operator} becomes a simple multiplication operator: $\hat x \psi(x) = x\psi(x)$. The momentum operator becomes a differential operator, $\hat p \psi(x) = -i\hbar (\partial \psi(x) / \partial x)$. In addition, the old Possion brackets for classical mechanics are promoted to \emph{commutator relations},
+\begin{align}
+\left\{ f, g \right\} \ \ \  \rightarrow \ \ \  \frac{1}{i \hbar }\left[ \hat f, \hat g \right].
+\end{align}
+This means the fundamental Poisson bracket, $\{q_i,p_j\}=\delta_{ij}$, is enforced as the \emph{fundamental commutator relation}
+\begin{align}
+\left\{ q_i, p_j \right\}=\delta_{ij} \ \ \ \rightarrow \ \ \ \left[ \hat x_i, \hat p_j \right] = i\hbar \delta_{ij}.
+\end{align}
+
+It is striking to consider that the preceding three steps is all that is needed to take us from the classical Hamilton equations of motion, and to the Heisenberg equations of motion in the Heisenberg picture of quantum mechanics\footnote{The Heisenberg picture is a formulation of quantum mechanics in which the state vectors are all constant, but the operators evolve in time according to the Heisenberg equation of motion (the Heiseberg picture analogue to the Schrödinger equation).}. Indeed the classical \eq{QM2} \emph{directly} yields the quantum equation of motion by promoting the classical observables to operators, $q,p\rightarrow\hat x,\hat p$, and the Poisson brackets to commutator relations, $\{f,g\}\rightarrow -i/\hbar[\hat f,\hat g]$, as\footnote{Assuming no \emph{explicit} time dependence. If any such depenence is present, we need to add a $\partial A/\partial t$ term to the right hand side of both the classical and quantum equations.}
+\begin{align}
+\der{A}{t} = \left\{A, \H\right\} \ \ \ \rightarrow \ \ \ \der{A}{t} = \frac{1}{i\hbar} \left[\hat A, \hat H\right] \label{eq:QM3}.
+\end{align}
+
+Taking the expectation value (relative to some quantum state vector) of the Heisenberg equation of motion yields the familiar Ehrenfest theorem, which essentially states that the quantum \emph{expectation values} evolve in time in the same way the classical observables do (Shankar, p.180),
+\begin{align}
+\left\langle \hat A \right\rangle = \frac{1}{i\hbar} \left\langle \psi \bigg| \left[\hat A, \hat H  \right] \bigg| \psi\right\rangle.
+\end{align}
+As usual, we will denote by $\langle \cdot| \cdot\rangle$ the integral $L^2$ inner product, while $\langle \cdot \rangle=\langle \psi | \cdot | \psi\rangle$ will denote the expectation value. 
+
+\subsection{Schrödinger picture}
+The straight forward application of cannonical quantization, starting from Hamiltonian classical mechanics, landed us in the Heisenberg picture of quantum mechanics. This is the formulation of quantum theory in which the operators carry the time dependence, with state vectors being constant in time with the equation governing the evolution being the Heisenberg equation, \eq{QM3}. This is the quantum mechanics formalism that behaves the most like classical mechanics does; classically, the observables themselves, $q$ and $p$ (and derived quantities), evolve in time (the phase space point moves along a trajectory according to the Hamilton equations of motion).
+
+But there is another, more familiar, formulation of quantum mechanics in which the operators are constant in time but the state vectors carry the time dependence. This is called the Schrödinger picture, with the corresponding equation of motion being the \emph{Schrödinger equation}. 
+
+The wave function, a representation of the state vector which will be made rigorous in \ref{postulates}, $\Psi(\R;t)$ describes the state of a system at time $t$, where the vector $\R$ encodes all the relevant degrees of freedom of the system. The Schrödinger equation can be derived by employing two key assumptions: The state $\Psi(\R;t)$ evolves in time according to a \emph{linear} and \emph{unitary} time evolution operator, $\hat{\mathcal{U}}(t,t_0):L^2\rightarrow L^2$ such that $\Psi(\R;t)=\hat{\mathcal{U}}(t,t_0)\Psi(\R;t_0)\equiv \hat \hat{\mathcal{U}}(t)\Psi(\R)$ ((FYS4410 pp20)). Two other physically motivated properties of $\hat{\mathcal{U}}$ are also assumed, namely that $\lim_{t\rightarrow t_0} \hat{\mathcal{U}}(t,t_0)=\mathds{1}$ and $\hat{\mathcal{U}}(t_2,t_0)=\hat{\mathcal{U}}(t_2,t_1)\hat{\mathcal{U}}(t_1,t_0)$. These properties are all satisfied if we assume $\hat{\mathcal{U}}$  to take the form
+\begin{align}
+\hat{\mathcal{U}}(t+\Delta t,t_0) = \mathds{1} - i \hat \Omega \Delta t,
+\end{align}
+with $\hat \Omega$ being \emph{some Hermitian operator} ((Sakurai pp71)). This is essentially nothing more than a guess, but guided by the intuition from the classical analogue of our system, we notice that $\hat \Omega$ has dimensions of frequency and postulate that we are really dealing with $\hat H / \hbar$. This is after all pretty natural, since the classical Hamiltonian is what governs time evolution before the quantization. 
+
+Taking the composition of $\hat{\mathcal{U}}(t_2,t_1)$ and $\hat{\mathcal{U}}(t_1,t_0)$ with $t_1\rightarrow t$ and $t_2\rightarrow t_1+\Delta t$ now yields
+\begin{align}
+\hat{\mathcal{U}}(t+\Delta t,t)\hat{\mathcal{U}}(t,t_0) = \hat{\mathcal{U}}(t+\Delta t, t_0) = \left(\mathds{1} - \frac{i\hat H \Delta t}{\hbar} \right) \hat{\mathcal{U}}(t,t_0)
+\end{align}
+which we can rearrange as 
+\begin{align}
+\hat{\mathcal{U}}(t+\Delta t,t_0) - \hat{\mathcal{U}}(t,t_0) = -\Delta t \frac{i}{\hbar} \hat H \hat{\mathcal{U}}(t,t_0).
+\end{align}
+Dividing by $\Delta t$ and taking the limit $\Delta t\rightarrow 0$ yields the familiar definition of the derivative of $\hat{\mathcal{U}}(t,t_0)$ in terms of the Hamiltonian, i.e.
+\begin{align}
+i\hbar \pder{}{t} \hat{\mathcal{U}}(t,t_0) = \hat H \hat{\mathcal{U}}(t,t_0).
+\end{align}
+This is known as the Schrödinger equation for the time evolution operator, $\hat{\mathcal{U}}$ and is the fundamental equation from which all things connected to time evolution follows ((Sakurai pp72)). 
+
+The more familiar Schrödinger equation which govern the time evolution of states emerges after we right-multiply by the wavefunction $\Psi(\R)$,
+\begin{align}
+i\hbar \pder{}{t}\hat{\mathcal{U}}(t,t_0)\Psi(\R) &= \hat H \hat{\mathcal{U}}(t,t_0) \Psi(\R) \nn\\
+%
+i\hbar \pder{}{t} \Psi(\R;t) &= \hat H \Psi(\R;t). \label{eq:TDSE}
+\end{align}
+We will denote \eq{TDSE} by the time dependent Schrödinger equation (TDSE). For the important special case where $\hat H$ is time independent, the TDSE is separable in spatial and temporal variables and admits the formal solution ((Kvaal pp8))
+\begin{align}
+\Psi(\R;t) = \hat{\mathcal{U}}(t,t_0) \Psi(\R) = e^{-it\hat H/t}\Psi(\R). \label{eq:QM10}
+\end{align}
+
+It is a central postulate of quantum mechanics that any observable is associated with a Hermitian operator, $\hat O$, and that it's spectrum spans the entirety of $L^2$. This will be discusssed more thorougly in section \ref{postulates}, but for now we will anticipate things to come and use the \emph{completeness} of the operator $\hat O$'s spectrum: 
+\begin{align}
+\sum_i |O_i\rangle\langle O_i| = \mathds{1}. \label{eq:QM8}
+\end{align}
+Let us now consider the energy, with corresponding Hermitian operator $\hat H$. The spectrum, the energy-eigenstates, are labeled by $|E_i\rangle$. Inserting the unity of \eq{QM8} realized in terms of the energy eigen-states on both sides of the exponential expression for $\hat{\mathcal{U}}(t,t_0)$ yields 
+\begin{align}
+e^{-it\hat H/\hbar} &= \sum_i \sum_j |E_i\rangle \langle E_i| e^{-it\hat H/\hbar} |E_j\rangle \langle E_j| \nn\\
+%
+&=\sum_i \sum_j |E_i\rangle \langle E_i|\sum_{n=0}^\infty \frac{1}{n!}\left(\frac{t\hat H}{i\hbar} \right)^n |E_j\rangle \langle E_j|, \label{eq:QM9}
+\end{align}
+where we have used the normal definition of the exponential in terms of it's power series $e^x=\sum_n x^n/n!$. Since $\hat H |E_i\rangle = E_i |E_i\rangle$ and $\hat H^n = E_i\hat H^{n-1}|E_i\rangle = E_i^2 \hat H^{n-2}|E_i\rangle = \dots = E_i^n|E_i\rangle$, we find from \eq{QM9} that 
+\begin{align}
+e^{-it\hat H/\hbar} &= \sum_i \sum_j |E_i\rangle \langle E_i|\sum_{n=0}^\infty \frac{1}{n!}\left(\frac{t\hat E_i}{i\hbar} \right)^n |E_j\rangle \langle E_j| \nn\\
+%
+&=  \sum_i \sum_j e^{-it E_i /\hbar} |E_i\rangle \underbrace{\langle E_i| E_j\rangle}_{\delta_{ij}} \langle E_j| \nn\\
+%
+&= \sum_i | E_i\rangle e^{-it E_i /\hbar} \langle E_i|. \label{eq:QM11}
+\end{align}
+
+This shows that if we can somehow find the energy-eigenstates and expand our wave function in this basis, finding the time evolution, governed by the TDSE, is trivial ((Sakurai p74)). Applying the result from \eq{QM11} in \eq{QM10} gives 
+\begin{align}
+\Psi(\R;t) &= \hat{\mathcal{U}}(t,t_0)\Psi(\R) = e^{-it\hat H/\hbar} \Psi(\R) \nn\\
+%
+&= \sum_i | E_i\rangle e^{-it E_i /\hbar} \langle E_i|\left(\sum_j|E_j\rangle\langle E_j|\Psi\rangle\right) \nn\\
+%
+&= \sum_i \sum_j| E_i\rangle e^{-it E_i /\hbar} \underbrace{\langle E_i|E_j\rangle}_{\delta_{ij}}\langle E_j|\Psi\rangle = \sum_i |E_i\rangle e^{-it E_i /\hbar} \langle E_i|\Psi\rangle.
+\end{align}
+
+As illustrated above, the problem of computing the time evolution of a state when the eigen-states of the Hamiltonian are known consists of calculating a series of integrals ($\langle E_i|\Psi\rangle$). For us, however, finding the eigen-states and the corresponding eigenvalues will be the fundamental task. The governing equation is simply the eigenvalue equation 
+\begin{align}
+\hat H |\Psi\rangle &= E |\Psi\rangle, \label{eq:TISE}
+\end{align}
+which is called the time independent Schrödinger equation (TISE). This is the spatial result of the separation of variables we used to derive the TDSE ((Griffiths p26)). 
+
+%In the Schrödinger picture the time evolution of a \emph{time dependent} state happens %according to the time dependent Schrödinger equation (TDSE),
+%\begin{align}
+%i\hbar \der{}{t}\Psi(\R;t) &= \hat H \Psi(\R;t),
+%\end{align}
+%where $\Psi(\R;t)$ denotes the \emph{wave function} corresponding to the state in %question. The distinction will be made clear in section \ref{postulates}. 
+
+%Following (FYS4110 lecture notes), we may formulate this in terms of a \emph{time %evolution operator}, $\mathcal{U}(t_1,t_0)$, that relates the wave function at time $t_0$% to the one at a later time $t_1$. For a Hamiltonian with no \emph{explicit} time %dependence, the TDSE is separable and admits a formal solution in terms of the the time %evolution operator as
+%\begin{align}
+%\Psi(\R;t) = \mathcal{U}(t,t_0) \Psi(\R;t_0) = e^{-it\hat H /\hbar} \Psi(\R).
+%\end{align}
+%The vector $\R$ contains all the relevant degrees of freedom of the system in question %and the $\mathcal{U}(t,t_0)\equiv\mathcal{U}(t)=e^{-it\hat H / \hbar}$ is the result of %solving the general TDSE by assuming separation of spatial and temporal variables, $\Psi(%\R;t)=\phi(\R)\tau(t)$. The 
+
+%We must demand certain physically motivated conditions to hold for this operator (Suomi lecture notes), namely
+%\begin{itemize}
+%  \item[(i)] $\mathcal{U}(t_1,t_0)$ must be unitary (in order to ensure conservation of probability).
+%  \item[(ii)] The \emph{composition} $\mathcal{U}(t_2,t_1)\mathcal{U}(t_1,t_0)$ must equal $\mathcal{U}(t_2,t_0)$ (since first evolving the state from $t_0$ to $t_1$ and \emph{then} from $t_1$ to $t_2$ must be equivalent to going straight from $t_0$ to $t_2$ ).
+%  \item[(iii)] $\lim_{\Delta t\rightarrow 0}\mathcal{U}(t+\Delta t, t) = \mathcal{U}(t,t) = \mathds{1}$ (since a time evolution in which no time passes should leave any state unchanged).
+%\end{itemize}
+
+%Since time is a continous parameter, $\lim_{\Delta t \rightarrow 0}|\psi(t+\Delta t)\rangle = |\psi(t)\rangle$ must obviously hold. Let us now assume that the deviation of $\mathcal{U}(t+\Delta t, t)$ from unity is on the order of $\Delta t$, meaning
+%\begin{align}
+%\mathcal{U}(t+\Delta t, t) \psit &= \left(1 + \Delta t \hat A \right) \psit,
+%\end{align}
+%for \emph{some} operator $\hat A$. Let us posit that $\hat A$ takes the form 
+
+\subsection{Theh quantum Hamiltonian}
+Since the Hamiltonian is the fundamental quantity which governs the dynamics of any quantum mechanical system, the natural question is now: What does it look like? In the simplest possible case, a free particle of mass $m$ constrained to move in one spatial dimension, it takes the form 
+\begin{align}
+\hat H_\text{1D free} &= -\frac{\hbar^2}{2m}\pder{}{x}.
+\end{align}
+It is straight forward to apply the 
+
+Under first quantization, the classical Hamiltonian changes from \eq{QM4} to 
+\begin{align}
+\hat H &= -\sum_{i=1}^N \frac{\hbar}{2m_e}\nabla_i^2 - \sum_{i=1}^N \frac{Ze^2}{|\hat {\bf R} - \hat \r_i|} + \sum_{i=1}^N\sum_{j=i+1}^N \frac{e^2}{|\hat \r_i- \hat \r_j|}, \label{eq:QM5}
+\end{align}
+after promoting the classical observables to operators, ${\bf q}_i \rightarrow \hat \r_i$ and ${\bf p}_i\rightarrow -i\hbar\nabla_i$. The second term is the coulomb attraction between electron $i$ and a stationary nucleus (with charge $Z$) at position ${\bf R}$, while the third term is the electron-electron coulomb repulsion. 
+
+\subsection{Second quantization}
+Let us now consider a system of $N$ \emph{indistinguishable} particles, i.e. particles that are fundamentally identical as to make telling them apart from each other is impossible. If our theory is to handle such a system with any logical consistency, we must require our wave function (and thus also the observables we derive from it) to be \emph{permutation invariant} (up to a phase factor, which does not affect the physics [as per the postulates of QM]). Following (Fys-kjm4480, p8) we may define this mathematically by defining $\sigma\in S_N$, a permutation of the indices in a set of $N$ such indices. $S_N$ here denotes the symmetric group of degree $N$.\footnote{The symmetric group on a finite set $M$ is a mathematical group, and consists of all possible permutations of the elements of the set $M$. Mathematically, these permutations are bijections from $M$ onto $M$ itself. There are $N!$ unique permutations in the group, including the identity permutation (which just leaves the set un-changed).} We must demand that $|\Psi|^2$ be permutation invariant, that is
+\begin{align}
+\left|\Psi(\r_1,\r_2,\r_3,\dots,\r_N)\right|^2 &= \left|\Psi(\r_{\sigma(1)},\r_{\sigma(2)},\r_{\sigma(3)},\dots,\r_{\sigma(N)})\right|^2 \nn\\
+\Rightarrow \ \ \Psi(\r_1,\r_2,\r_3,\dots,\r_N) &= \alpha \Psi(\r_{\sigma(1)},\r_{\sigma(2)},\r_{\sigma(3)},\dots,\r_{\sigma(N)}),
+\end{align}
+with $\alpha\in\C$ (possibly $\sigma$-dependent) with $|\alpha|=1$.
+
+For each permutation in $S_N$, we define a linear operator $\hat P_\sigma$ that evaluates the wave function with permuted indices
+\begin{align}
+\hat P_\sigma \left[ \Psi(\r_1,\r_2,\r_3,\dots,\r_N) \right] &= \Psi(\r_{\sigma(1)},\r_{\sigma(2)},\r_{\sigma(3)},\dots,\r_{\sigma(N)}.
+\end{align}
+Thus we can formulate particle indistinguishability in terms of $\hat P_\sigma$ by demanding that $\Psi(\r_1,\r_2,\r_3,\dots,\r_N)$ be an eigenfunction of $\hat P_\sigma$. According to the \emph{postulates} of quantum mechanics, a fermionic wave function is totally anti-symmetric w.r.t. exchange of particles, meaning this eigenvalue is $(-1)^{|\sigma|}$, with $|\sigma|$ being the minimal number of \emph{transpositions}\footnote{A transposition is defined as a permutation of \emph{only two indices}.} needed to perform the full permutation $\sigma$. 
+
+
+\subsection{Slater determinants}
+So far we know that the wave function of a multi-electron system must be square intergrable and totally antisymmetric w.r.t. interchange of electrons. 
+
+
+
+
+
+
+
+
+
+
+
+
+\subsection{Postulates of Quantum Mechanics \label{postulates}}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\section{Appendix}
+\subsection{Non-dimensionalizing the Hamiltonian: Hartree atomic units}
+(Szabo p41) In SI-units, the electronic wave function for the Hydrogen atom system (under first quantization) reads 
+\begin{align}
+\left[-\frac{\hbar^2}{2m_e}\nabla^2 - \frac{e^2}{4\pi\varepsilon_0 r}\right] \psi &= E\psi.
+\end{align}
+We may write this in terms of a new length scale, $r' = r / \lambda$. Since $\nabla$ is a differentiation w.r.t. a lenght, it carries units of $1/\text{length}$ so $\nabla'=\lambda \nabla$. In terms of units, this gives 
+\begin{align}
+-\frac{\hbar^2}{2m_e\lambda^2} - \frac{e^2}{4\pi\varepsilon_0 \lambda} = E. \label{eq:QM6}
+\end{align}
+Since we are adding the first two terms they must both carry the same total dimensionality as the right hand side, namely energy. We will denote this quantity $E_h$, the Hartree energy. Solving 
+\begin{align}
+E_h=\frac{\hbar^2}{m_e\lambda^2} &= \frac{e^2}{4\pi\varepsilon_0 \lambda} \label{eq:QM7}
+\end{align}
+for $\lambda$ gives 
+\begin{align}
+\lambda &= \frac{4\pi \varepsilon_0 \hbar^2}{m_e e^2}
+\end{align}
+revealing the familiar \emph{Bohr radius}, $\lambda=a_0$. Using the relation in \eq{QM5}, we may rewrite the Hamiltonian in terms of the Hartree energy as
+\begin{align}
+E_h\left[-\frac{1}{2}\nabla'^2 - \frac{1}{r'}\right] \psi &= E\psi,
+\end{align}
+and introducing $E'=E/E_h$ as a new energy scale we can finally write the Hamiltonian as
+\begin{align}
+E_h\left[-\frac{1}{2}\nabla'^2 - \frac{1}{r'}\right] \psi &= E_hE'\psi \nn\\
+\left[-\frac{1}{2}\nabla'^2 - \frac{1}{r'}\right] \psi &= E'\psi.
+\end{align}
+
+From \eq{QM7} we can find the value for $\hbar$ in our new units as
+\begin{align}
+\hbar^2 &= \frac{E_h}{m_e\lambda^2} = \frac{e^2}{4\pi \varepsilon_0 \lambda^3 m_e} = \frac{e^2}{4\pi \varepsilon_0 m_e }
+\end{align}
+
+\newcommand{\M}{\mathrm{M}}
+\renewcommand{\L}{\mathrm{L}}
+\newcommand{\T}{\mathrm{T}}
+\renewcommand{\C}{\mathrm{C}}
+\subsection{Natural units: Hartree atomic units}
+When working within a specific branch of physics, it is often useful to deviate from the every-day SI units of measurements and instead use units which are \emph{natural} to the systems under study. Since we are working with "small" systems, the SI \emph{meter}, \emph{second}, \emph{kilogram}, and \emph{coulomb} are of little use to us. Instead we will work in a system of units in which we define the mass of the electron, $m_e$, to be the scale by which we measure all other masses. This obviously means the numerical value of the electron mass becomes unity, $m_e=1$. In the same way, we will use Planck's constant, $\hbar$, as the scale by which we measure angular momentum and action, the electron charge, $e$, will be our scale for electrical charge, and finally Coulomb's constant, $k_e$, will be our scale of electric permittivity. 
+
+The usual way to state this is to set $\hbar=e=m_e=k_e=1$, and the system of units derived from these four definitions is called Hartree atomic units. We can think of this as the \emph{natural} system of units for the Hydrogen atom system. To better see why this is the case, let us combine these four quantities in such a way as to produce a length. 
+
+In terms of the four fundamental dimenions of physics: Length(L), time(T), mass(M), and charge(C), the units of $\hbar$, $m_e$, $e$, and $k_e$ are $\left[\hbar\right]=\mathrm{M}\mathrm{L}^2\mathrm{T}^{-1}$, $\left[m_e\right]=\mathrm{M}$, $\left[e\right]=\mathrm{C}$, and $\left[k_e\right]=\mathrm{M}\mathrm{L}^3\mathrm{C}^{-2}\mathrm{T}^{-2}$, respectively. Combining arbitrary powers of these four constants gives 
+\begin{align}
+\left[\lambda(a,b,c,d)\right] &= \left[k_e^a \hbar^b m_e^c e^d\right] =  \left(\M^a \L^{3a} \C^{-2a} \T^{-2a} \right) \left(\M^b \L^{2b} \T^{-b} \right) \left( \M^c \right) \left( \C^d \right) \nn\\
+%%
+&= \L^{2a+3b} \T^{-a-2b} \M^{a+b+c} \C^{-2b+d}.
+\end{align}
+There is exactly one way to realize a length from these exponents, i.e. solving the four equations $2a+3b=1$, $-a-2b=0$, $a+b+c=0$, and $-2b+d=0$: $a=-1$, $b=2$, $c=-1$, and $d=-2$. This means that the natural length scale of our problem is simply (up to a numerical constant)
+\begin{align}
+\L_\text{scale} &= a_0 = k_e^{-1} \hbar^{2} m_e^{-1} e^{-2} = \frac{\hbar^2}{k_e m_e e^2} = \frac{ 4\pi \varepsilon_0 \hbar^2 }{m_e e^2},
+\end{align}
+which re recognize as simply the \emph{Bohr radius}. 
+
+We can go through this same exercise to find a natural \emph{time} scale for our system. There is a unique way to combine the exponents $a$, $b$, $c$, and $d$ in order to realize a time, namely $a=-2$, $b=3$, $c=-1$, $d=-4$, or
+\begin{align}
+\T_\text{scale} &= k_e^{-2} \hbar^3 m_e^{-1} e^{-4} = \frac{\hbar^3 }{k_e^2 m_e e^4} = \frac{\hbar a_0}{k_e e^2}.
+\end{align}
+
+From $a_0$ and $\T_\text{scale}$ we can find the natural energy scale,
+\begin{align}
+\mathrm{E}_\text{scale} &= m_e \frac{a_0^2}{a_0^2 \left(\frac{\hbar}{k_e e^2}\right)^2} = \frac{m_e k_e^2 e^4}{\hbar^2} \equiv E_h,
+\end{align}
+which we will call a Hartree. 
+
+Finally, before we go on we may use the expression for the \emph{fine structure constant} to find the numerical value of $c$ in this system. From 
+\begin{align}
+\alpha &= \frac{k_e e^2}{\hbar c} \Rightarrow c = \frac{k_e e^2}{\hbar \alpha} = \frac{1}{\alpha} \simeq 137,
+\end{align}
+after substituting $\hbar=e=k_e=1$.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\end{document}
+
+% \begin{figure}[p!]
+% \centering
+% \includegraphics[width=12cm]{<fig>.pdf}
+% \caption{\label{fig:1}}
+% \end{figure}
+ 
+% \lstinputlisting[firstline=1,lastline=2, float=p!, caption={}, label=lst:1]{<code>.m}
+
