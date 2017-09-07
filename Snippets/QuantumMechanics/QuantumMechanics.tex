@@ -29,6 +29,11 @@
 \usepackage{capt-of}                         % Caption things which are not floats.
 \usepackage[url=false]{biblatex}             % Citations (made easy).
 \usepackage{dsfont}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{multirow}% http://ctan.org/pkg/multirow
+\usepackage{hhline}% http://ctan.org/pkg/hhline
+\usepackage{siunitx}
 
 % Differentials -------------------------------------------------------------- %
 \newcommand{\dt}{\,\mathrm{d}t}
@@ -241,6 +246,9 @@ Gerald D. Mahan: Quantum Mechanics in a Nutshell
 
 Lamb Shift article \url{https://journals.aps.org/pra/pdf/10.1103/PhysRevA.95.022704}
 
+Itzykson, Zuber: Quantum Field Theory \url{http://libgen.io/search.php?req=+C.+Itzykson++J.+B.+Zuber++Quantum+Field+Theory+&lg_topic=libgen&open=0&view=simple&res=25&phrase=1&column=def}
+
+T. Welton: Some observable effects of the quantum-mechanical fluctuations of the electromagnetic field \url{https://journals.aps.org/pr/pdf/10.1103/PhysRev.74.1157}
 
 \subsection{Review of Hamiltonian classical mechanics}
 Before venturing into the land of quantum mechanics (QM), it is useful to first review the Hamiltonian formulation of classical mechanics (CM). Classical mechanics deals with the dynamics of macroscopic objects. 
@@ -276,7 +284,9 @@ Abstract vectors in our Hilbert spaces are denoted using Dirac's bra-ket notatio
 
 In a finite dimensional space, we may employ an orthonormal basis and express the general vectors in terms of this basis. We can always represent the basis vectors as ordinary $\R^n$ column vectors\footnote{Since the mapping $f:\mathcal{H}\rightarrow \R^n$ defined by $f(|\phi\rangle)=f(c_1|v_1\rangle+c_2|v_2\rangle+\dots+c_n|v_n\rangle) = (c_1,c_2,\dots,c_n)^T$ (with the set $\{|v_i\rangle\}_{i=1}^n$ being a basis for $\mathcal{H}$) is a linear, injective map \emph{onto} $\R^n$ and thus define an isomorphism between $\mathcal{H}$ and $\R^n$.}, $|e_1\rangle=(1,0,\dots,0)^T$, $|e_2\rangle=(0,1,0,\dots,0)^T$, $\dots$. In this case, bra-vectors are simply row vectors with the bra-ket composition understood to be matrix multiplication. It is important to note that \emph{any} vector in such a space can be represented in terms of this basis, $|\psi\rangle = \sum_{i=1}^n c_i |e_1\rangle$ and employing this we may compute any inner product $\langle \psi | \phi\rangle$ as a series of matrix multiplications of the unit colum/row vectors.
 
-When we are not fortunate enought to be able to work in a finite dimensional subspace of $L^2$, we will assume that the infinite space is \emph{separable}. This means there exists a countably infinite set $D=\{|e_i\rangle\}_{i=1}^\infty$ of orthonormal functions which form a basis for $\mathcal{H}$ ((FYS4410 pp9)). In more mathematical terms, we say that $D$ is a countable \emph{dense} subset of $\mathcal H$, and (perhaps anti-intuitively) the existance of such a set is not at all obvious. Although we are guaranteed that \emph{any} Hilbert space (not neccessarily finite dimensional) contains at least one orthonormal sequence, so we can write for any $|\psi\rangle \in \mathcal H: \psi\rangle = \sum_{i=1}^\infty \langle \psi|e_1\rangle |e_1\rangle$. However, we are in no way guaranteed that this converges and if it does, we are in no way guaranteed that it converges to $|\psi\rangle\in \mathcal H$ ((Rynne pp73)). As it turns out, the assumption that $\mathcal H$ be separable is exactly the neccessary and sufficient condition for this sum to behave like we are used to in the finite dimensional case. Perhaps the most important consequence of separability is that we can \emph{realize unity} in terms of this basis, that is the following equation holds $\sum_i |e_i\rangle \langle e_i|=\mathds{1}$ ((Hassani p148)). This is infinitely helpful in deriving all sorts of things in QM.
+When we are not fortunate enought to be able to work in a finite dimensional subspace of $L^2$, we will assume that the infinite space is \emph{separable}. This means there exists a countably infinite set $D=\{|e_i\rangle\}_{i=1}^\infty$ of orthonormal functions which form a basis for $\mathcal{H}$ ((FYS4410 pp9)). In more mathematical terms, we say that $D$ is a countable \emph{dense} subset of $\mathcal H$, the closure of which span $\mathcal{H}$. The existence of such a set is (perhaps anti-intuitively)  not at all obvious. Although we are guaranteed that \emph{any} Hilbert space (not neccessarily finite dimensional) contains at least one orthonormal sequence, so we can write for any $|\psi\rangle \in \mathcal H$: $|\psi\rangle = \sum_{i=1}^\infty \langle \psi|e_i\rangle |e_i\rangle$. However, we are in no way guaranteed that this converges in $\mathcal{H}$ and if it does, we are in no way guaranteed that it converges to $|\psi\rangle\in \mathcal H$ ((Rynne pp73)). As it turns out, the assumption that $\mathcal H$ be separable is exactly the neccessary and sufficient condition for this sum to behave like we are used to in the finite dimensional case. Perhaps the most important consequence of separability is that we can \emph{realize unity} in terms of this basis, that is the following equation holds $\sum_i |e_i\rangle \langle e_i|=\mathds{1}$ ((Hassani p148)). This is sometimes called \emph{Parseval relation} ((Rynne p81)).
+
+The orthonormal basis is sometimes called a \emph{complete orthonormal sequence} ((Rynne p78)) which causes confusion\----when physicists talk about completeness they are talking about the existence of such a basis set and the resulting validity of $\sum_i^\infty |e_i\rangle\langle e_i|=\mathds{1}$. This is also sometimes called the completeness relation. However, when mathematicians talk about completeness, they are almost always refering to the fact that any Cauchy sequence in $\mathcal{H}$ converges \emph{in} $\mathcal{H}$.
 
 We note that for a infinite dimensional, separable Hilbert space, there exists an isomorphism between $\mathcal H$ and $\ell^2$, the Hilbert space of \emph{square summable sequences}. 
 
@@ -398,7 +408,7 @@ which is called the time independent Schrödinger equation (TISE). This is the s
 %\end{align}
 %for \emph{some} operator $\hat A$. Let us posit that $\hat A$ takes the form 
 
-\subsection{Theh quantum Hamiltonian}
+\subsection{The quantum Hamiltonian}
 Since the Hamiltonian is the fundamental quantity which governs the dynamics of any quantum mechanical system, the natural question is now: What does it look like? In the simplest possible case, a free particle of mass $m$ constrained to move in one spatial dimension, it takes the form 
 \begin{align}
 \hat H_\text{free} &= -\frac{\hbar^2}{2m}\pder{}{x},
@@ -456,11 +466,11 @@ Combining both effects gives what is know as the \emph{fine structure}.
 
 There is an additional relativistic effect which is derived by expanding the Dirac equation Hamiltonian in powers of $mc^2$ and taking the non-relativistic limit. This is called the Darwin term, and for a central potential it can be written as ((Mahan pp382))
 \begin{align}
-H_\text{Darwin} = -\frac{\pi\hbar^2}{2m_e^2c^2}\delta^3(\r-\r_A),
+H_\text{Darwin} = -\frac{\pi\hbar^2k_ee^2}{2m_e^2c^2}\delta^3(\r-\r_A),
 \end{align}
 with $\delta^3(\r-\r_A)$ being a Dirac delta function at the position of the nucleus. Since only $n=1$ (s symmetry) states have a non-vanishing magnitude at the origin, the Darwin term only affects s states. 
 
-Furthermore we may take into account the Lamb shift, that is the splitting of 2s and 2p states which is related to the quantization of the electric field and vacuum fluctuations of the electric and magnetic fields which partially shield the Coulomb interactions between the electrons and the nuclei ((Griffiths p267)). Even though quantum field theory is needed in order to handle this effect for real, we may use an effective Hamiltonian term which generates the shift ((Lamb shift article))
+Furthermore we may take into account the Lamb shift, that is the splitting of 2s and 2p states which is related to the quantization of the electric field. The charged electrons interact with the vacuum fluctuations of the quantized electromagnetic field which partially shield the Coulomb interactions between the electrons and the nuclei ((Itzykson, p80)) ((Griffiths p267)). Even though quantum field theory is needed in order to handle this effect for real\footnote{In fact, the Dirac equation does not predict the shift ((Mahan p168)), but a semi-classical model due to Welton ((Welton article)) does.}, we may use an effective Hamiltonian term which generates the shift ((Lamb shift article))
 \begin{align}
 \hat H_\text{Lamb shift} = \frac{4}{3}\alpha^2 m_ec^2 \left(\frac{\hbar}{m_ec}\right)^3 \ln(1/\alpha^2) \delta^3(\r-\r_A),
 \end{align}
@@ -468,16 +478,47 @@ with $\alpha=k_ee^2/\hbar c\simeq 1/137$ denoting the \emph{fine structure const
 
 Finally, let us consider the interaction between the electrons and the magnetic dipoles of the protons. The proton has a magnetic dipole of magnitude ${\bf \mu}_p = (g_pe/2m_p){\bf S}_p$ and sets up the magnetic field (according to classical electrodynamics) ((Griffiths p283))
 \begin{align}
-{\bf B}&= \frac{k_e\mu_0}{r^3}\left[ 3({\bf \mu} \cdot \hat r)\hat r-{\bf \mu} \right] + \frac{2\mu_0}{3}{\bf \mu}\delta^3(\r-\r_A).
+{\bf B}&= \frac{k_e\mu_0}{r^3}\left[ 3({\bf \mu} \cdot \hat r)\hat r-{\bf \mu} \right] + \frac{2\mu_0}{3}{\bf \mu}\delta^3(\r-\r_A),
 \end{align}
-The Hamiltonian correction term becomes 
+where $\mu_0$ denotes the permeability of free space and $g_p\approx5.59$ is the gyromagnetic ratio of the proton. The Hamiltonian correction term becomes 
 \begin{align}
-\hat H_\text{hyperfine} &= \frac{\mu_0g_pe^2}{8\pi m_pm_e} \frac{\left[3({\bf S}_p\cdot\hat r)({\bf S}_e \cdot \hat r)-{\bf S}_p\cdot {\bf S}_e \right]}{r^3} + \frac{\mu_0g_pe^2}{3m_pm_e}{\bf S}_p\cdot {\bf S}_p \delta^3(\r-\r_A).
+\hat H_\text{hyperfine} &= \frac{\mu_0g_pe^2}{m_pm_e}\left( \frac{\left[3({\bf S}_p\cdot\hat r)({\bf S}_e \cdot \hat r)-{\bf S}_p\cdot {\bf S}_e \right]}{8\pi r^3} + \frac{1}{3}{\bf S}_p\cdot {\bf S}_e \delta^3(\r-\r_A)\right).
 \end{align}
 
-We may now use dimensional analysis in order to work out the rough size of these effects relative to the ground state energies of ordinary atoms. We will take electronic distances to be on the order of the Bohr radius, $r\sim a_0$ and use the natural time scale $t\sim\hbar a_0 /k_e e^2$ in order to work out the typical momentum of an electron as $p\sim m_ek_e e^2 /\hbar$. The hydrogenic radial wave function of principal quantum number $n$ takes the value $R_n({\bf 0})=4Z^3/a_0^3n^3$ ((Griffiths p155)), so we take the delta function to be on the order of $\delta^3(\r)\sim 1/a_0^3$.
+\begin{table}
+\centering
+\setlength\extrarowheight{2pt}
+\begin{tabularx}{\textwidth}{X c c r}
+\hline
+\hline
+\\[-0.9em] 
+Correction & & & Approximate \\ 
+term & Expression & Dimensions & magnitude $[E_h]$ \\
+\\[-0.9em]
+\hline
+\\[-0.9em]
+$\hat H_\text{Relativistic}$ & $\displaystyle-\frac{p^4}{8m^3c^2}$ &  $\displaystyle\frac{m_ek_e^4e^8}{\hbar^4c^2}$ & $5\e{-6}$ \\
+\\[-0.5em]
+$\hat H_\text{Spin-orbit}$ & $\displaystyle\frac{Zk_ee^2}{2m_e^2c^2r^3}{\bf S}\cdot {\bf L}$ &  $\displaystyle\frac{k_ee^2\hbar^2}{m_e^2c^2a_0^3}$ & $5\e{-5}$ \\
+\\[-0.5em]
+$\hat H_\text{Darwin}$ & $\displaystyle-\frac{\pi\hbar^2k_ee^2}{2m_e^2c^2}\delta^3(\r-\r_A)$ &  $\displaystyle\frac{\hbar^2k_ee^2}{m_e^2c^2a_0^3}$ & $5\e{-5}$ \\
+\\[-0.5em]
+$\hat H_\text{Lamb}$ & $\displaystyle \frac{4}{3}\alpha^2 m_ec^2 \left(\frac{\hbar}{m_ec}\right)^3 \ln(1/\alpha^2) \delta^3(\r-\r_A)$ & $\displaystyle \frac{\alpha^2\hbar^3}{m_e^2ca_0^3}$ & $1\e{-6}$ \\
+\\[-0.5em]
+$\hat H_\text{hyperfine}$ & $\displaystyle\frac{9({\bf S}_p\cdot\hat r)({\bf S}_e \cdot \hat r) + {\bf S}_p\cdot{\bf S}_e\left(8\pi r^3 \delta^3(\r-\r_A)-3\right)}{24\pi \chi r^3}$ & $\displaystyle\frac{\mu_0e^2\hbar^2}{m_pm_ea_0^3}$ & $5\e{-7}$ \\
+\\[-0.9em]
+\hline
+\end{tabularx}
+\caption{Order of magnitude energy corrections to the  Hamiltonian due to various effects un-accounted for by the ordinary atomic Hamiltonian. The $\chi$ in the denominator of the hyperfine correction term denotes $\chi=m_pm_e/\mu_0g_pe^2$\label{tab:QM1}}
+\end{table}
+
+We may now use dimensional analysis in order to work out the rough size of these effects relative to the ground state energies of ordinary atoms. We will take electronic distances to be on the order of the Bohr radius, $r\sim a_0$ and use the natural time scale $t\sim\hbar a_0 /k_e e^2$ in order to work out the typical momentum of an electron as $p\sim m_ek_e e^2 /\hbar$. The hydrogenic radial wave function of principal quantum number $n$ takes the value $R_n({\bf 0})=4Z^3/a_0^3n^3$ ((Griffiths p155)), so we take the delta function to be on the order of $\delta^3(\r)\sim 1/a_0^3$. All ${\bf S}$ and ${\bf L}$ terms carry units of $\hbar$.
+
+Rough back of the envelope estimations of the order of magnitude of the correction terms are shown in \tab{QM1}. The binding energy of e.g. hydrogen is on the order of $\sim 1E_h$, so these are all miniscule compared to the typical energy scale we are working with. 
 
 
+\subsection{Born-Oppenheimer approximation}
+Let us now consider again the atomic Hamiltonian of \eq{QM5}. For a system of $N$ electrons in the presence of $M$ nuclei in three spatial dimensions, we have a system of $3(N+M)$ degrees of freedom (treating the nuclei as point particles). 
 
 
 
