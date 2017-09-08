@@ -444,7 +444,7 @@ with $M$ denoting the number of nuclei of (possibly differing) charge(s) $+Z_Ae$
 \end{align}
 The mass of nucleus $A$ is here denoted $m_A$. 
 
-\subsection{Corrections to the Hamiltonian \label{corrections}}
+\subsubsection*{How accurate is this Hamiltonian?  \label{corrections}}
 Of course, there are some imperfections. We have for example not included any relativistic effects. The classical non-relativistic kinetic energy term takes the form $|{\bf p}|^2/2m=m{\bf v}^2/2$. However, in order to account for relativistic effects, we should really use 
 \begin{align}
 T_\text{classical, relativistic} = \frac{mc^2}{\sqrt{1-(v/c)^2}}-mc^2,
@@ -531,7 +531,7 @@ Let us now consider again the atomic Hamiltonian of \eq{QM5}. For a system of $N
 
 In general, for an arbitrary Hamiltonian (for example the full Hamiltonian of \eq{TISE} with the five correction terms of section \ref{corrections}), solving the corresponding Schrödinger equation is a problem classified in complexity theory as {\bf NP}-hard ((Bolotin)). Heuristically, we may consider this to be a problem that is not feasably soluble even in theory using a deterministic algorithm.\footnote{The {\bf P} class problems are problems which can be solved in \emph{polynomial} time using a deterministic algorithm. Assuming that {\bf P}$\not=${\bf NP} (which is belived to be true), it means that {\bf NP} problems cannot and {\bf NP}-hard problems are by definition as hard as the hardest {\bf NP} problems. In reality, this most likely means we are stuck with a theoretical best case scenario of an algorithm with runs in exponential (w.r.t. the system size) time.} As it turns out, we will need to make certain simplifications before we can proceed.
 
-In a molecular system, little momentum transfer will happen between the nuclei and the electrons on account of their differing masses ((Hjorth-Jensen, p467)). As protons are almost 2000 times heavier than electrons, their movement will be drastically slower than their lighter counterparts (assuming the momenta of the two are similar). As the electrons will relax to a stationary state much faster than the typical time scales involved in nucleonic motion, we may assume the nucleus to be effectively fixed and treat only the electronic degrees of freedom. This is very similar to the idea of a quasistatic process in thermodynamics ((Schroeder, p21)) in where change is forced upon a system sufficiently slowly to allow it to continuously equilibrate throughout\----at every instant, we may regard the system to be equilibrated despite the continual change it is undergoing.
+In a molecular system, little momentum transfer will happen between the nuclei and the electrons on account of their differing masses ((Hjorth-Jensen, p467)). As protons are almost 2000 times heavier than electrons, their movement will be drastically slower than their lighter counterparts (assuming the momenta of the two are similar). As the electrons will relax to a stationary state much faster than the typical time scales involved in nucleonic motion, we may assume the nucleus to be effectively fixed and treat only the electronic degrees of freedom. This is very similar to the idea of a quasistatic process in thermodynamics ((Schroeder, p21)) in where change is forced upon a system sufficiently slowly to allow it to continuously equilibrate throughout\----at every instant, we may regard the system to be equilibrated despite the continual change it is undergoing. In the framework of quantum mechanics, this is known as the adiabatic theorem and sometimes the fixed nuclei approximation is called an adiabatic approximation ((Sakurai, p473)).
 
 The separation of the nuclear and electronic degrees of freedom is known as the Born-Oppenheimer approximation. Recall that the full molecular Hamiltonian reads (\eq{QM5})
 \begin{align}
@@ -558,9 +558,19 @@ If we are able to somehow find a solution to the electronic Schrödinger equatio
 
 The key insight to glean from this is that the electronic energy acts as an effective potential for the nucleonic motion\----in the words of Szabo \& Ostlund "the nuclei in the Born-Oppenheimer approximation move on the potential energy surface obtained by solving the electronic problem" ((Szabo, p44))((Weinberg)). This lies at the heart of, and forms the foundation for, most of quantum chemistry. Note carefully that all we need to find is the energy, in principle we dont need to concern ourselves with the elctronic wave function. All molecular dynamics (disregarding vibration and rotation) emerge effectively from $E_\text{electronic}(\R_A)$.
 
+\subsubsection*{How accurate is the Born-Oppenheimer approximation?}
+In somewhat more tehcnical terms, the Born-Oppenheimer approximation can be stated as: Assuming the full molecular Schrödinger equation has a solution on the form $\psi(\R,\R_A)\equiv \Psi(\R)\Phi(\R_A)$, with $\Psi(\R)$ being the solution of the electronic problem, then insertion of this total wave function into the full Hamiltonian yields
+\begin{align}
+\hat H_\text{full} \, \psi(\R,\R_A) &= \left[\hat T_\text{electronic} + \hat T_\text{nucleonic} +\hat V(\R) + \hat V(\R_A) + \hat V(\R,\R_A)\right] \Psi(\R)\Phi(\R_A) \nn\\
+%
+&= \Big[\underbrace{\hat T_\text{nucleonic} + \hat V(\R_A)}_{\hat H_\text{nucleonic}} + \hat H_\text{electronic}\Big] \Psi(\R)\Phi(\R_A).
+\end{align}
+Since $\hat T$ involves a differential operator, we need to consider the operation of a differentiation of $\Psi(\R)$ w.r.t. $\R_A$ and $\Phi(\R_A)$ w.r.t. $\R$. It turns out that the latter vanishes exactly ((Weinberg, p194)), however the former will have a non-zero contribution to the total molecular energy. The Born-Oppenheimer approximation consists of disregarding this differential cross-term and taking the full Hamiltonian acting on the product state to be ((Sakurai p474))
+\begin{align}
+ \left[\hat H_\text{nucleonic} + E_\text{electronic}(\R_A) \right] \Phi(\R_A) &\approx E_\text{Total} \Phi(\R_A).
+\end{align}
 
-
-
+Let us now consider for a moment how much effect this intentional oversight will have on the total energy of the system. Again we turn to dimensional analysis in order to get a rough estimate. For the electronic wave function, we take the characteristic length to be the only combination of $\hbar$, $m_e$, $k_e$, and $e$ with units of distance. This is the Bohr radius, $a_0=\hbar^2/m_ee^2$.
 
 
 \subsection{Second quantization}
