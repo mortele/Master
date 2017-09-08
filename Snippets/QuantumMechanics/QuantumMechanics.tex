@@ -34,6 +34,9 @@
 \usepackage{multirow}% http://ctan.org/pkg/multirow
 \usepackage{hhline}% http://ctan.org/pkg/hhline
 \usepackage{siunitx}
+\usepackage[version=4]{mhchem}
+
+
 
 % Differentials -------------------------------------------------------------- %
 \newcommand{\dt}{\,\mathrm{d}t}
@@ -250,6 +253,8 @@ Itzykson, Zuber: Quantum Field Theory \url{http://libgen.io/search.php?req=+C.+I
 
 T. Welton: Some observable effects of the quantum-mechanical fluctuations of the electromagnetic field \url{https://journals.aps.org/pr/pdf/10.1103/PhysRev.74.1157}
 
+Bolotin: \url{http://iopscience.iop.org/article/10.1088/1742-6596/574/1/012088/pdf}
+
 \subsection{Review of Hamiltonian classical mechanics}
 Before venturing into the land of quantum mechanics (QM), it is useful to first review the Hamiltonian formulation of classical mechanics (CM). Classical mechanics deals with the dynamics of macroscopic objects. 
 
@@ -383,6 +388,9 @@ As illustrated above, the problem of computing the time evolution of a state whe
 \end{align}
 which is called the time independent Schrödinger equation (TISE). This is the spatial result of the separation of variables we used to derive the TDSE ((Griffiths p26)). 
 
+\subsection{Canonical quantization as a semi-classical model of quantum mechanics}
+\url{https://en.wikipedia.org/wiki/First_quantization} "A first quantization of a physical system is a semi-classical treatment of quantum mechanics, in which particles or physical objects are treated using quantum wave functions but the surrounding environment (for example a potential well or a bulk electromagnetic field or gravitational field) is treated classically."
+
 %In the Schrödinger picture the time evolution of a \emph{time dependent} state happens %according to the time dependent Schrödinger equation (TDSE),
 %\begin{align}
 %i\hbar \der{}{t}\Psi(\R;t) &= \hat H \Psi(\R;t),
@@ -432,10 +440,11 @@ where $k_e=1/4\pi \varepsilon_0$ is the Coulomb constant.  The sum limits ensure
 \end{align}
 with $M$ denoting the number of nuclei of (possibly differing) charge(s) $+Z_Ae$. Putting it all together yields the total electron and nuclear Hamiltonian
 \begin{align}
-\hat H &= -\sum_{i=1}^N \frac{\hbar^2}{2m_e}\nabla_i^2 - \sum_{i=1}^N\sum_{A=1}^M \frac{k_eZe^2}{|\hat {\bf r}_A - \hat \r_i|} + \sum_{i=1}^N\sum_{j=i+1}^N \frac{k_ee^2}{|\hat \r_i- \hat \r_j|}. \label{eq:QM5}
+\hat H &= -\sum_{i=1}^N \frac{\hbar^2}{2m_e}\nabla_i^2-\sum_{A=1}^M \frac{\hbar^2}{2m_A}\nabla^2_A - \sum_{i=1}^N\sum_{A=1}^M \frac{k_eZe^2}{|\hat {\bf r}_A - \hat \r_i|} + \sum_{i=1}^N\sum_{j=i+1}^N \frac{k_ee^2}{|\hat \r_i- \hat \r_j|}. \label{eq:QM5}
 \end{align}
+The mass of nucleus $A$ is here denoted $m_A$. 
 
-\subsection{Corrections to the Hamiltonian}
+\subsection{Corrections to the Hamiltonian \label{corrections}}
 Of course, there are some imperfections. We have for example not included any relativistic effects. The classical non-relativistic kinetic energy term takes the form $|{\bf p}|^2/2m=m{\bf v}^2/2$. However, in order to account for relativistic effects, we should really use 
 \begin{align}
 T_\text{classical, relativistic} = \frac{mc^2}{\sqrt{1-(v/c)^2}}-mc^2,
@@ -518,9 +527,21 @@ Rough back of the envelope estimations of the order of magnitude of the correcti
 
 
 \subsection{Born-Oppenheimer approximation}
-Let us now consider again the atomic Hamiltonian of \eq{QM5}. For a system of $N$ electrons in the presence of $M$ nuclei in three spatial dimensions, we have a system of $3(N+M)$ degrees of freedom (treating the nuclei as point particles). 
+Let us now consider again the atomic Hamiltonian of \eq{QM5}. For a system of $N$ electrons in the presence of $M$ nuclei in three spatial dimensions, we have a system of $3(N+M)$ degrees of freedom (treating the nuclei as point particles). The solution of the TDSE is the wave function, a function depending on at least $3(N+M)$ variables. If we were to seek the solution to the Schrödinger equation for, say an isolated caffeine molecule \ce{C8H10N4O2}, then $\Psi(\R;t)$ would depend on a bit more than 300(!) coordinates. This is an unbelievably monumentous task, and we are only asking for the solution of an \emph{isolated}, fairly small molecule consisting of first row atoms. As it turns out, the wave function is a "very, very, \emph{very} complicated function" ((Kvaal, p8)) and solving the Schrödinger equation is a very, very, \emph{very} hard problem for all but the smallest of systems.
 
+In general, for an arbitrary Hamiltonian (for example the full Hamiltonian of \eq{TISE} with the five correction terms of section \ref{corrections}), solving the corresponding Schrödinger equation is a problem classified in complexity theory as {\bf NP}-hard ((Bolotin)). Heuristically, we may consider this to be a problem that is not feasably soluble even in theory using a deterministic algorithm.\footnote{The {\bf P} class problems are problems which can be solved in \emph{polynomial} time using a deterministic algorithm. Assuming that {\bf P}$\not=${\bf NP} (which is belived to be true), it means that {\bf NP} problems cannot and {\bf NP}-hard problems are by definition as hard as the hardest {\bf NP} problems. In reality, this most likely means we are stuck with a theoretical best case scenario of an algorithm with runs in exponential (w.r.t. the system size) time.} As it turns out, we will need to make certain simplifications before we can proceed.
 
+In a molecular system, little momentum transfer will happen between the nuclei and the electrons on account of their differing masses ((Hjorth-Jensen, p467)). As protons are almost 2000 times heavier than electrons, their movement will be drastically slower than their lighter counterparts (assuming the momenta of the two are similar). As the electrons will relax to a stationary state much faster than the typical time scales involved in nucleonic motion, we may assume the nucleus to be effectively fixed and treat only the electronic degrees of freedom. This is very similar to the idea of a quasistatic process in thermodynamics ((Schroeder, p21)) in where change is forced upon a system sufficiently slowly to allow it to continuously equilibrate throughout\----at every instant, we may regard the system to be equilibrated despite the continual change it is undergoing.
+
+The separation of the nuclear and electronic degrees of freedom is known as the Born-Oppenheimer approximation. Recall that the full molecular Hamiltonian reads (\eq{QM5})
+\begin{align}
+\hat H = -\sum_{i=1}^N \frac{\hbar^2}{2m_e}\nabla_i^2-\sum_{A=1}^M \frac{\hbar^2}{2m_A}\nabla^2_A - \sum_{i=1}^N\sum_{A=1}^M \frac{k_eZe^2}{|\hat {\bf r}_A - \hat \r_i|} + \sum_{i=1}^N\sum_{j=i+1}^N \frac{k_ee^2}{|\hat \r_i- \hat \r_j|}. 
+\end{align}
+Taking the limit $m_A\rightarrow 0$ freezes out the proton motion, creating stationary \emph{clamped nuclei}. The Born-Oppenheimer Hamiltonian is given as 
+\begin{align}
+\hat H_\text{Born-Oppenheimer} = -\sum_{i=1}^N \frac{\hbar^2}{2m_e}\nabla_i^2 - \sum_{i=1}^N\sum_{A=1}^M \frac{k_eZe^2}{|\hat {\bf r}_A - \hat \r_i|} + \sum_{i=1}^N\sum_{j=i+1}^N \frac{k_ee^2}{|\hat \r_i- \hat \r_j|},
+\end{align}
+where it is important to note that solution of the corresponding Schrödinger equation now depends only \emph{parametrically} on the nuclei positions, $\R_A$. This reduces the number of degrees of fredom by $3M$ ((Szabo, p43)). 
 
 
 \subsection{Second quantization}
@@ -643,6 +664,7 @@ We can go through this same exercise to find a natural \emph{time} scale for our
 \begin{align}
 \T_\text{scale} &= k_e^{-2} \hbar^3 m_e^{-1} e^{-4} = \frac{\hbar^3 }{k_e^2 m_e e^4} = \frac{\hbar a_0}{k_e e^2}.
 \end{align}
+This is the revolution time of an electron in the lowest lying hydrogen state in the Bohr model (apart from a factor of $2\pi$).
 
 From $a_0$ and $\T_\text{scale}$ we can find the natural energy scale,
 \begin{align}
