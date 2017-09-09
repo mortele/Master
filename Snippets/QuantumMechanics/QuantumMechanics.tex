@@ -1,6 +1,6 @@
 \documentclass[a4paper]{article}
 %Included packages ----------------------------------------------------------%
-\usepackage{inputenc}                        % utf-8 encoding, æ, ø , å, etc.
+\usepackage[utf8]{inputenc}                        % utf-8 encoding, æ, ø , å, etc.
 \usepackage{a4wide}                          % Adjust margins to better fit A4 format.
 \usepackage{array}                           % Matrices.
 \usepackage{amsmath}                         % Math symbols, and enhanced matrices.
@@ -570,8 +570,40 @@ Since $\hat T$ involves a differential operator, we need to consider the operati
  \left[\hat H_\text{nucleonic} + E_\text{electronic}(\R_A) \right] \Phi(\R_A) &\approx E_\text{Total} \Phi(\R_A).
 \end{align}
 
-Let us now consider for a moment how much effect this intentional oversight will have on the total energy of the system. Again we turn to dimensional analysis in order to get a rough estimate. For the electronic wave function, we take the characteristic length to be the only combination of $\hbar$, $m_e$, $k_e$, and $e$ with units of distance. This is the Bohr radius, $a_0=\hbar^2/m_ee^2$.
+Let us now consider for a moment how much effect this intentional oversight will have on the total energy of the system. Again we turn to dimensional analysis in order to get a rough estimate. For the electronic wave function, we take the characteristic length to be the only combination of $\hbar$, $m_e$, $k_e$, and $e$ with units of distance. This is the Bohr radius, $a_0=\hbar^2/m_ee^2$. For the vibrational nucleonic motion however, the characteristic length is taken to be ((Weinberg, p196)) $b_0 \equiv \hbar^2/e^2m_A^{\nicefrac{1}{4}}m_e^{\nicefrac{3}{4}}$. Differentiation w.r.t. $\R_A$ will then yield appreciable change in $\Psi(\R)$ if the change is on the order of $a_0$, but differentiation of $\Phi(\R_A)$ will cause it to change appreciably if the the variations in $\R_A$ are on the order of $b_0$. It is thus the ratio $a_0$ to $b_0$ which determines how good of an approximation the Born-Oppenheimer scheme is. As $b_0$ depends, albeit weakly, on the typical nucleonic mass, this changes depending on the molecular system in question. 
 
+\newcolumntype{Y}{>{\raggedleft\arraybackslash}X}
+\begin{SCtable}
+\centering
+\setlength\extrarowheight{2pt}
+\begin{tabularx}{0.5\textwidth}{l c Y}
+\hline
+\hline
+\\[-0.9em] 
+& Atomic&  Born-Oppenheimer\\
+Atom & number & supression ratio \\
+\\[-0.9em]
+\hline
+\\[-0.9em]
+\ce{H}  & $1$   & $0.1527$ \\
+\ce{He} & $2$   & $0.1081$ \\
+\ce{Be} & $4$   & $0.0883$ \\ 
+\ce{Ne} & $10$  & $0.0722$ \\
+\ce{Ar} & $18$  & $0.0608$ \\
+\ce{Sn} & $50$  & $0.0463$ \\
+\ce{U}  & $92$  & $0.0389$ \\
+\ce{Og} & $118$ & $0.0369$ \\
+\\[-0.9em]
+\hline
+\end{tabularx}
+\caption{Values of the Born-Oppenheimer supression ratio, $S=(m_e/m_A)^{\nicefrac{1}{4}}$ for various different atomic systems. Note the \emph{very} slow scaling of quarter power, despite the massively differing masses (is this a pun?). \label{tab:QM2}}
+\end{SCtable}
+
+The ratio 
+\begin{align}
+S\equiv \frac{b_0}{a_0} = \frac{\left(\frac{\hbar^2}{e^2m_A^{\nicefrac{1}{4}}m_e^{\nicefrac{3}{4}}}\right)}{\left(\frac{\hbar^2}{m_ee^2}\right)}=\left(\frac{m_e}{m_A}\right)^{\nicefrac{1}{4}}
+\end{align}
+depends on the mass ratio to the one quarter power. Despite the almost three order of magnitude difference in the electron and proton masses, the low exponent means this \emph{supression ratio} worryingly large values for small atoms. The $S$ ratio is calculated for a few atoms of differing sizes in \tab{QM2}. 
 
 \subsection{Second quantization}
 Let us now consider a system of $N$ \emph{indistinguishable} particles, i.e. particles that are fundamentally identical as to make telling them apart from each other is impossible. If our theory is to handle such a system with any logical consistency, we must require our wave function (and thus also the observables we derive from it) to be \emph{permutation invariant} (up to a phase factor, which does not affect the physics [as per the postulates of QM]). Following (Fys-kjm4480, p8) we may define this mathematically by defining $\sigma\in S_N$, a permutation of the indices in a set of $N$ such indices. $S_N$ here denotes the symmetric group of degree $N$.\footnote{The symmetric group on a finite set $M$ is a mathematical group, and consists of all possible permutations of the elements of the set $M$. Mathematically, these permutations are bijections from $M$ onto $M$ itself. There are $N!$ unique permutations in the group, including the identity permutation (which just leaves the set un-changed).} We must demand that $|\Psi|^2$ be permutation invariant, that is
