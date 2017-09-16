@@ -37,11 +37,6 @@
 \usepackage{siunitx}
 \usepackage[version=4]{mhchem}
 
-% Color of links -------------------------------------------------------------- %
-\hypersetup{
-    urlcolor = {green},
-}
-
 
 
 
@@ -228,66 +223,26 @@
 \newcommand{\psit}{\left|\psi(t)\right\rangle}
 
 
-\section{Variational Monte Carlo validation tests}
-\subsection{Effect of cusp correction}
-\url{http://aip.scitation.org/doi/pdf/10.1063/1.2890722}
-\url{http://aip.scitation.org/doi/pdf/10.1063/1.1394757}
-\url{http://www.tcm.phy.cam.ac.uk/~mdt26/papers/nemec_2010.pdf}
+\section{Wave functions}
+
+\subsection{Hydrogen wave functions}
+
+\subsection{Properties of the \emph{exact} wave function}
+
+\subsubsection{Electron-electron cusp}
+
+\subsubsection{Electron-nucleus cusp}
+"This is valid in a non-relativistic treatment within the Born–Oppenheimer approximation, and assuming point-like nuclei." \url{https://en.wikipedia.org/wiki/Kato_theorem}
+
+\subsection{Orbitals}
+\subsubsection{Slater type orbitals}
+\subsubsection{Hydrogenic orbitals}
+\subsubsection{Gaussian type orbitals}
 
 
-\subsection{Testing the hydrogenic orbitals}
 
-\subsection{Testing the gaussian orbitals}
 
-\begin{table}
-\centering\sisetup{table-number-alignment=center}
-\setlength\extrarowheight{2pt}
-\begin{tabularx}{\textwidth}{X *{3}{S[table-format=-1.3,table-space-text-post=***]}}
-\hline
-\hline
-\\[-0.9em]
-                 &                          & \textbf{Standard}          & \textbf{Relative error}    \\
-\textbf{Orbital} & \textbf{Energy} $[E_h]$  & \textbf{deviation} $[E_h]$ & \textbf{w.r.t. STO} [$\%$]  \\
-\\[-0.9em]
-\hline
-\\[-0.9em]
-STO-1G & -1.775  & 0.0031  &  38.57 \\
-STO-2G & -2.675  & 0.0022  &   7.43 \\
-STO-3G & -2.841  & 0.0017  &   1.69 \\
-STO-4G & -2.877  & 0.0013  &   0.44 \\
-STO-5G & -2.886  & 0.0011  &   0.13 \\
-STO-6G & -2.887  & 0.0011  &   0.09 \\
-STO    & -2.8897 & 0.00086 & \\
-\\[-0.9em]
-\hline
-\end{tabularx}
-\caption{Binding energies for \ce{He} calculated using slater type orbitals (STO) and $n$ gaussians fitted to the slater orbitals (STO-$n$G). Only the 1s slater type orbital is used. $10^7$ monte carlo cycles were used for all simulations. An effective charge of $\alpha=1.843$ was used as exponent for the STO, and $\beta=0.347$ was used as parameter for the Jastrow factor. Produced using \url{github.com/mortele/VMC} commit \texttt{a5a3580b2dc7c4a48594b853c32ad7082b99345c}. \label{tab:vmcv1}}
-\end{table}
 
-\begin{table}
-\centering\sisetup{table-number-alignment=center}
-\setlength\extrarowheight{2pt}
-\begin{tabularx}{\textwidth}{X *{3}{S[table-format=-1.3,table-space-text-post=***]}}
-\hline
-\hline
-\\[-0.9em]
-                 &                          & \textbf{Standard}          & \textbf{Relative error}    \\
-\textbf{Orbital} & \textbf{Energy} $[E_h]$  & \textbf{deviation} $[E_h]$ & \textbf{w.r.t. STO} [$\%$]  \\
-\\[-0.9em]
-\hline
-\\[-0.9em]
-STO-1G & -10.10  & 0.023  &   30.00 \\
-STO-2G & -13.53  & 0.024  &    6.22 \\
-STO-3G & -14.03  & 0.022  &    2.76 \\
-STO-4G & -14.27  & 0.013  &    1.10 \\
-STO-5G & -14.41  & 0.012  &    0.12 \\
-STO-6G & -14.425 & 0.014  &    0.02 \\
-STO    & -14.428 & 0.0090 & \\
-\\[-0.9em]
-\hline
-\end{tabularx}
-\caption{Binding energies for \ce{Be} calculated using slater type orbitals (STO) and $n$ gaussians fitted to the slater orbitals (STO-$n$G). Only the 1s and 2s slater type orbitals are used. $5\e{6}$ monte carlo cycles were used for all simulations. An effective charge of $\alpha=3.983$ was used as exponent for the STO, and $\beta=0.094$ was used as parameter for the Jastrow factor. Produced using \url{github.com/mortele/VMC} commit \texttt{a5a3580b2dc7c4a48594b853c32ad7082b99345c}. \label{tab:vmcv2}}
-\end{table}
 
 
 
