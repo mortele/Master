@@ -223,31 +223,23 @@
 \newcommand{\psit}{\left|\psi(t)\right\rangle}
 
 
-\section{Wave functions}
+\section{Density functional theory}
 
-\subsection{Hydrogen wave functions}
+Yang and Parr: Density functional theory of atoms and molecules
 
-\subsection{Properties of the \emph{exact} wave function}
+Atomic Reference Data for Electronic Structure Calculations \url{http://math.nist.gov/DFTdata/atomdata/node4.html}
 
-\subsubsection{Electron-nucleus cusp}
-"This is valid in a non-relativistic treatment within the Born–Oppenheimer approximation, and assuming point-like nuclei." \url{https://en.wikipedia.org/wiki/Kato_theorem}
-
-\subsubsection{Electron-electron cusp}
+Vosko,Wilk,Nusair: Accurate spin-dependent electron liquid correlation energies for local spin density calculations: A critical analysis \url{http://www.nrcresearchpress.com/doi/pdf/10.1139/p80-159}
 
 
-\subsection{Jastrow factor}
+\subsection{Local density approximation}
+\subsubsection{VWN-LDA}
+((YangAndParr, pp275)) ((atomic reference, \url{DFTdata/atomdata/node4.html})) Parametrize the exchange correlation terms: After Vosko, Wilk, and Nusair ((VWN)) 
 
-\subsection{Orbitals}
-\subsubsection{Slater type orbitals}
-\subsubsection{Hydrogenic orbitals}
-\subsubsection{Gaussian type orbitals}
-
-
-
-
-
-
-
+\textbf{Exchange term}:
+\begin{align}
+\varepsilon_\text{x} (r_s,\xi) = \varepsilon_\text{x}^P(r_s) + \left[\varepsilon_\text{x}^P(r_s) - \varepsilon_\text{x}^F(r_s) \right] f(\xi)
+\end{align}
 
 
 \end{document}
