@@ -642,10 +642,36 @@ So far we know that the wave function of a multi-electron system must be square 
 
 
 
-
-
 \subsection{Postulates of Quantum Mechanics \label{postulates}}
 
+
+\subsection{The variational principle}
+For a given Hamiltonian, calculating the expectation value of $\langle \Psi | \hat H | \Psi\rangle$ (for \emph{any} $Psi\in\mathcal{L}_2$) gives an upper bound on the ground state energy. Following ((Griffits p293)), a simple proof goes as follows: Since the spectrum of $\hat H$ spans\footnote{Asumming \emph{crucially} that the Hamiltonian is hermitian. This is not the case for e.g. the similarity transformed $\bar H$ used in coupled cluster theory, predictably leading to all kinds of difficulties.} all of $\mathcal{L}_2$. We assume also that the eigenstates are orthonormalized. This means that \emph{any} normalized $\Psi$ we choose can be expressed in terms of the eigenstates of $\hat H$,
+\begin{align}
+\Psi = \sum_{n=0}^\infty c_n \Phi_n, \ \ \text{ where } \ \ \hat H \Phi_n = E_n \Phi_n.
+\end{align}
+The ground state energy is by definition the lowest eigenvalue of $\hat H$, we have $E_0\le E_n$ for all $n=1,2,\dots$
+
+Calculating the expectation value in terms of the $E_n$s, we find
+\begin{align}
+\big\langle \Psi | \hat H | \Psi\big\rangle &= \left\langle \sum_{n=0}^\infty c_n^* \Phi_n \right| \hat H \left| \sum_{n'=0}^\infty c_{n'} \Phi_{n'} \right\rangle \nn\\
+%
+&= \sum_{n=0}^\infty\sum_{n'=0}^\infty c_n^* c_{n'} \big\langle \Phi_n | \hat H | \Phi_{n'}\big\rangle = \sum_{n=0}^\infty\sum_{n'=0}^\infty c_n^* c_{n'} E_{n'} \underbrace{\big\langle \Phi_n | \Phi_{n'}\big\rangle}_{\delta_{nn'}} \nn\\
+%
+&= \sum_{n=0}^\infty c_n^* c_n E_n = \sum_{n=0}^\infty |c_n|^2 E_n.
+\end{align}
+Since $\Phi$ is assumed to be normalized, we know that $\sum_{n=0}^\infty |c_n|^2=1$, meaning $|c_n|\le 1$ for any $n=0,1,2,\dots$ This means that the expectation value $\langle \Psi | \hat H | \Psi\rangle = |c_0|^2E_0 + |c_1|^2E_1+\dots \ge E_0$. 
+
+The variational principle is an invaluable tool, and forms the basis for almost all electronic structure methods. 
+
+The variational principle can be stated concisely as 
+\begin{align}
+E_0 = \min_{\Psi\in \mathcal{L}^2}\big\langle \Psi | \hat H | \Psi \big\rangle,
+\end{align}
+where we can consider the energy to be a functional of the wave function, $E[\Psi]$. More generally, the variational principle can be expressed as: The energy functional is stationary at all eigenvalues of the Hamiltonian, ((YangParr, p6)) ((Kryachko, p60)) ((Martin, p55))
+\begin{align}
+\delta \, E[\Psi]\Big|_{\Phi_n}=0
+\end{align}
 
 
 
