@@ -37,6 +37,7 @@
 \usepackage{hhline}% http://ctan.org/pkg/hhline
 \usepackage{siunitx}
 \usepackage[version=4]{mhchem}
+\usepackage{relsize}  % Resize parts of equations
 
 
 
@@ -236,12 +237,12 @@ Because the wave function is such an unbelievably complicated function, dependin
 
 It turns out that exactly this is possible. There is a one-to-one correspondance between the ground state density, $\rho_0(\r)$, and the external potential (up to an additive constant) and thus also the Hamiltonian. ((Toulouse, p5)) Since the Hamiltonian uniquely determines all properties of a quantum mechanical system, we can in principle determine all the information in the many-body wave function (of the ground state and \emph{all} excited states) from the ground state density alone ((Martin, pp119)). The fact that the density can be determined from the wave function is almost trivially true, but that the converse is true is the content of the Hohenberg-Kohn theorems. 
 
-However, the theorems of Hohenberg and Kohn guarantee only the existence and uniqueness of an \emph{energy functional}, $E[\rho]$, which can be used to determine the energy from the density. Without knowing the form of $E[\rho]$ and a computational scheme for calculating it, we are still no closer to being able to use the electron density as the primary quantity in electronic structure calculations. This is where the Kohn-Sham ansatz comes in, making it possible for us to calculate structure properties of electronic systems by essentially solving a different system\----a non-interacting system with the electrons moving in an effective potential which by construction yields the same ground state density as the original system. 
+However, the theorems of Hohenberg and Kohn guarantee only the existence and uniqueness of an \emph{energy functional}, $E[\rho]$, which can be used to determine the energy from the density. Without knowing the form of $E[\rho]$ and a computational scheme for calculating it, we are still no closer to being able to use the electron density as the basic variable in electronic structure calculations. This is where the Kohn-Sham ansatz comes in, making it possible for us to calculate structure properties of electronic systems by essentially solving a different system\----a non-interacting system with the electrons moving in an effective potential which by construction yields the same ground state density as the original system. 
 
 We will begin our discussion of {\bf Density functional theory} (DFT [sometimes prepended KS, making it Kohn-Sham density functional theory \{KS-DFT\}]) by considering the theoretical framework and the Hohenberg-Kohn theorems. Then we will consider the Kohn-Sham ansatz and how DFT calculations are performed in practice.
 
 
-\subsection{The electronic many-body problem in terms of the electron density}
+\subsection{The Hohenberg-Kohn theorems}
 Recall from ((Born-oppenheimer section)) that the \emph{electronic} Hamiltonian under the Born-Oppenheimer approximation takes the form
 \begin{align}
 \hat H &= -\frac{1}{2}\sum_{i=1}^N\nabla^2_i + \sum_{i=1}^N\sum_{j=i+1}^N \frac{1}{|\r_i-\r_j|} - \sum_{i=1}^N\sum_{A=1}^M \frac{Z_A}{|\r_i-\r_A|}.
@@ -250,14 +251,130 @@ We will in the following relabel the last term, and define
 \begin{align}
 \sum_{i=1}^{N}\sum_{A=1}^M \frac{-Z_A}{|\r_i-\r_A|} &\equiv \hat V_\text{ext}.
 \end{align}
+Since the first two terms of the Hamiltonian are the same for any system of $N$ electrons, the external potential term $\hat V_\text{ext}$ completely fixes the electronic Hamiltonian as a whole. In fixing $\hat H$, we also fix the spectrum and so the ground state and all its derived properties are determined by $N$ and $\hat V_\text{ext}$ alone ((YangParr p51)). One such property is of course the ground state electronic density.
 
+In the following, we will denote by $v(\r)$ the spatial (position basis) representation of the external potential $\hat V_\text{ext}$
 
+\subsubsection*{The first Hohenberg-Kohn theorem}
+\begin{figure}
+\begin{align}
+\mat{ccc}{
+\hat V_\text{ext}(\r) &  \mathlarger{\mathlarger{\xleftarrow{\text{Hohenberg-Kohn}}}} & \rho_0(\r) \\
+\\
+\mathlarger{\mathlarger{\downarrow}} & & \mathlarger{\mathlarger{\uparrow}} \\
+\\
+\hat H & \mathlarger{\mathlarger{\xrightarrow{\text{Schrödinger equation}}}} & \Psi(\R)
+}
+\end{align}
+\caption{Schematic representation of the Hohenberg-Kohn theorems. Knowing the external potential fixes the Hamiltonian, from which we can extract the spectrum. The ground state density may then be extracted from the ground state wave function. The Hohenberg-Kohn theorems allows us (in principle) to find the potential if we know only the ground state wave function, making a one-to-one correspondence, $\hat V_\text{ext}(\r)\Leftrightarrow\rho_0(\r)$.  Adapted from a similar figure in ((Martin, p122)).  \label{fig:DFT1}}
+\end{figure}
+Hohenberg-Kohn article: \url{https://journals.aps.org/pr/pdf/10.1103/PhysRev.136.B864}
 
+lecture notes quantum chem \url{http://www.springer.com/gp/book/9783540586203}
 
+The first theorem of Hohenberg and Kohn proves the highly non-trivial converse statement\----the external potential is uniquely determined (up to an additive constant) by the ground state electron density ((Hohenberg-Kohn article)). We outline the deceptively simple proof in the following paragraphs.
 
+Consider two potentials, $\hat V_1$ and $\hat V_2$, differ by more than an additive constant, $\hat V_1 \not= \hat V_2 + \text{const}$ and denote the ground state energies of the corresponding Hamiltonians by $E_1$ and $E_2$ respectively. Assume now that the ground state wave functions of the two Hamiltonians are \emph{the same}, $\Psi_1(\R)=\Psi_2(\R)$. Since all parts of the Hamiltonian apart from $\hat V_\text{ext}$ coincide, subtracting the two Schrödinger equations give
+\begin{align}
+\hat H_1|\Psi\rangle - \hat H_2 |\Psi\rangle = \left(\hat V_1 - \hat V_2\right)|\Psi\rangle &= \left(E_1-E_2\right)|\Psi\rangle.
+\end{align}
+In terms of the wave functions (projecting the equation onto the position basis) this yields
+\begin{align}
+\sum_{i=1}^N \big[\hat v_1(\r_i) - \hat v_2(\r_i)\big] \Psi(\r_1,\r_2,\dots,\r_N) &= \left(E_1-E_2\right) \Psi(\r_1,\r_2,\dots,\r_N),
+\end{align}
+which means $\hat V_1-\hat V_2=\text{const}$, in contradiction with the assumption. 
 
+We proceed thus with $\Psi_1(\R)$ and $\Psi_2(\R)$ neccessarily different. Assume now that $\Psi_1(\R)$ and $\Psi_2(\R)$ have the same ground state electronic density, $\rho_0(\r)$. From the variational principle ((Ref var principle section)), we know that 
+\begin{align}
+E_1=\big\langle \Psi_1 |\hat H_1 |\Psi_1\big\rangle &< \big\langle \Psi_2 |\hat H_1 |\Psi_2\big\rangle \nn\\
+%
+&= \big\langle \Psi_2 | \hat H_2 + \hat V_1 - \hat V_2 |\Psi_2\big\rangle \nn\\
+%
+&= E_2 + \int \,\mathrm{d}^3\r \big[v_1(\r) - v_2(\r) \big] |\Psi_2(\R)|^2 \nn\\
+%
+\Rightarrow \ \ E_1 &< E_2 + \int \,\mathrm{d}^3\r \big[v_1(\r) - v_2(\r) \big] \rho_0(\r). \label{eq:dft1}
+\end{align}
+Exchanging the arbitrary indices $1\leftrightarrow2$, gives rise to 
+\begin{align}
+E_2 &< E_1 + \int \,\mathrm{d}^3\r \big[v_2(\r) - v_1(\r) \big] \rho_0(\r), \label{eq:dft2}
+\end{align}
+and adding \eq{dft1} from \eq{dft2} gives finally the contradiction $E_1+E_2 < E_1 + E_2$ since the integrals differ only by a sign. But this means that clearly, different $\hat V_\text{ext}$ neccessarily produce differing $\rho_0(\r)$ ((Toulouse, p5)).\footnote{As a hands-on example of the first theorem in practice, it is instructive to consider the Coulombic external potential of $M$ stationary nuclei, $\hat V=-\sum_{A=1}^M Z_A/|\r-\r_A|$. In order to uniquely determine the system, we need to know the number of electrons, $N$, the position of the nuclei, $\r_A$, and their charges, $Z_A$. The local maxima of the ground state density coincides perfectly with the nuclei positions. Furthermore, the Kato cusp condition states that at the nuclei ((ref cusp condition section)) $(\partial \bar\rho_0(r_A)/\partial r_A)_{r_A\rightarrow 0}=-2Z_A\bar\rho_0(0)$, where $\bar\rho(r_A)$ denotes the spherical average of density around nucleus $A$ and $r_A=|\r-\r_A|$. This determines $Z_A$ from the ground state density also. Finally, the integral over the density itself gives the number of electrons, $N=\int\,\mathrm{d}^3\r \rho_0(\r)$. 
 
+This is known as E. Bright Wilson's observation ((lecture notes quantum chem, p92)).}
 
+The statement of the first Hohenberg-Kohn theorem is represented in diagram form in \fig{DFT1}.
+
+\subsubsection*{The second Hohenberg-Kohn theorem}
+Since, by the first theorem, the Hamiltonian is determined uniquely by the density, that means the wave function can be considered a functional of the density also, $\Psi[\rho]$. Following the original article by Hohenberg and Kohn((HohenbergKohn article)), we note that this means the kinetic energy operator and the electron-electron interaction operators are also both functionals of the density. These can be combined into the \emph{universal functional}, 
+\begin{align}
+F[\rho(\r)] \equiv \big\langle \Psi|\hat T + \hat W|\Psi \big\rangle.
+\end{align}
+A further energy functional, $E_V[\rho]$, can be defined as 
+\begin{align}
+E_V[\rho(\r)] &\equiv F[\rho(\r)] + \int\mathrm{d}^3\r \,v(\r)\rho(\r),
+\end{align}
+where $v(\r)$ is the position basis representation of an arbitrary external potential. It is clear that minimizing $E_V[\rho]$ will yield the ground state energy of the system with Hamiltonian $\hat H = \hat T + \hat W + \hat V_\text{ext}$. In the present section we restrict ourselves to densities representing a system of $N$ electrons, i.e. fixing $\int\mathrm{d}^3\r\,\rho(\r)=N$.
+
+We now consider the energy functional evaluated at some other density, $\rho(\r)\not=\rho_0(\r)$, with $\rho_0(\r)$ being the corresponding density of the ground state of $\hat H$, $\rho_0(\r)=\int|\Psi_0(\R)|^2$. The other density, $\rho(\r)$, is taken to be the corresponding ground state density of \emph{some other} external potential, $\hat V_\text{ext}'$. Evaluating the functional gives
+\begin{align}
+E_V[\rho(\r)] &= \big\langle\Psi|\hat T + \hat W|\Psi\big\rangle + \big\langle\Psi|\hat V_\text{ext}|\Psi\big\rangle = \big\langle \Psi|\hat H|\Psi\big\rangle.
+\end{align}
+Having established that the external potential is a functional of the density, this gives us now almost trivially that $E_V[\rho]>E_V[\rho_0]$ for any density that is not the one associated with the true ground state corresponding to $\hat V_\text{ext}$ ((Martin, p125)). 
+
+\subsubsection*{The way forward}
+Essentially, the two Hohenberg-Kohn theorems say that all properties of a electronic quantum mechanical system is uniquely determined by the ground state density alone. Also, a \emph{universal functional} for the energy in terms of the density, valid for any external potential, exists and it attains a global minimum for exactly the true ground state density $\rho_0(\r)$. In the words of Hohenberg and Kohn: "If $F[\rho]$ were a known and sufficiently simple functional of $\rho$, the problem of determining the ground-state energy and density in a given external potential would be rather easy(...)." ((Hohenberg-Kohn article)) Indeed, all of electronic structure theory would have been \emph{solved} in one fel swoop. 
+
+Predictably, this is not the case. Determination of the universal functional is anything but trivial. In order to make real progress with the approach of considering the electronic density as the primary variable, we turn now to the framework proposed by Kohn and Sham.
+
+\subsection{Kohn-Sham ansatz}
+Kohn-Sham article: \url{https://journals.aps.org/pr/pdf/10.1103/PhysRev.140.A1133}
+
+DFT:An advanced course(Springer)\url{https://link.springer.com/content/pdf/10.1007%2F978-3-642-14090-7.pdf}
+
+In their seminal 1965 paper ((Kohn Sham article)), Kohn and Sham outlined a way to obtain a set of single electron equations in the density that can be solved self-consitently to obtain the total electronic energy. In order to accomplish this, they consider an auxiliary non-interacting system in place of the original one ((Martin p135)). 
+ 
+Kohn and Sham tell us to consider a non-interacting system for which the ground state density is the same as the ground state density for the interacting system in question. The existance of such a non-interacting system of electrons is far for obvious. In fact, determining neccessary constraints on $\hat V_\text{ext}$ for it to be \emph{non-interacting} $v$\emph{-representable} is still an open question in the theoretical foundations of density functional theory. For almost all real world problems, it is neccessary to simply assume the existance of a non-interacting system for which the ground state density coincides with that of $\hat V_\text{ext}$ ((Advanced course, p71)) ((Martin p145)). The assumption that such a non-interacting system exists constitutes the Kohn-Sham ansatz.
+
+We denote the non-interacting Hamiltonian and the corresponding effective potential by $\hat H_s$ and $\hat V_s$, with spatial representation $v_s(\r)$. Since the electrons in this auqiliary system dont feel the coulombic inter-electron force, we know that the \emph{exact} ground state is represented by a Slater determinant filled with the energetically lowest $N$ single electron solutions of the single electron Schrödinger equation ((Yang and Parr, p143)). Note that the Schrödinger equation is by construction separable, since it only involves the kinetic energy operator and a (multiplicative) external potential operator. The one-electron Hamiltonian takes the form
+\begin{align}
+\hat h_s \psi_i = \left[-\frac{1}{2}\nabla^2 + v_s(\r)\right]\psi_i = \varepsilon_i \psi_i,
+\end{align}
+with eigenstates $\psi_i$. Since $\hat H_s$ is spin-independent\footnote{If the original Hamiltonian is spin-dependent, the effective potential needs to also carry spin-dependency in order to give the required spin-density. This is a complication we will fully ignore here.} and obviously commutes with $\hat S_z$, we may choose the $\psi_i$ to be products of spatial orbitals and the normalized spinor eigenstates of $\hat S_z$, $\psi_i(\r,\sigma)=\phi_n(\r)\chi(\sigma)$. We note that the quantum number $i$ represents both spatial and spin quantum numbers. This means we can write the exact ground state wave function and the density as 
+\begin{align}
+\Psi_0(\R)&=\frac{1}{\sqrt{N}}\vmat{cccc}{
+\psi_1(\r_1) & \psi_2(\r_1) & \dots & \psi_N(\r_1) \\
+\psi_1(\r_2) & \psi_2(\r_2) & \dots & \psi_N(\r_2) \\
+\vdots & \vdots & \ddots & \vdots \\
+\psi_1(\r_N) & \psi_2(\r_N) & \dots & \psi_N(\r_N)},
+\end{align}
+with 
+\begin{align}
+\rho_0(\r) &= \sum_{i=1}^N |\psi_i(\r)|^2 = \sum_\sigma \sum_{n=1}^{N/2} |\phi_n(\r)|^2 = 2\sum_{n=1}^{N/2} |\phi_n(\r)|^2.
+\end{align}
+
+In general, the kinetic energy operator as a functional of the density is not known. However, in the auqiliary non-interacting system, we can write down the closed form expression in terms of the $\psi_i$s ((YangParr p143)):
+\begin{align}
+T_s[\rho(\r)] &= -\sum_{i=1}^N\big\langle \psi_i|-\frac{1}{2}\nabla_i^2|\psi_i\big\rangle.
+\end{align}
+Recall that the universal energy functional has the form $F[\rho]=T[\rho]+W[\rho]$, i.e. the sum of the kinetic and the inter-electronic potential functionals. Kohn and Sham now suggest we rewrite $F[\rho]$ in terms of the known non-interacting kinetic energy functional as
+\begin{align}
+F[\rho]&= T_s[\rho] + J[\rho] + E_\text{xc}[\rho],
+\end{align}
+where $J[\rho]$ is the classical coulomb interaction functional and $E_\text{xc}[\rho]$ is essentially \emph{everything that is left over} ((Kohn-Sham article)). The $J[\rho]$ functional we will shortly see is the functional form of the $\hat J$ operator in the Hartree-Fock approximation ((HF section)), while $E_\text{xc}[\rho]$ is called the exchange-correlation energy and contains the (hopefully small) correction needed for $T_s[\rho]$ in order to make it into $T[\rho]$ and the non-classical part of the electron-electron interaction $\hat W$ ((Yang Parr p144)) ((Martin p138)). 
+
+The \emph{exact} (recall that the density of the auqiliary system is the same as the original density) energy functional of the fully interacting system can now be written as 
+\begin{align}
+E[\rho] &= T_s[\rho] + J[\rho] + \int\mathrm{d}^3\r\,\rho(\r)v(\r) + E_\text{xc}[\rho],
+\end{align}
+where $v(\r)$ is the position basis representation of $\hat V_\text{ext}$. For completeness, we state also the explicit form of the exchange-correlation energy 
+\begin{align}
+E_\text{xc}[\rho] &= \left(T[\rho] - T_s[\rho] \right) + \left(W[\rho] - J[\rho]\right),
+\end{align}
+where $W[\rho]=J[\rho]-K[\rho]$ is the functional corresponding to the two-body term in the original Hamiltonian. 
+
+It may seem like we have made no progress at all: We started off with an unknown functional $F[\rho]$, and after introducing the Kohn-Sham ansatz we are still left with an unknown (albeit different) functional, $E_\text{xc}[\rho]$. The exchange-correlation functional, however, may be easier to approximate. Also, we have introduced a separable (by construction) Hamiltonian from which we can extract a set of coupled one-electron Schrödinger equations which we may solve in order to obtain the true ground state density (and in principle all other properties of the system). Note carefully that at this point, no approximations (beyond Born-Oppenheimer and the assumption that the original density was non-interacting $v$-representible) have been made, and so we may consider the preceding results to be exact. This represents a conceptually major difference between DFT and Hartree-Fock theory: The latter is an approximate set of equations which we solve exactly, while DFT constitutes a set of exact equations which we are forced to solve approximately (because we dont know closed form expressions for $E_\text{xc}$).
+
+\subsection{The Kohn-Sham equations}
 
 
 
@@ -308,8 +425,8 @@ In the limit of no spin-polarization (restricted), $\varepsilon_\text{x}$ takes 
 
 \textbf{Correlation term}:
 \begin{align}
-\varepsilon_\text{c}(r_s) &= \frac{A}{2}\left\{ \ln\left(\frac{x^2}{X(x)}\right) + \frac{2b}{Q}\tan^{-1}\left(\frac{Q}{2x+b}\right) \right.\nn\\
-& \ \ \ \ \ \ \ \left.- \frac{bx_0}{X(x_0)} \left[\ln\left(\frac{(x-x_0)^2}{X(x)} \right) + \frac{2(b+2x_0)}{Q}\tan^{-1}\left(\frac{Q}{2x+b} \right) \right]  \right\},
+\varepsilon_\text{c}(r_s) &= \frac{A}{2}\left\{ \ln\left(\frac{x}{X(x)}\right) + \frac{2b}{Q}\tan^{-1}\left(\frac{Q}{2x+b}\right) \right.\nn\\
+& \ \ \ \ \ \ \ \left.- \frac{bx_0}{X(x_0)} \left[\ln\left(\frac{(x-x_0)^2}{X(x)} \right) + \frac{2(b+2x_0)}{Q}\tan^{-1}\left(\frac{Q}{2x-b} \right) \right]  \right\},
 \end{align}
 with 
 \begin{align}
