@@ -4,7 +4,7 @@
 \usepackage{inputenc}                        % utf-8 encoding, æ, ø , å, etc.
 \usepackage{a4wide}                          % Adjust margins to better fit A4 format.
 \usepackage{array}                           % Matrices.
-\usepackage{amsmath}                         % Math symbols, and enhanced matrices.
+\usepackage{amsmath}                         % Math symbols, and enhanced matrices.o
 \usepackage{amsfonts}                        % Math fonts.
 \usepackage{amssymb}                         % Additional symbols.
 %\usepackage{wasysym}                        % More additional symbols.
@@ -373,6 +373,8 @@ E_\text{xc}[\rho] &= \left(T[\rho] - T_s[\rho] \right) + \left(W[\rho] - J[\rho]
 where $W[\rho]=J[\rho]-K[\rho]$ is the functional corresponding to the two-body term in the original Hamiltonian. 
 
 It may seem like we have made no progress at all: We started off with an unknown functional $F[\rho]$, and after introducing the Kohn-Sham ansatz we are still left with an unknown (albeit different) functional, $E_\text{xc}[\rho]$. The exchange-correlation functional, however, may be easier to approximate. Also, we have introduced a separable (by construction) Hamiltonian from which we can extract a set of coupled one-electron Schrödinger equations which we may solve in order to obtain the true ground state density (and in principle all other properties of the system). Note carefully that at this point, no approximations (beyond Born-Oppenheimer and the assumption that the original density was non-interacting $v$-representible) have been made, and so we may consider the preceding results to be exact. This represents a conceptually major difference between DFT and Hartree-Fock theory: The latter is an approximate set of equations which we solve exactly, while DFT constitutes a set of exact equations which we are forced to solve approximately (because we dont know closed form expressions for $E_\text{xc}$).
+
+
 
 \subsection{The Kohn-Sham equations}
 

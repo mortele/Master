@@ -223,7 +223,47 @@
 \newcommand{\psit}{\left|\psi(t)\right\rangle}
 
 
+Salasnich: Quantum Physics of Light and Matter
+
+Wheeler,Zurek: Quantum Theory and Measurement
+
+Born: "Zur Quantenmechanik der Stossvorgänge," Zeitschrift für Physik, 37, 863-67 (1926). Translation to english by Wheeler, Zurek
+
+Weinberg: lectures on quantum mechanics
+
+Helgaker++: Molecular Electronic Sctructure Theory
+
+Gross,Runge,Heinonen: Many-particle Theory
+
 \section{Wave functions}
+In ordinary quantum mechanics, the wave function is the primary quantity of interest. It constitutes the \emph{solution} of the Schrödinger equation and encodes within it all information about the state of the isolated quantum system in question. Mathematically speaking, the wave function is the complex valued spatial projection of the abstract state vector\---which is a unitary vector in some separable Hilbert space ((Kvaal, p8)) ((Salasnich, p8)). The wave function has a probabilistic interpretation originally after Born ((Born, translated by WheelerZurek)), which states that the magnitude squared is a probability density, i.e. ((Weinberg, p24))
+\begin{align}
+\mathrm{d}P(\r) = \left|\psi(\r)\right|^2 \mathrm{d}^3\r. 
+\end{align} 
+The probability $\mathrm{d}P(\r)$ denotes here the probability of finding the particle described by the wave function in an infinitesimal volume $\mathrm{d}^3\r$ around the position $\r$. 
+
+Even though we are unable (in the overwhelming majority of cases) to find closed form solutions to the Schrödinger equation, we may nevertheless write down a set of conditions we know the exact solution must adhere to. In the following section, we will go through properties of the exact wave function which are most relevant for atomic and molecular systems. Thereafter, we will consider the most common bases used to form approximate wave functions for many-body quantum systems.
+
+\subsection{Properties of the exact wave function}
+In the words of Helgaker et. al ((Helgaker, p108)) (paraphrasing), even though we are forced to make approximations in the solution of the Schrödinger equation, such approximations should not be made in a "haphazard manner." Instead we should try to incorporate as many properties of the exact wave function as feasible in our approximate guess. Some of these properties are incorporated almost without thought, such as anti-symmetry and square integrability. However, there are more subtle ones which may be easily missed without a thorough analysis of the known properties of the exact wave function. We present here an incomplete list of properties and conditions for the exact solution of the Schrödinger equation.
+
+\subsubsection*{Eigenfunction of the number operator, $\hat N$}
+The exact wave function is a function of the spatial and spin degrees of freedom of the particles it describes. For an atomic or molecular system, under the Born-Oppenheimer approximation, the wave function depends only parametrically on the positions of the nuclei, $\Psi=\Psi(\r_1,\r_2,\dots,\r_N,\sigma_1,\sigma_2,\dots,\sigma_N;\r_A,\r_B,\dots,\r_C)$. The approximation we choose should thus be an eigenfunction of the number operator, $\hat N|\psi\rangle=N|\psi\rangle$. The number operator is defined under second quantization as $\hat N = \sum_q c_q^\dagger c_q$, where the sum is taken to run over all possible single particle states ((Kvaal, p24)). 
+
+\subsubsection*{Totally anti-symmetric under exchange of particles}
+A fermionic wave function must be totally anti-symmetric w.r.t. exhange of two particles ((Griffiths)). In accordance with this, we must choose the approximating wave function to be an eigenfunction of the permutation operator, $\hat P_{ij}$, which interchanges particles $i$ and $j$. We must also demand that the eigenvalue is $-1$, i.e. $\hat P_{ij} |\psi\rangle = -1|\psi\rangle$. 
+
+Both of the aforementioned conditions are satisfied if we take the approximation to be an $N \times N$ (or a linear combination of) Slater determinant(s) filled with single electron orbitals.
+
+\subsubsection*{Square integrability and normalization}
+For a bound state, the exact wave function is square integrable and normalized to unity, $\langle \Psi|\Psi\rangle = 1$ ((Helgaker, p108)). This means that the exact wave function is finite almost everywhere\footnote{Mathematically, it is finite except possibly on a set of measure zero such that the integral over space is not affected by the divergent value.} w.r.t. the $L^2$ norm. A sufficient and natural way to ensure this holds for the approximating wave function is to build it from finite single-electron orbitals, i.e. populate the Slater determinant(s) with spin-orbitals which are themselves parts of $L^2$. 
+
+\subsubsection*{Size-extensivity}
+The exact wave function is size-extensive in that a system of non-interacting subsystems have the same total energy as the sum of the energies of the subsystems ((Helgaker, p109)). It is thus reasonable to demand of the the approximate wave function that (in some chosen calculational scheme) the energy found by calculating the total energy of a system of non-interacting subsystems to exactly coincide with the energies of the subsystems themselves. In practice, we may check such a condition by separating subsystems by a large distance and comparing the calculated energy with the energy resulting from calculating the energies of the subsystems individually. 
+
+\subsubsection*{Eigenfunction of the total spin and projected spin operators, $\hat S^2$ and $\hat S_z$}
+In non-relativistic theory, the exact wave function is an eigenfunction of the total spin operator $\hat S^2$ and the spin projection operator $\hat S_z$ ((Gross,Runge,Heionen p67)). It would be natural to demand that the approximating wave function also be an eigenfunction of these two operators. Taking the approximation to be a single Slater determinant, populated with spin-orbitals of definite spin projection automatically means the total wave function is an eigenfunction of $\hat S_z$. However, single determinants are not \emph{necessarily} eigenfunctions of $\hat S^2$ ((Szabo, p100)). Linear combinations of 
+
 
 \subsection{Hydrogen wave functions}
 
