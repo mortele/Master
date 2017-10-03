@@ -235,8 +235,16 @@ Helgaker++: Molecular Electronic Sctructure Theory
 
 Gross,Runge,Heinonen: Many-particle Theory
 
+Kato article: \url{http://refhub.elsevier.com/S0009-2614(13)01451-6/h0095}
+
+Katriel,Davidson: \url{http://www.pnas.org/content/77/8/4403}
+
+Hammond: Monte Carlo Methods in Ab Initio Quantum Chemistry
+
+Weissbluth: Atoms and Molecules
+
 \section{Wave functions}
-In ordinary quantum mechanics, the wave function is the primary quantity of interest. It constitutes the \emph{solution} of the Schrödinger equation and encodes within it all information about the state of the isolated quantum system in question. Mathematically speaking, the wave function is the complex valued spatial projection of the abstract state vector\---which is a unitary vector in some separable Hilbert space ((Kvaal, p8)) ((Salasnich, p8)). The wave function has a probabilistic interpretation originally after Born ((Born, translated by WheelerZurek)), which states that the magnitude squared is a probability density, i.e. ((Weinberg, p24))
+In ordinary quantum mechanics, the wave function is the primary quantity of interest. It constitutes the \emph{solution} of the Schrödinger equation and encodes within it all information about the state of the isolated quantum system in question. Mathematically speaking, the wave function is the complex valued spatial projection of the abstract state vector\---which is a unitary vector in some separable Hilbert space ((Kvaal, p8)) ((Salasnich, p8)). Formally, it is the solution to the Schrödinger equation, $\hat H \psi_k=E_k\psi_k$, and it has a probabilistic interpretation originally after Born ((Born, translated by WheelerZurek)), which states that the magnitude squared is a probability density, i.e. ((Weinberg, p24))
 \begin{align}
 \mathrm{d}P(\r) = \left|\psi(\r)\right|^2 \mathrm{d}^3\r. 
 \end{align} 
@@ -246,6 +254,8 @@ Even though we are unable (in the overwhelming majority of cases) to find closed
 
 \subsection{Properties of the exact wave function}
 In the words of Helgaker et. al ((Helgaker, p108)) (paraphrasing), even though we are forced to make approximations in the solution of the Schrödinger equation, such approximations should not be made in a "haphazard manner." Instead we should try to incorporate as many properties of the exact wave function as feasible in our approximate guess. Some of these properties are incorporated almost without thought, such as anti-symmetry and square integrability. However, there are more subtle ones which may be easily missed without a thorough analysis of the known properties of the exact wave function. We present here an incomplete list of properties and conditions for the exact solution of the Schrödinger equation.
+
+
 
 \subsubsection*{Eigenfunction of the number operator, $\hat N$}
 The exact wave function is a function of the spatial and spin degrees of freedom of the particles it describes. For an atomic or molecular system, under the Born-Oppenheimer approximation, the wave function depends only parametrically on the positions of the nuclei, $\Psi=\Psi(\r_1,\r_2,\dots,\r_N,\sigma_1,\sigma_2,\dots,\sigma_N;\r_A,\r_B,\dots,\r_C)$. The approximation we choose should thus be an eigenfunction of the number operator, $\hat N|\psi\rangle=N|\psi\rangle$. The number operator is defined under second quantization as $\hat N = \sum_q c_q^\dagger c_q$, where the sum is taken to run over all possible single particle states ((Kvaal, p24)). 
@@ -262,17 +272,109 @@ For a bound state, the exact wave function is square integrable and normalized t
 The exact wave function is size-extensive in that a system of non-interacting subsystems have the same total energy as the sum of the energies of the subsystems ((Helgaker, p109)). It is thus reasonable to demand of the the approximate wave function that (in some chosen calculational scheme) the energy found by calculating the total energy of a system of non-interacting subsystems to exactly coincide with the energies of the subsystems themselves. In practice, we may check such a condition by separating subsystems by a large distance and comparing the calculated energy with the energy resulting from calculating the energies of the subsystems individually. 
 
 \subsubsection*{Eigenfunction of the total spin and projected spin operators, $\hat S^2$ and $\hat S_z$}
-In non-relativistic theory, the exact wave function is an eigenfunction of the total spin operator $\hat S^2$ and the spin projection operator $\hat S_z$ ((Gross,Runge,Heionen p67)). It would be natural to demand that the approximating wave function also be an eigenfunction of these two operators. Taking the approximation to be a single Slater determinant, populated with spin-orbitals of definite spin projection automatically means the total wave function is an eigenfunction of $\hat S_z$. However, single determinants are not \emph{necessarily} eigenfunctions of $\hat S^2$ ((Szabo, p100)). Linear combinations of 
+In non-relativistic theory, the exact wave function is an eigenfunction of the total spin operator $\hat S^2$ and the spin projection operator $\hat S_z$ ((Gross,Runge,Heionen p67)). It would be natural to demand that the approximating wave function also be an eigenfunction of these two operators. Taking the approximation to be a single Slater determinant, populated with spin-orbitals of definite spin projection automatically means the total wave function is an eigenfunction of $\hat S_z$. However, single determinants are not \emph{necessarily} eigenfunctions of $\hat S^2$ ((Szabo, p100)). Linear combinations of determinants may be formed which by construction are eigenfunctions of $\hat S^2$ ((Helgaker, p51)). Such wave functions are called spin-adapted. 
+
+\subsubsection*{Asymptotic behaviour of the electronic density}
+Katriel and Davidson ((Katriel,Davidson article)) showed that the electron density decays exponentially as
+\begin{align}
+\rho(\r)\approx \exp\left( -2\sqrt{2I}r \right),
+\end{align}
+in the limit of large $r$. Here $I$ denotes the first ionization potential of the molecule, i.e. the energy needed in order to remove the least tightly bound electron. Since the ionization potential is not known before the solution to the Schrödinger equation is found, an a priori treatment of the long-range exponential decay of the density is impossible ((Helgaker, p110)). 
+
+\newcommand{\z}{{\bf z}}
+\subsubsection*{Virial theorem}
+The exact wave function obeys the \emph{virial theorem}, which states that (for a Coulombic potential $\hat V$) ((Weisbluth, p570))
+\begin{align}
+\langle \hat T \rangle &= -\frac{1}{2}\langle \hat V\rangle. \label{eq:virial}
+\end{align}
+A simple proof\footnote{More precisely, a heuristic (not entirely rigorous) justification.} by dimensional analysis due to Weinberg ((Weinberg, p190)) for the one-particle case illustrates the condtion: Since the square of the wave function has to integrate over space to a probability, it must have dimensions of $\text{Length}^{\nicefrac{-3}{2}}$. Letting $a$ denote the chosen length scale, we can express the wave function as $\psi(\r)=a^{\nicefrac{-3}{2}}f(\r/a)$, with $\z\equiv\r/a$ and $f(\z)$ being a dimensionless function of a dimensionless argument. Changing integration variables in the expressions for $\langle \hat V\rangle$ and $\langle \hat T\rangle$,
+\begin{align}
+\langle \psi|\hat V|\psi\rangle = \langle \hat V\rangle_\psi&= \frac{\int \mathrm{d}^3\r \, V(\r) |\psi(\r)|^2}{\int \mathrm{d}^3\r \,|\psi(\r)|^2}, \ \ \text{ and}\\
+%
+\langle \psi|\hat T|\psi\rangle = \langle \hat T \rangle_\psi &= \frac{\int \mathrm{d}^3\r \, \frac{\hbar^2}{2m}\left(|\pder{\psi}{x}|^2+|\pder{\psi}{y}|^2+|\pder{\psi}{z}|^2\right)}{\int \mathrm{d}^3\r \,|\psi(\r)|^2},
+\end{align}
+from $\r\rightarrow \z=\r/a$ gives a single factor of $a^{-1}$ in the former and $a^{-2}$ in the latter integral. For the denominators, the integration measure $\mathrm{d}^3\r$ carries dimensions of $a^3$ which exactly cancel the $(a^{\nicefrac{-3}{2}})^2=a^{-3}$ from the wave function squared (by neccessity, since the integral represents a probability). In the $\langle V\rangle$ integral, the same happens in the numerator, and we are left with only the Coulomb potential $a^{-1}$ contribution. The numerator in the $\langle T \rangle$ integral has dimensions of $a^{-2}$, since each coordinate differentiation carries a single inverse $a$.
+
+As the exact wave function is a variational minimum of the Hamiltonian, the expectation value of $\langle H\rangle_\psi$ (note carefully that this is true only when evaluated \emph{at the exact wave function} [ground or excited states]) must be independent of variations in $\psi$. Namely, they must be independent of variations of $a$ since $\psi(\r)=a^{\nicefrac{-3}{2}}f(\z)$ ((Weinberg, p190)). The derivative of $\langle \hat T\rangle_\psi + \langle \hat V \rangle_\psi$ taken at the exact wave function must vanish, giving \eq{virial}.
+
+The virial theorem generalizes to $N$ particles in the same form as \eq{virial}.
+
+\subsubsection*{Cusp conditions}
+First described by Kato ((Kato article)), cusp conditions describe known properties of the quantum system and wave function at the divergent points of the inter-electron and electron-nucleus Coulomb potentials. These two cases will be described in depth in sections \ref{section:eecusp} and \ref{section:encusp}. 
+
+
+\subsection{Electron-nucleus cusp \label{section:eecusp}}
+%"This is valid in a non-relativistic treatment within the Born–Oppenheimer approximation, and assuming point-like nuclei." \url{https://en.wikipedia.org/wiki/Kato_theorem}
+We will now consider in some detail the issue of the cusp condition arising from the singular Coulombic potential at the position of point-like nuclei. 
+
+Let us consider a system of a single atom of charge $+Z$ with $N$ bound electrons. It will be useful in the following to define the \emph{local energy}, $E_\text{local}$, as a spatially dependent measure of the "instantaneous" energy of a system. We take
+\begin{align}
+E_\text{local}(\R) \equiv \frac{1}{\Psi(\R)}\hat H\Psi(\R)
+\end{align}
+to be the local energy, and note that for any eigenfunction $\Phi(\R)$ of $\hat H$, the local energy is constant for all configurations $\R=\{\r_1,\r_2,\dots,\r_N,\sigma_1,\sigma_2,\dots,\sigma_N\}$ ((Hjort-Jensen)). This is simply a trivial result of the Schrödinger equation, since $\hat H\Phi(\R)=E\Phi(\R)$ we find that
+\begin{align}
+E_\text{local}(\R)=\frac{1}{\Phi(\R)}\hat H\Phi(\R) = \frac{1}{\Phi(\R)}E\Phi(\R)=E. \label{eq:rads}
+\end{align}
+We cannot normally find an approximate wave function for which $E_\text{local}(\R)=E$ holds, but we should at least make sure that it is \emph{well behaved}. There are certain critical electronic configurations for which the Coulombic potential diverges\----keeping the local energy finite at these points lead to what is known as cusp conditions on the wave function. 
+
+The first critical configuration we will consider is the class of electronic positions for which $|\r_i-\r_A|\rightarrow 0$ for some electron $i$ and nucleus $A$. Since the electron-nucleus Coulomb potential diverges there must be a corresponding divergent term in the laplacian which exactly cancels it. Let us consider the Born-Oppenheimer Hamiltonian for a single electron in the presence of a charge-$Z$ atom,
+\begin{align}
+\hat H(\r) &= -\frac{\nabla^2}{2} - \frac{Z}{|\r|},
+\end{align}
+where we take the atom to be situated at the origin. The \emph{radial} Schrödinger equation can be written as ((Thjissen, p156))
+\begin{align}
+\left[\pder{^2}{r^2} + \frac{2}{r}\pder{}{r} + \frac{2Z}{r} - \frac{l(l+1)}{r^2} + 2E \right]R(r) = 0.
+\end{align}
+For $l=0$ states, we note that the two $1/r$ terms must exactly cancel if the local energy is to remain finite when $r\rightarrow 0$. This means that 
+\begin{align}
+E_\text{local}(\r\rightarrow0)=\lim_{r\rightarrow0} \left\{\frac{1}{R(r)}\left(\frac{2}{r}\pder{}{r} +\frac{2Z}{r} + \text{ finite terms} \right)R(r)\right\},
+\end{align}
+and the exact wave function obeys ((Hammond, p156))
+\begin{align}
+\lim_{r\rightarrow0}\left\{ \frac{1}{R(r)} \pder{R}{r}\right\}=-Z.
+\end{align}
+We see that a wave function of s-type symmetry which does not vanish at $r=0$ must be exponential in $r$ in the limit of $r\rightarrow0$. 
+\newcommand{\Rdo}{\pder{\tilde R}{r}}
+\newcommand{\Rd}[1]{\pder{^#1\tilde R}{r^#1}}
+What happens if $l\not=0$ or $R(0)=0$? It turns out that considering the latter issue automatically resolves the first ((Hammond, p157)), so let us take the case of $R(0)=0$. We may factor the leading $r$ dependence out of $R(r)$, and define $\tilde R(r)\equiv r^mR(r)$, so that $\tilde R(0)\not=0$. Three applications of the derivative product rule gives 
+\begin{align}
+\pder{}{r}R(r) &= \pder{}{r}\left[ \tilde R(r) r^m \right] = \Rdo r^m + m\tilde R(r)r^{m-1},
+\end{align}
+and
+\begin{align}
+\pder{^2}{r^2}R(r) &= \pder{^2}{r^2}\left[\tilde R(r) r^m\right] = \Rd{2} r^m + 2\Rdo mr^{m-1}+m(m-1)\tilde R(r)r^{m-2}.
+\end{align}
+Insertion into the radial Schrödinger equation, \eq{rads}, we find that
+\begin{align}
+\Rd{2}r^m+\Rdo \frac{2(m+1)}{r}r^m + \tilde R(r)\frac{m(m+1)}{r^2}r^m + \tilde R(r)\frac{2Z}{r}r^m-\tilde R(r) \frac{l(l+1)}{r^2}r^m + 2E\tilde R(r)r^m=0.
+\end{align}
+If the local energy is to remain finite once again, we need the inverse powers of $r$ to cancel, which for $1/r^2$ yields $m=l$. Furthermore, for the $1/r$ terms, we have the condition 
+\begin{align}
+\lim_{r\rightarrow0}\left\{ \frac{1}{\tilde R(r)} \pder{\tilde R}{r}\right\}=-\frac{Z}{l+1}.
+\end{align}
+
+%   The first critical configuration we will consider is the class of electronic positions for which $|\r_i-\r_A|\rightarrow 0$ for some electron $i$ and nucleus $A$. Since the electron-nucleus Coulomb potential diverges there must be a corresponding divergent term in the laplacian which exactly cancels it. Let us consider the Born-Oppenheimer Hamiltonian for a system of $N$ electrons in the presence of a single charge-$Z$ atom:
+%   \begin{align}
+%   \hat H(\R) &= \sum_{i=1}^N -\frac{\nabla^2_i}{2} + \sum_{i=1}^N\sum_{j=i+1}^N \frac{1}{|\r_i-\r_j|} - \sum_{i=1}^N \frac{Z}{|\r_i-\r_A|}.
+%   \end{align}
+%   Let us for simplicity take the position of nucleus, $\r_A$, to be the origin. We assume for the moment that all inter-electronic distances $r_{ij}$ are finite and non-zero. Writing out the radial Schrödinger equation and focusing on the terms originating from the first particle, we find
+%   \begin{align}
+%   \left[\pder{^2}{r^2_1} + \frac{2}{r_1}\pder{}{r_1} + \frac{2Z}{r_1^2} - \frac{l(l+1)}{r_1^2} + 2E + \sum_{i=2}^N F\left(r_i,\pder{}{r_i},\pder{^2}{r_i^2}\right)\right]R(r_1,r_2,\dots,r_N) = 0,
+%   \end{align}
+%   where $F$ is simply the remaining terms in the Hamiltonian containing inter-electronic interactions, electron-nucleus interactions, and the kinetic energy operators for electrons $i=2,3,\dots,N$.
+
+
+\subsection{Electron-electron cusp \label{section:encusp}}
+
+
+\subsection{Higher order coalescence conditions}
+Advances in Quantum Chemistry, Vol73 chap2 s59
+
+
 
 
 \subsection{Hydrogen wave functions}
 
-\subsection{Properties of the \emph{exact} wave function}
-
-\subsubsection{Electron-nucleus cusp}
-"This is valid in a non-relativistic treatment within the Born–Oppenheimer approximation, and assuming point-like nuclei." \url{https://en.wikipedia.org/wiki/Kato_theorem}
-
-\subsubsection{Electron-electron cusp}
 
 
 \subsection{Jastrow factor}
@@ -286,8 +388,18 @@ In non-relativistic theory, the exact wave function is an eigenfunction of the t
 
 
 
+block:730
+glance:5266
+hit:2167
+crit:1380
+miss:2956
+dodge:680
+total hits: 9543
 
-
+proc:200
+proc(resist): 41
+total procs: 241
+proc chance: 2.5%
 
 
 \end{document}
