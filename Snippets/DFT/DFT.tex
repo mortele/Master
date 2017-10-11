@@ -1,7 +1,7 @@
 
 \documentclass[a4paper]{article}
 %Included packages ----------------------------------------------------------%
-\usepackage{inputenc}                        % utf-8 encoding, æ, ø , å, etc.
+\usepackage[utf8]{inputenc}                        % utf-8 encoding, æ, ø , å, etc.
 \usepackage{a4wide}                          % Adjust margins to better fit A4 format.
 \usepackage{array}                           % Matrices.
 \usepackage{amsmath}                         % Math symbols, and enhanced matrices.o
@@ -28,7 +28,7 @@
 \usepackage{wasysym}                         % \smiley{}-s!
 \usepackage{multicol}                        % Multiple text columns.
 \usepackage{capt-of}                         % Caption things which are not floats.
-\usepackage[url=false]{biblatex}             % Citations (made easy).
+%\usepackage[url=false]{biblatex}             % Citations (made easy).
 \usepackage{dsfont}
 \usepackage{booktabs}                        % Tables
 \usepackage{tabularx}
@@ -38,6 +38,10 @@
 \usepackage{siunitx}
 \usepackage[version=4]{mhchem}
 \usepackage{relsize}  % Resize parts of equations
+\usepackage[backend=biber,url=false]{biblatex}
+\usepackage{mdframed}
+\usepackage{tikz}
+\usetikzlibrary{matrix}
 
 
 
@@ -196,15 +200,14 @@
 \newenvironment{answer}{}{}
 
 % Set bibliography file and path for images.
-\bibliography{references/fys4180ref.bib}
+%\bibliography{references/fys4180ref.bib}
 \graphicspath{{./images/}}
 \newcommand{\includepdfgraphics}[2]{\includecombinedgraphics[#1]{./images/#2}}
 
 
-
 \graphicspath{{/Users/morten/Documents/Master/Master/Figures/}}
 
-
+\newcommand{\comment}[1]{\ignorespaces}
 
 % Title
 \title{}
@@ -213,7 +216,9 @@
 % ---------------------------------------------------------------------------- %
 % ---------------------------------------------------------------------------- %
 
-
+\addbibresource{/Users/morten/Documents/Master/Master/ref.bib}
+%\bibliography{/Users/morten/Documents/Master/Master/ref.bib}%{}
+%\bibliographystyle{plain}
 \begin{document}
 
 
@@ -225,17 +230,15 @@
 \newcommand{\psit}{\left|\psi(t)\right\rangle}
 
 
-Yang and Parr: Density functional theory of atoms and molecules
 
-Atomic Reference Data for Electronic Structure Calculations \url{http://math.nist.gov/DFTdata/atomdata/node4.html}
+%Atomic Reference Data for Electronic Structure Calculations \url{http://math.nist.gov/DFTdata/atomdata/node4.html}
 
-Vosko,Wilk,Nusair: Accurate spin-dependent electron liquid correlation energies for local spin density calculations: A critical analysis \url{http://www.nrcresearchpress.com/doi/pdf/10.1139/p80-159}
 
 \section{Density functional theory}
 %\subsection{Intro and motivation}
-Because the wave function is such an unbelievably complicated function, depending on $4N$ degrees of freedom (of which $3N$ are spatial coordinates), it is natural to ask the question: Is it possible to represent the state of an electronic system in a more succinct way? A natural candidate for such an entity is the electronic number density, $\rho(\r)$, which we will mostly refer to as simply \emph{the density}. It would be remarkable if we could deal with enormously complex quantum mechanical systems by means of a function depending only on three spatial coordinates and spin(!) ((Kryachko,Ludena p163)). 
+Because the wave function is such an unbelievably complicated function, depending on $4N$ degrees of freedom (of which $3N$ are spatial coordinates), it is natural to ask the question: Is it possible to represent the state of an electronic system in a more succinct way? A natural candidate for such an entity is the electronic number density, $\rho(\r)$, which we will mostly refer to as simply \emph{the density}. It would be remarkable if we could deal with enormously complex quantum mechanical systems by means of a function depending only on three spatial coordinates and spin(!) \cite{kryachko} \comment{p163}.. 
 
-It turns out that exactly this is possible. There is a one-to-one correspondance between the ground state density, $\rho_0(\r)$, and the external potential (up to an additive constant) and thus also the Hamiltonian. ((Toulouse, p5)) Since the Hamiltonian uniquely determines all properties of a quantum mechanical system, we can in principle determine all the information in the many-body wave function (of the ground state and \emph{all} excited states) from the ground state density alone ((Martin, pp119)). The fact that the density can be determined from the wave function is almost trivially true, but that the converse is true is the content of the Hohenberg-Kohn theorems. 
+It turns out that exactly this is possible. There is a one-to-one correspondance between the ground state density, $\rho_0(\r)$, and the external potential (up to an additive constant) and thus also the Hamiltonian \cite{toulouse}\comment{p5}. Since the Hamiltonian uniquely determines all properties of a quantum mechanical system, we can in principle determine all the information in the many-body wave function (of the ground state and \emph{all} excited states) from the ground state density alone \cite{martin}\comment{p119}. The fact that the density can be determined from the wave function is almost trivially true, but that the converse is true is the content of the Hohenberg-Kohn theorems. 
 
 However, the theorems of Hohenberg and Kohn guarantee only the existence and uniqueness of an \emph{energy functional}, $E[\rho]$, which can be used to determine the energy from the density. Without knowing the form of $E[\rho]$ and a computational scheme for calculating it, we are still no closer to being able to use the electron density as the basic variable in electronic structure calculations. This is where the Kohn-Sham ansatz comes in, making it possible for us to calculate structure properties of electronic systems by essentially solving a different system\----a non-interacting system with the electrons moving in an effective potential which by construction yields the same ground state density as the original system. 
 
@@ -251,28 +254,36 @@ We will in the following relabel the last term, and define
 \begin{align}
 \sum_{i=1}^{N}\sum_{A=1}^M \frac{-Z_A}{|\r_i-\r_A|} &\equiv \hat V_\text{ext}.
 \end{align}
-Since the first two terms of the Hamiltonian are the same for any system of $N$ electrons, the external potential term $\hat V_\text{ext}$ completely fixes the electronic Hamiltonian as a whole. In fixing $\hat H$, we also fix the spectrum and so the ground state and all its derived properties are determined by $N$ and $\hat V_\text{ext}$ alone ((YangParr p51)). One such property is of course the ground state electronic density.
+Since the first two terms of the Hamiltonian are the same for any system of $N$ electrons, the external potential term $\hat V_\text{ext}$ completely fixes the electronic Hamiltonian as a whole. In fixing $\hat H$, we also fix the spectrum and so the ground state and all its derived properties are determined by $N$ and $\hat V_\text{ext}$ alone \cite{yangparr}\comment{p51}. One such property is of course the ground state electronic density.
 
 In the following, we will denote by $v(\r)$ the spatial (position basis) representation of the external potential $\hat V_\text{ext}$
 
 \subsubsection*{The first Hohenberg-Kohn theorem}
 \begin{figure}
-\begin{align}
-\mat{ccc}{
-\hat V_\text{ext}(\r) &  \mathlarger{\mathlarger{\xleftarrow{\text{Hohenberg-Kohn}}}} & \rho_0(\r) \\
-\\
+\begin{center}
+\begin{tikzpicture}
+  \matrix (m)[
+    matrix of math nodes,
+    nodes in empty cells,
+    minimum width=width("998888"),
+  ] {
+  \hat V_\text{ext}(\r) &  \mathlarger{\mathlarger{\xleftarrow{\text{Hohenberg-Kohn}}}} & \rho_0(\r) \\
+& & \\
 \mathlarger{\mathlarger{\downarrow}} & & \mathlarger{\mathlarger{\uparrow}} \\
-\\
-\hat H & \mathlarger{\mathlarger{\xrightarrow{\text{Schrödinger equation}}}} & \Psi(\R)
-}
-\end{align}
-\caption{Schematic representation of the Hohenberg-Kohn theorems. Knowing the external potential fixes the Hamiltonian, from which we can extract the spectrum. The ground state density may then be extracted from the ground state wave function. The Hohenberg-Kohn theorems allows us (in principle) to find the potential if we know only the ground state wave function, making a one-to-one correspondence, $\hat V_\text{ext}(\r)\Leftrightarrow\rho_0(\r)$.  Adapted from a similar figure in ((Martin, p122)).  \label{fig:DFT1}}
+& & \\
+\hat H & \mathlarger{\mathlarger{\xrightarrow{\text{Schrödinger equation}}}} & \Psi(\R) \\
+};
+  \draw (-4,-2) -- (4,-2);
+  \draw (-4,-2) -- (-4,2);
+  \draw (4,-2) -- (4,2);
+  \draw (-4,2) -- (4,2);
+\end{tikzpicture}
+\caption{Schematic representation of the Hohenberg-Kohn theorems. Knowing the external potential fixes the Hamiltonian, from which we can extract the spectrum. The ground state density may then be extracted from the ground state wave function. The Hohenberg-Kohn theorems allows us (in principle) to find the potential if we know only the ground state wave function, making a one-to-one correspondence, $\hat V_\text{ext}(\r)\Leftrightarrow\rho_0(\r)$.  Adapted from a similar figure in \%cite{martin}\comment{p112}.  \label{fig:DFT1}}
+\end{center}
 \end{figure}
-Hohenberg-Kohn article: \url{https://journals.aps.org/pr/pdf/10.1103/PhysRev.136.B864}
 
-lecture notes quantum chem \url{http://www.springer.com/gp/book/9783540586203}
 
-The first theorem of Hohenberg and Kohn proves the highly non-trivial converse statement\----the external potential is uniquely determined (up to an additive constant) by the ground state electron density ((Hohenberg-Kohn article)). We outline the deceptively simple proof in the following paragraphs.
+The first theorem of Hohenberg and Kohn proves the highly non-trivial converse statement\----the external potential is uniquely determined (up to an additive constant) by the ground state electron density \cite{hohenberg-kohn}. We outline the deceptively simple proof in the following paragraphs.
 
 Consider two potentials, $\hat V_1$ and $\hat V_2$, differ by more than an additive constant, $\hat V_1 \not= \hat V_2 + \text{const}$ and denote the ground state energies of the corresponding Hamiltonians by $E_1$ and $E_2$ respectively. Assume now that the ground state wave functions of the two Hamiltonians are \emph{the same}, $\Psi_1(\R)=\Psi_2(\R)$. Since all parts of the Hamiltonian apart from $\hat V_\text{ext}$ coincide, subtracting the two Schrödinger equations give
 \begin{align}
@@ -298,14 +309,14 @@ Exchanging the arbitrary indices $1\leftrightarrow2$, gives rise to
 \begin{align}
 E_2 &< E_1 + \int \,\mathrm{d}^3\r \big[v_2(\r) - v_1(\r) \big] \rho_0(\r), \label{eq:dft2}
 \end{align}
-and adding \eq{dft1} from \eq{dft2} gives finally the contradiction $E_1+E_2 < E_1 + E_2$ since the integrals differ only by a sign. But this means that clearly, different $\hat V_\text{ext}$ neccessarily produce differing $\rho_0(\r)$ ((Toulouse, p5)).\footnote{As a hands-on example of the first theorem in practice, it is instructive to consider the Coulombic external potential of $M$ stationary nuclei, $\hat V=-\sum_{A=1}^M Z_A/|\r-\r_A|$. In order to uniquely determine the system, we need to know the number of electrons, $N$, the position of the nuclei, $\r_A$, and their charges, $Z_A$. The local maxima of the ground state density coincides perfectly with the nuclei positions. Furthermore, the Kato cusp condition states that at the nuclei ((ref cusp condition section)) $(\partial \bar\rho_0(r_A)/\partial r_A)_{r_A\rightarrow 0}=-2Z_A\bar\rho_0(0)$, where $\bar\rho(r_A)$ denotes the spherical average of density around nucleus $A$ and $r_A=|\r-\r_A|$. This determines $Z_A$ from the ground state density also. Finally, the integral over the density itself gives the number of electrons, $N=\int\,\mathrm{d}^3\r \rho_0(\r)$. 
+and adding \eq{dft1} from \eq{dft2} gives finally the contradiction $E_1+E_2 < E_1 + E_2$ since the integrals differ only by a sign. But this means that clearly, different $\hat V_\text{ext}$ neccessarily produce differing $\rho_0(\r)$ \cite{toulouse}\comment{p5}.\footnote{As a hands-on example of the first theorem in practice, it is instructive to consider the Coulombic external potential of $M$ stationary nuclei, $\hat V=-\sum_{A=1}^M Z_A/|\r-\r_A|$. In order to uniquely determine the system, we need to know the number of electrons, $N$, the position of the nuclei, $\r_A$, and their charges, $Z_A$. The local maxima of the ground state density coincides perfectly with the nuclei positions. Furthermore, the Kato cusp condition states that at the nuclei ((ref cusp condition section)) $(\partial \bar\rho_0(r_A)/\partial r_A)_{r_A\rightarrow 0}=-2Z_A\bar\rho_0(0)$, where $\bar\rho(r_A)$ denotes the spherical average of density around nucleus $A$ and $r_A=|\r-\r_A|$. This determines $Z_A$ from the ground state density also. Finally, the integral over the density itself gives the number of electrons, $N=\int\,\mathrm{d}^3\r \rho_0(\r)$. 
 
-This is known as E. Bright Wilson's observation ((lecture notes quantum chem, p92)).}
+This is known as E. Bright Wilson's observation \cite{roos}\comment{p92}.}
 
 The statement of the first Hohenberg-Kohn theorem is represented in diagram form in \fig{DFT1}.
 
 \subsubsection*{The second Hohenberg-Kohn theorem}
-Since, by the first theorem, the Hamiltonian is determined uniquely by the density, that means the wave function can be considered a functional of the density also, $\Psi[\rho]$. Following the original article by Hohenberg and Kohn((HohenbergKohn article)), we note that this means the kinetic energy operator and the electron-electron interaction operators are also both functionals of the density. These can be combined into the \emph{universal functional}, 
+Since, by the first theorem, the Hamiltonian is determined uniquely by the density, that means the wave function can be considered a functional of the density also, $\Psi[\rho]$. Following the original article by Hohenberg and Kohn\cite{hohenberg-kohn}, we note that this means the kinetic energy operator and the electron-electron interaction operators are also both functionals of the density. These can be combined into the \emph{universal functional}, 
 \begin{align}
 F[\rho(\r)] \equiv \big\langle \Psi|\hat T + \hat W|\Psi \big\rangle.
 \end{align}
@@ -319,21 +330,17 @@ We now consider the energy functional evaluated at some other density, $\rho(\r)
 \begin{align}
 E_V[\rho(\r)] &= \big\langle\Psi|\hat T + \hat W|\Psi\big\rangle + \big\langle\Psi|\hat V_\text{ext}|\Psi\big\rangle = \big\langle \Psi|\hat H|\Psi\big\rangle.
 \end{align}
-Having established that the external potential is a functional of the density, this gives us now almost trivially that $E_V[\rho]>E_V[\rho_0]$ for any density that is not the one associated with the true ground state corresponding to $\hat V_\text{ext}$ ((Martin, p125)). 
+Having established that the external potential is a functional of the density, this gives us now almost trivially that $E_V[\rho]>E_V[\rho_0]$ for any density that is not the one associated with the true ground state corresponding to $\hat V_\text{ext}$ \cite{martin}\comment{p125}. 
 
 \subsubsection*{The way forward}
-Essentially, the two Hohenberg-Kohn theorems say that all properties of a electronic quantum mechanical system is uniquely determined by the ground state density alone. Also, a \emph{universal functional} for the energy in terms of the density, valid for any external potential, exists and it attains a global minimum for exactly the true ground state density $\rho_0(\r)$. In the words of Hohenberg and Kohn: "If $F[\rho]$ were a known and sufficiently simple functional of $\rho$, the problem of determining the ground-state energy and density in a given external potential would be rather easy(...)." ((Hohenberg-Kohn article)) Indeed, all of electronic structure theory would have been \emph{solved} in one fel swoop. 
+Essentially, the two Hohenberg-Kohn theorems say that all properties of a electronic quantum mechanical system is uniquely determined by the ground state density alone. Also, a \emph{universal functional} for the energy in terms of the density, valid for any external potential, exists and it attains a global minimum for exactly the true ground state density $\rho_0(\r)$. In the words of Hohenberg and Kohn: "If $F[\rho]$ were a known and sufficiently simple functional of $\rho$, the problem of determining the ground-state energy and density in a given external potential would be rather easy(...)." \cite{hohenberg-kohn} Indeed, all of electronic structure theory would have been \emph{solved} in one fel swoop. 
 
 Predictably, this is not the case. Determination of the universal functional is anything but trivial. In order to make real progress with the approach of considering the electronic density as the primary variable, we turn now to the framework proposed by Kohn and Sham.
 
 \subsection{Kohn-Sham ansatz}
-Kohn-Sham article: \url{https://journals.aps.org/pr/pdf/10.1103/PhysRev.140.A1133}
-
-DFT:An advanced course(Springer)\url{https://link.springer.com/content/pdf/10.1007%2F978-3-642-14090-7.pdf}
-
-In their seminal 1965 paper ((Kohn Sham article)), Kohn and Sham outlined a way to obtain a set of single electron equations in the density that can be solved self-consitently to obtain the total electronic energy. In order to accomplish this, they consider an auxiliary non-interacting system in place of the original one ((Martin p135)). 
+In their seminal 1965 paper \cite{hohenberg-kohn}, Kohn and Sham outlined a way to obtain a set of single electron equations in the density that can be solved self-consitently to obtain the total electronic energy. In order to accomplish this, they consider an auxiliary non-interacting system in place of the original one \cite{martin}\comment{p135}. 
  
-Kohn and Sham tell us to consider a non-interacting system for which the ground state density is the same as the ground state density for the interacting system in question. The existance of such a non-interacting system of electrons is far for obvious. In fact, determining neccessary constraints on $\hat V_\text{ext}$ for it to be \emph{non-interacting} $v$\emph{-representable} is still an open question in the theoretical foundations of density functional theory. For almost all real world problems, it is neccessary to simply assume the existance of a non-interacting system for which the ground state density coincides with that of $\hat V_\text{ext}$ ((Advanced course, p71)) ((Martin p145)). The assumption that such a non-interacting system exists constitutes the Kohn-Sham ansatz.
+Kohn and Sham tell us to consider a non-interacting system for which the ground state density is the same as the ground state density for the interacting system in question. The existance of such a non-interacting system of electrons is far for obvious. In fact, determining neccessary constraints on $\hat V_\text{ext}$ for it to be \emph{non-interacting} $v$\emph{-representable} is still an open question in the theoretical foundations of density functional theory. For almost all real world problems, it is neccessary to simply assume the existance of a non-interacting system for which the ground state density coincides with that of $\hat V_\text{ext}$ \cite{engel}\comment{p71}\cite{martin}\comment{p145}. The assumption that such a non-interacting system exists constitutes the Kohn-Sham ansatz.
 
 We denote the non-interacting Hamiltonian and the corresponding effective potential by $\hat H_s$ and $\hat V_s$, with spatial representation $v_s(\r)$. Since the electrons in this auqiliary system dont feel the coulombic inter-electron force, we know that the \emph{exact} ground state is represented by a Slater determinant filled with the energetically lowest $N$ single electron solutions of the single electron Schrödinger equation ((Yang and Parr, p143)). Note that the Schrödinger equation is by construction separable, since it only involves the kinetic energy operator and a (multiplicative) external potential operator. The one-electron Hamiltonian takes the form
 \begin{align}
@@ -360,7 +367,7 @@ Recall that the universal energy functional has the form $F[\rho]=T[\rho]+W[\rho
 \begin{align}
 F[\rho]&= T_s[\rho] + J[\rho] + E_\text{xc}[\rho],
 \end{align}
-where $J[\rho]$ is the classical coulomb interaction functional and $E_\text{xc}[\rho]$ is essentially \emph{everything that is left over} ((Kohn-Sham article)). The $J[\rho]$ functional we will shortly see is the functional form of the $\hat J$ operator in the Hartree-Fock approximation ((HF section)), while $E_\text{xc}[\rho]$ is called the exchange-correlation energy and contains the (hopefully small) correction needed for $T_s[\rho]$ in order to make it into $T[\rho]$ and the non-classical part of the electron-electron interaction $\hat W$ ((Yang Parr p144)) ((Martin p138)). 
+where $J[\rho]$ is the classical coulomb interaction functional and $E_\text{xc}[\rho]$ is essentially \emph{everything that is left over} \cite{hohenberg-kohn}. The $J[\rho]$ functional we will shortly see is the functional form of the $\hat J$ operator in the Hartree-Fock approximation ((HF section)), while $E_\text{xc}[\rho]$ is called the exchange-correlation energy and contains the (hopefully small) correction needed for $T_s[\rho]$ in order to make it into $T[\rho]$ and the non-classical part of the electron-electron interaction $\hat W$ \cite{yangparr}\comment{p144}\cite{martin}\comment{p138}. 
 
 The \emph{exact} (recall that the density of the auqiliary system is the same as the original density) energy functional of the fully interacting system can now be written as 
 \begin{align}
@@ -380,11 +387,16 @@ It may seem like we have made no progress at all: We started off with an unknown
 
 
 
-
-
-
-
-
+!!!!!!
+!!!!!!
+!!!!!!
+!!!!!!
+GOODSHIT: \url{http://theory.rutgers.edu/~giese/notes/DFT.pdf}
+!!!!!!
+!!!!!!
+!!!!!!
+!!!!!!
+!!!!!!
 
 
 
@@ -397,7 +409,7 @@ It may seem like we have made no progress at all: We started off with an unknown
 
 \subsection{Local density approximation}
 \subsubsection{VWN-LDA}
-((YangAndParr, pp275)) ((atomic reference, \url{DFTdata/atomdata/node4.html})) Parametrize the exchange correlation terms: After Vosko, Wilk, and Nusair ((VWN)) 
+((YangAndParr, pp275)) ((atomic reference, \url{DFTdata/atomdata/node4.html})) Parametrize the exchange correlation terms: After Vosko, Wilk, and Nusair \cite{vwn}
 
 \textbf{Exchange term}:
 \begin{align}
@@ -441,6 +453,8 @@ Q &\equiv \sqrt{4c-b^2}.
 
 For $\xi=0$ we have $A=0.0621814$, $x_0=-0.409286$, $b=13.0720$, and $c=42.7198$.
 
+
+%\printbibliography
 
 
 \end{document}
