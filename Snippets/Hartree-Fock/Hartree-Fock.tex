@@ -27,7 +27,7 @@
 \usepackage{wasysym}                         % \smiley{}-s!
 \usepackage{multicol}                        % Multiple text columns.
 \usepackage{capt-of}                         % Caption things which are not floats.
-\usepackage[url=false]{biblatex}             % Citations (made easy).
+
 
 % Differentials -------------------------------------------------------------- %
 \newcommand{\dt}{\,\mathrm{d}t}
@@ -183,12 +183,12 @@
 \newenvironment{answer}{}{}
 
 % Set bibliography file and path for images.
-\bibliography{references/fys4180ref.bib}
 \graphicspath{{./images/}}
 \newcommand{\includepdfgraphics}[2]{\includecombinedgraphics[#1]{./images/#2}}
 
-
-
+\usepackage[backend=biber,url=false]{biblatex}
+\newcommand{\comment}[1]{\ignorespaces}
+\addbibresource{/Users/morten/Documents/Master/Master/ref.bib}
 
 % Title
 \title{}
@@ -199,59 +199,152 @@
 
 
 \begin{document}
+\renewcommand{\R}{{\bf R}}
+\renewcommand{\r}{{\bf r}}
+\newcommand{\x}{{\bf x}}
+\newcommand{\psiz}{|\Psi_0\rangle}
 
 
 \section{Hartree-Fock}
-Morten forelesningsnotater: Computation Physics, Lecture Notes Fall 2015 kap. 15
-Mastern til Dragly: Bridging QM and ... kap. 3
-Shankar kap. 4: Postulates
-Szabo, Ostlund: Intro to advanced Electronic Structure 
+The Hartree-Fock (HF) method is one of the most important models in all of quantum chemistry, not only because it may yield acceptable approximations in certain scenarios, but because it is also an important stepping stone on the way to more accurate methods. Only a few of the more sophisticated quantum chemistry methods bypass HF entirely, while \emph{most} of them use it as a first step and then build on the HF orbitals to obtain more accurate descriptions\cite{szabo}\comment{p108}. In particular, for larger systems, the Hartree-Fock approach may be the only feasible one and it is the only approximate method that is \emph{routinely} being applied to \emph{large} systems of several hundred atoms and molecules\cite{helgaker}\comment{p433}.
 
-\renewcommand{\R}{{\bf R}}
-\renewcommand{\r}{{\bf r}}
-\newcommand{\psiz}{|\Psi_0\rangle}
+The Hartree-Fock method is a \emph{mean field} method in that it treats the inter electron interaction only in an averaged way\cite{kvaal}\comment{p44}. Any single electron does not feel the effect of every other localized electron, but rather just an averaged potential from all other remaining ones. This is sometimes also called an \emph{independent-particle} model. The Hartree-Fock approximation usually \emph{defines} the dynamical coulomb correlation between electrons by saying the difference between the Hartree-Fock energy and the exact quantum mechanical energy is the correlation energy. Hartree-Fock nevertheless deals exactly with the electron correlations arising from the anti-symmetry condition of Pauli, namely the exchange correlations. 
 
-Subject to the Born-Oppenheimer approximation, the Schrödinger equation for a system of $N$ electrons takes the form\footnote{Using atmoic units, $4\pi\epsilon_0=\hbar=m_e=e=1$.}
+In essence, the Hartree-Fock procedure finds the most energetically favorable electronic configuration under the assumption that the full ground state wave function consists of a \emph{single} Slater determinant populated by orthonormal spin-orbitals. In older litterature, the HF method is often called \emph{self-consitent field} method due to the way the resulting equations are usually solved\cite{levine}\comment{p292}. However, the self-consistent field iterations are not the \emph{only} way to solve the HF equations, and thus not an essential part of the method itself\cite{helgaker}\comment{433}.
+
+In the following we will apply the variational principle to the single Slater determinant ansatz wave function for the interacting system of $N$ electrons. We will then expand the solution in a given basis and derive the Roothan-Hall and Pople-Nesbet equations, for the closed-shell and open-shell systems respectively. 
+
+
+\subsection{Single Slater determinant ansatz}
+The method itself essentially finds the most energetically favorable electronic wave function, under the assumption that the full ground state consists of \emph{a single} Slater determinant populated by orthonormal spin-orbitals, $\phi_i$. We denote this Slater determinant $|\Psi\rangle$,
 \begin{align}
-\hat{H} \Psi(\R) = \left[-\sum_{i=1}^N \frac{\nabla_i^2}{2m_e} + V_\text{external}(\r_i) + \frac{1}{2} \sum_{i=1}^N \sum_{j=1}^N \frac{1}{|\r_i-\r_j|}\right] \Psi(\R) = E\Psi(\R).
+|\Psi\rangle &= |\phi_0\phi_1\phi_2\dots\phi_{N-1}\phi_{N}\rangle, \ \ \ \langle \phi_i|\phi_j\rangle = \delta_{ij}.
 \end{align}
-
-\subsection{Outline of the Hartree-Fock Method}
-The Hartree-Fock method is one of the most important models in all of quantum chemistry, not only because it may yield acceptable approximations in certain scenarios, but because it is also an important stepping stone on the way to more accurate methods. Only a few of the more sophisticated quantum chemistry methods bypass HF entirely, while \emph{most} of them use it as a first step and then build on the HF orbitals to obtain more accurate descriptions (Szabo, p108).
-
-The Hartree-Fock method is a \emph{mean field} method (Fys-kjm4480, p61) because it treats the inter electron interaction only in an averaged way. Any single electron does not feel the effect of every other localized electron, but rather just an averaged potential from all of remaining ones. This is sometimes also called an \emph{independent-particle} model. 
-
-The method itself essentially finds the most energetically favorable electronic wave function, under the assumption that the full ground state consists of \emph{a single} Slater determinant populated by orthonormal spin-orbitals, $\phi_i$. We denote this Slater determinant $|\Psi_0\rangle$,
+We may write down an explicit expression for the determinantal wave function in the position basis as 
 \begin{align}
-\psiz &= |\phi_0\phi_1\phi_2\dots\phi_{N-1}\phi_{N}\rangle, \ \ \ \langle \phi_i|\phi_j\rangle = \delta_{ij},
+\Psi(\x_1,\x_2,\dots,\x_N) &= \frac{1}{\sqrt{N!}}\vmat{cccc}
+{
+  \phi_1(\x_1)  & \phi_2(\x_1)  & \dots   & \phi_N(\x_1)  \\
+  \phi_1(\x_2)  & \phi_2(\x_2)  & \dots   & \phi_N(\x_2)  \\
+  \vdots        & \vdots        & \ddots  & \vdots        \\
+  \phi_1(\x_N)  & \phi_2(\x_N)  & \dots   & \phi_N(\x_N)
+},
 \end{align}
-and the energy we wish to minimize takes the form 
+with $\phi_n(\x_k)$ being the index $n$ spin-orbital evaluated at the spatial and spin-projection coordinates $\x_k$. Under the assumption that the spin-orbitals themselves are orthonormal, the total determinant will also be normalized in the sense that $\langle \Phi|\Phi\rangle=1$ \cite{kvaal}\comment{p44}.
+
+Recall from section ((Born-Oppenheimer section)) that the Born-Oppenheimer Hamiltonian for a system of $N$ electrons subject to the Coulomb potential from $M$ atoms takes the form
 \begin{align}
-\langle \Psi_0 |\hat H|\Phi_0\rangle &= \sum_{i=1}^N \langle \phi_i | \hat h_1 | \phi_i\rangle + \sum_{i=1}^N\sum_{j=}^N
+\hat H &= \underbrace{\sum_{i=1}^N -\frac{\nabla^2}{2} + \sum_{i=1}^N\sum_{A=1}^M -\frac{Z_A}{|\r_A-\r_i|}} + \sum_{i=1}^N \sum_{j=i+1}^N \frac{1}{|\r_i-\r_j|} \nn\\
+%
+&\equiv \phantom{------}\sum_{i=1}^N \hat h_i \phantom{-----}+ \sum_{i=1}^N\sum_{j=i+1}^N\hat w_{ij}, 
 \end{align}
+where we have defined the \emph{one-body operator} $\hat h_i=-\nabla^2/2-\sum_AZ_A/|\r_A-\r_i|$. The \emph{two-body operator} $\hat w_{ij}$ represents the Coulombic electron-electron interaction between electrons labelled $i$ and $j$. 
 
 
 
+\subsection{Exchange correlation}
+With only applying the Slater determinant ansatz, the electrons are already correlated. If we consider the probability of finding two electrons at coordinates $\x_1$ and $\x_2$ respectively, \cite{thijssen}\comment{p53}
+\begin{align}
+\rho(\x_1,\x_2) &= \int\mathrm{d}\x_3\,\mathrm{d}\x_4\,\dots\,\mathrm{d}\x_N\,|\Psi(\x_1,\x_2,\dots,\x_N)|^2 \nn\\
+%
+&= \frac{1}{N(N-1)}\sum_{k=1}^N\sum_{l=1}^N \Big[ |\phi_k(\x_1)|^2 |\phi_l(\x_2)|^2 - \phi^*_k(\x_1)\phi_k(\x_2)\phi_l^*(\x_2)\phi_l(\x_1)\Big]. \label{eq:exchange}
+\end{align}
+In order to relate this to spatial coordinates only, we need to sum over the spin variables,
+\begin{align}
+\rho(\r_1,\r_2) &= \sum_{s_1}\sum_{s_2} \rho(\x_1,\x_2),
+\end{align}
+which means the second term vanishes for opposite spin electrons. However, for same spin electrons, the second term of \eq{exchange} gives rise to a correlation effect\----for electrons of the same spin-projection the first and second term cancel exactly for $\r_1=\r_2$\cite{thijssen}\comment{p54}. This is known as \emph{exchange correlation}, all electrons are surrounded by \emph{exchange holes} where the chance of finding other like-spin electrons is drastically reduced. 
+
+
 !!!!!!!
+
 !!!!!!!
+
 !!!!!!!
+
 !!!!!!!
+
 INSANE SHIT: 
 Integrals:\url{https://github.com/psi4/psi4numpy/blob/master/Tutorials/11_Integrals/11a_1e_Integrals.ipynb}
 RHF:\url{https://github.com/psi4/psi4numpy/blob/master/Tutorials/03_Hartree-Fock/3a_restricted-hartree-fock.ipynb}
-!!!!!!!
-!!!!!!!
-!!!!!!!
+
 !!!!!!!
 
+!!!!!!!
+
+!!!!!!!
+
+!!!!!!!
 
 
+\subsection{Appendix: Functionals and functional variations}
+Recall that a \emph{function} is a mapping from some algebraic scalar field $\mathbb{F}$ to another (possibly different) field $\mathbb{F}'$, i.e. $g:\mathbb{F}\rightarrow \mathbb{F}'$. In physics, we are usually interested mainly in the cases where $\mathbb{F}$ and $\mathbb{F}'$ are the real or complex numbers, $\mathbb{R}$ or $\C$. An example is the complex exponential, $x\mapsto e^{ix}$, which takes complex values but the argument is real, so $g:\mathbb{R}\rightarrow \mathbb{C}$ in this case. 
 
+A \emph{functional}, on the other hand, is a mapping from some function space, $\mathcal{F}$, to a scalar field $\mathbb{F}$, i.e. $f:\mathcal{F}\rightarrow F$. We will take the space of functions to be the underlying Hilbert space of our quantum mechanical system, $\mathcal{H}$, and the field to be the complex numbers, $\C$. The functional thus assigns to each $f\in\mathcal{H}$ a complex number. 
 
+As a familiar example of such a construction, let us consider the definite integral. For the moment, let us take the function space to be continous real functions of a single real arguments in the range $[0,1]$, $C([0,1])$. We call this \emph{functional} $I$, such that $I:C([0,1])\rightarrow \mathbb{R}$. 
+\begin{align}
+I[f] = \int_0^1\dx f(x)
+\end{align}
+thus assigns a real number to any continous function on $[0,1]$. For example, $I[e^x]=e-1\approx 1.7183$ or $I[\sqrt{x}]=2/3\approx 0.6667$.
 
+When working in a separable Hilbert space as we always do in quantum mechanics, we may always express any function $f\in\mathcal{H}$ in terms of some basis $\{\\chi_n\}_{n=1}^\infty$, (recall the Parseval relation from section ((QM math)))
+\begin{align}
+|f\rangle = \left(\sum_{n=1}^\infty |\chi_n\rangle\langle \chi_n| \right)|f\rangle = \sum_{n=1}^\infty \underbrace{\langle \chi_n|f\rangle}_{c_n} |\chi_n\rangle = \sum_{n=1}^\infty c_n |\chi_n\rangle,
+\end{align}
+meaning we can think of a functional $F[f]$ as a \emph{function} of the vector of coefficients relative to the basis set, ${\bf c}=(c_1,c_2,\dots)$ \cite{kvaal}\comment{p151}.
 
+\begin{exframe}
+\subsubsection{Short mathematical interlude \label{HFmath}}
+Let $B(X,Y)$ denote the set of all continous linear transformations from normed vector spaces $X$ and $Y$ (over the algebraic scalar field $\mathbb{F}$\footnote{Meaning $X$ and $Y$ are closed under scalar multiplication with elements $c\in\mathbb{F}$.}). For example we may consider $X=\mathbb{R}^n$ and $Y=\mathbb{R}^m$, i.e. the set of real vectors of length $n$ and $m$, respectively. The set of continous linear transformations from $X$ to $Y$, $B(X,Y)$, thus consists of real valued matrices of dimensions $m\times n$, so we may write $B(\mathbb{R}^n,\mathbb{R}^m)=\mathbb{R}^{m\times n}$. 
 
+A \emph{Banach space} is a normed vector space which is complete under the metric associated with the norm. Since any norm, $\Vert \cdot \Vert$ induces as metric by $d({\bf x},{\bf y})=\Vert {\bf x}-{\bf y} \Vert$, and the inner product $\langle \cdot|\cdot\rangle$ induces a norm by $\Vert \cdot \Vert = \sqrt{\langle \cdot|\cdot\rangle}$ we can define a \emph{Hilbert space} as a Banach space which is complete w.r.t. this specific metric \cite{lindstrom}\comment{p153}\cite{mcdonald}\comment{p461}.
 
+The space of linear transformations from $X$ to $\mathbb{F}$, with $X$ being some normed vector space, is called the \emph{dual space} of $X$, sometimes denoted $X^*$. We note that a linear transformation from $X$ to $\mathbb{F}$ is exactly a linear \emph{functional}, and so functionals "live in the dual" of the vector space itself. It turns out that if $X$ is normed, the dual is always a Banach space \cite{rynne}\comment{p104}. Since we are inherently working with Hilbert spaces in quantum mechanics, it is natural to ask: What can we say in general about the vector space of functionals on a Hilbert space $\mathcal{H}$?
+
+In the following, we take $f\in\mathcal{H}^*$ to be a linear functional on $\mathcal{H}$ and $x\in\mathcal{H}$ to be a function in the Hilbert space itself. It can be shown that for any such $x$ there exists a \emph{unique} $y\in\mathcal{H}$ such that $f[x]=f_y[x]=\langle x|y\rangle$, where the functional $f_y[\cdot]\equiv\langle \cdot|y\rangle$ \cite{rynne}\comment{p123}\cite{mcdonald}\comment{p472}. This is known as the Riesz representation theorem or sometimes the Riesz-Fréchet theorem. Essentially, this means that we can associate the dual space of $\mathcal{H}$ with the space itself since there is a correspondance between the functionals and the elements of the space itself. This is more succintly stated as Hilbert spaces are \emph{self-dual}, and it is this property that justifies the use of Dirac bra-ket notation since we are guaranteed that any ket has a unique corresponding bra which is its Hermitian conjugate.
+\end{exframe}
+
+\subsubsection{Functional differentials and derivatives}
+The differential of a functional $F[f]$ is the part of the difference $F[f+\delta f]-F[f]$ that depends linearly on $\delta f$, where $\delta f$ is an infinitesimal variation of the argument function $f$ \cite{yangparr}\comment{246}. Since we need to account for the continous variation of $F$ over the infinitesimal range $[f,f+\delta f]$ we take the integral
+\begin{align}
+\delta F[f] = \int \frac{\delta F[f]}{\delta f(x)}\delta f(x)\dx,
+\end{align}
+where we have defined the \emph{functional derivative} of $F$ w.r.t. $f$ at the point $x$ as 
+\begin{align}
+F'[f]\equiv\frac{\delta F[f]}{\delta f(x)}.
+\end{align}
+If the underlying space is a Banach space, meaning the dual space is also a Banach space (c.f. section \ref{HFmath}), we can write the functional differential in a way that is familiar \cite{hfreview}\comment{p3093}:
+\begin{align}
+\delta F[f]=\lim_{\varepsilon\rightarrow 0}\frac{F[f+\varepsilon \delta f(x)] - F[f]}{\varepsilon} = \int \frac{\delta F[f]}{\delta f(x)}\delta f(x)\dx.
+\end{align}
+
+In the following, assume $g[f]$ is a functional of the function $f$. It turns out that the functional derivative behaves a lot like ordinary derivatives, \cite{toulouse}\comment{p42}
+\begin{align}
+\mat{rclr}{
+  \displaystyle\frac{\delta}{\delta f(x)}\Big(aF[f]+bG[f] \Big) & \displaystyle= & \displaystyle a \frac{\delta F[f]}{\delta f(x)} + b\frac{\delta G[f]}{\delta f(x)} & \text{(linearity)} \\
+%
+\\
+%
+  \displaystyle\frac{\delta}{\delta f(x)}\Big(F[f]\ G[f] \Big) & \displaystyle= & \displaystyle G[f]\frac{\delta F[f]}{\delta f(x)} + F[f]\frac{\delta G[f]}{\delta f(x)} & \text{(product rule)} \\
+%
+\\
+%
+  \displaystyle\frac{\delta}{\delta f(x)}\Big(F[g]\Big) & \displaystyle= & \displaystyle\int \frac{\delta F[g]}{\delta g(x')}\frac{\delta g(x')}{\delta f(x)}\dx & \text{(chain rule)} \\
+} \nn
+\end{align}
+
+We can also define higher-order functional derivaties, for example the equivalent of the ordinary double derivative
+\begin{align}
+\frac{\delta^2 F[f]}{\delta f(x)\delta f(x')} = \frac{\delta}{\delta f(x)}\left( \frac{\delta F[f]}{\delta f(x')} \right).
+\end{align}
+We may use this to compute the Taylor expansion of a functional $F[f]$ as 
+\begin{align}
+F[f+\Delta f] &= F[f] + \sum_{n=1}^\infty \frac{1}{n!}\int  \dots \int \frac{\delta^{(n)}F[f]}{\delta f(x_1)\dots \delta f(x_n)}\Delta f(x_1)\Delta f(x_2)\dots \Delta f(x_n)\mathrm{d}x_1\mathrm{d}x_2\dots\mathrm{d}x_n \nn\\
+%
+F[f+\Delta f] &= F[f] + \int \frac{\delta F[f]}{\delta f(x)}\Delta f(x)\dx + \frac{1}{2}\int \int \frac{\delta^2 F[f]}{\delta f(x)\delta f(x')}\Delta f(x) \Delta f(x')\dx\,\mathrm{d}x'+\dots,
+\end{align}
+where $\Delta f(x)$ is a finite (not infinitesimal) variation in the function $f(x)$ \cite{yangparr}\comment{p249}.
 
 
 
@@ -279,3 +372,4 @@ RHF:\url{https://github.com/psi4/psi4numpy/blob/master/Tutorials/03_Hartree-Fock
  
 % \lstinputlisting[firstline=1,lastline=2, float=p!, caption={}, label=lst:1]{<code>.m}
 
+  

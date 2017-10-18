@@ -207,7 +207,6 @@
 
 \graphicspath{{/Users/morten/Documents/Master/Master/Figures/}}
 
-\newcommand{\comment}[1]{\ignorespaces}
 
 % Title
 \title{}
@@ -216,6 +215,7 @@
 % ---------------------------------------------------------------------------- %
 % ---------------------------------------------------------------------------- %
 
+\newcommand{\comment}[1]{\ignorespaces}
 \addbibresource{/Users/morten/Documents/Master/Master/ref.bib}
 %\bibliography{/Users/morten/Documents/Master/Master/ref.bib}%{}
 %\bibliographystyle{plain}
@@ -278,14 +278,13 @@ In the following, we will denote by $v(\r)$ the spatial (position basis) represe
   \draw (4,-2) -- (4,2);
   \draw (-4,2) -- (4,2);
 \end{tikzpicture}
-\caption{Schematic representation of the Hohenberg-Kohn theorems. Knowing the external potential fixes the Hamiltonian, from which we can extract the spectrum. The ground state density may then be extracted from the ground state wave function. The Hohenberg-Kohn theorems allows us (in principle) to find the potential if we know only the ground state wave function, making a one-to-one correspondence, $\hat V_\text{ext}(\r)\Leftrightarrow\rho_0(\r)$.  Adapted from a similar figure in \%cite{martin}\comment{p112}.  \label{fig:DFT1}}
+\caption{Schematic representation of the Hohenberg-Kohn theorems. Knowing the external potential fixes the Hamiltonian, from which we can extract the spectrum. The ground state density may then be extracted from the ground state wave function. The Hohenberg-Kohn theorems allows us (in principle) to find the potential if we know only the ground state wave function, making a one-to-one correspondence, $\hat V_\text{ext}(\r)\Leftrightarrow\rho_0(\r)$.  Adapted from a similar figure in \cite{martin}\comment{p112}.  \label{fig:DFT1}}
 \end{center}
 \end{figure}
 
+As mentioned already, the external potential trivially determines the electron density. The first theorem of Hohenberg and Kohn proves the highly non-trivial converse statement\----the external potential is uniquely determined (up to an additive constant) by the ground state electron density \cite{hohenberg-kohn}. We outline the deceptively simple proof in the following paragraphs.
 
-The first theorem of Hohenberg and Kohn proves the highly non-trivial converse statement\----the external potential is uniquely determined (up to an additive constant) by the ground state electron density \cite{hohenberg-kohn}. We outline the deceptively simple proof in the following paragraphs.
-
-Consider two potentials, $\hat V_1$ and $\hat V_2$, differ by more than an additive constant, $\hat V_1 \not= \hat V_2 + \text{const}$ and denote the ground state energies of the corresponding Hamiltonians by $E_1$ and $E_2$ respectively. Assume now that the ground state wave functions of the two Hamiltonians are \emph{the same}, $\Psi_1(\R)=\Psi_2(\R)$. Since all parts of the Hamiltonian apart from $\hat V_\text{ext}$ coincide, subtracting the two Schrödinger equations give
+Consider two potentials, $\hat V_1$ and $\hat V_2$, differing by more than an additive constant, $\hat V_1 \not= \hat V_2 + \text{const}$ and denote the ground state energies of the corresponding Hamiltonians by $E_1$ and $E_2$ respectively. Assume now that the ground state wave functions of the two Hamiltonians are \emph{the same}, $\Psi_1(\R)=\Psi_2(\R)$. Since all parts of the Hamiltonian apart from $\hat V_\text{ext}$ coincide, subtracting the two Schrödinger equations give
 \begin{align}
 \hat H_1|\Psi\rangle - \hat H_2 |\Psi\rangle = \left(\hat V_1 - \hat V_2\right)|\Psi\rangle &= \left(E_1-E_2\right)|\Psi\rangle.
 \end{align}
@@ -342,7 +341,7 @@ In their seminal 1965 paper \cite{hohenberg-kohn}, Kohn and Sham outlined a way 
  
 Kohn and Sham tell us to consider a non-interacting system for which the ground state density is the same as the ground state density for the interacting system in question. The existance of such a non-interacting system of electrons is far for obvious. In fact, determining neccessary constraints on $\hat V_\text{ext}$ for it to be \emph{non-interacting} $v$\emph{-representable} is still an open question in the theoretical foundations of density functional theory. For almost all real world problems, it is neccessary to simply assume the existance of a non-interacting system for which the ground state density coincides with that of $\hat V_\text{ext}$ \cite{engel}\comment{p71}\cite{martin}\comment{p145}. The assumption that such a non-interacting system exists constitutes the Kohn-Sham ansatz.
 
-We denote the non-interacting Hamiltonian and the corresponding effective potential by $\hat H_s$ and $\hat V_s$, with spatial representation $v_s(\r)$. Since the electrons in this auqiliary system dont feel the coulombic inter-electron force, we know that the \emph{exact} ground state is represented by a Slater determinant filled with the energetically lowest $N$ single electron solutions of the single electron Schrödinger equation ((Yang and Parr, p143)). Note that the Schrödinger equation is by construction separable, since it only involves the kinetic energy operator and a (multiplicative) external potential operator. The one-electron Hamiltonian takes the form
+We denote the non-interacting Hamiltonian and the corresponding effective potential by $\hat H_s$ and $\hat V_s$, with spatial representation $v_s(\r)$. Since the electrons in this auqiliary system dont feel the coulombic inter-electron force, we know that the \emph{exact} ground state is represented by a Slater determinant filled with the energetically lowest $N$ single electron solutions of the single electron Schrödinger equation \cite{yangparr}\comment{p143}. Note that the Schrödinger equation is by construction separable, since it only involves the kinetic energy operator and a (multiplicative) external potential operator. The one-electron Hamiltonian takes the form
 \begin{align}
 \hat h_s \psi_i = \left[-\frac{1}{2}\nabla^2 + v_s(\r)\right]\psi_i = \varepsilon_i \psi_i,
 \end{align}
@@ -359,7 +358,7 @@ with
 \rho_0(\r) &= \sum_{i=1}^N |\psi_i(\r)|^2 = \sum_\sigma \sum_{n=1}^{N/2} |\phi_n(\r)|^2 = 2\sum_{n=1}^{N/2} |\phi_n(\r)|^2.
 \end{align}
 
-In general, the kinetic energy operator as a functional of the density is not known. However, in the auqiliary non-interacting system, we can write down the closed form expression in terms of the $\psi_i$s ((YangParr p143)):
+In general, the kinetic energy operator as a functional of the density is not known. However, in the auqiliary non-interacting system, we can write down the closed form expression in terms of the $\psi_i$s \cite{yangparr}\comment{p143}:
 \begin{align}
 T_s[\rho(\r)] &= -\sum_{i=1}^N\big\langle \psi_i|-\frac{1}{2}\nabla_i^2|\psi_i\big\rangle.
 \end{align}
@@ -384,20 +383,10 @@ It may seem like we have made no progress at all: We started off with an unknown
 
 
 \subsection{The Kohn-Sham equations}
-
-
-
-!!!!!!
-!!!!!!
-!!!!!!
-!!!!!!
-GOODSHIT: \url{http://theory.rutgers.edu/~giese/notes/DFT.pdf}
-!!!!!!
-!!!!!!
-!!!!!!
-!!!!!!
-!!!!!!
-
+In the same way Roothan and Hall introduced orbitals to the Hartree-Fock formalism ((ref H-F section)), we now introduce a set of spin-orbitals in the DFT scheme. The single determinantal wave function is constructed from $N$ orthonormal spin-orbitals, $\{\psi_i(\r)\}_{i=1}^N$, where we have absorbed the spin quantum number into the label $i$. In the restricted case, this means that $i$ and $i+1$ are spatially pair-wise identical, with differing spin index. The energy functional can now be written in terms of the orbitals as 
+\begin{align}
+E[\{\psi_i\}] = \sum_{i=1}^N 
+\end{align}
 
 
 

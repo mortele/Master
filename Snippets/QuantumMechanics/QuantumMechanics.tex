@@ -27,7 +27,6 @@
 \usepackage{wasysym}                         % \smiley{}-s!
 \usepackage{multicol}                        % Multiple text columns.
 \usepackage{capt-of}                         % Caption things which are not floats.
-\usepackage[url=false]{biblatex}             % Citations (made easy).
 \usepackage{dsfont}
 \usepackage{tabularx}
 \usepackage{array}
@@ -35,8 +34,76 @@
 \usepackage{hhline}% http://ctan.org/pkg/hhline
 \usepackage{siunitx}
 \usepackage[version=4]{mhchem}
+\usepackage{ifxetex,ifluatex}
+\usepackage{etoolbox}
+\usepackage[svgnames]{xcolor}
+\usepackage{tikz}
+\usepackage{framed}
 
 
+% Quotes --------------------------------------------------------------------- %
+% conditional for xetex or luatex
+\newif\ifxetexorluatex
+\ifxetex
+  \xetexorluatextrue
+\else
+  \ifluatex
+    \xetexorluatextrue
+  \else
+    \xetexorluatexfalse
+  \fi
+\fi
+%
+\ifxetexorluatex%
+  \usepackage{fontspec}
+  \usepackage{libertine} % or use \setmainfont to choose any font on your system
+  \newfontfamily\quotefont[Ligatures=TeX]{Linux Libertine O} % selects Libertine as the quote font
+\else
+  \usepackage[utf8]{inputenc}
+  \usepackage[T1]{fontenc}
+  \usepackage{libertine} % or any other font package
+  \newcommand*\quotefont{\fontfamily{LinuxLibertineT-LF}} % selects Libertine as the quote font
+\fi
+
+\newcommand*\quotesize{60} % if quote size changes, need a way to make shifts relative
+% Make commands for the quotes
+\newcommand*{\openquote}
+   {\tikz[remember picture,overlay,xshift=-4ex,yshift=-2.5ex]
+   \node (OQ) {\quotefont\fontsize{\quotesize}{\quotesize}\selectfont``};\kern0pt}
+
+\newcommand*{\closequote}[1]
+  {\tikz[remember picture,overlay,xshift=4ex,yshift={#1}]
+   \node (CQ) {\quotefont\fontsize{\quotesize}{\quotesize}\selectfont''};}
+
+% select a colour for the shading
+\colorlet{shadecolor}{Azure}
+
+\newcommand*\shadedauthorformat{\emph} % define format for the author argument
+
+% Now a command to allow left, right and centre alignment of the author
+\newcommand*\authoralign[1]{%
+  \if#1l
+    \def\authorfill{}\def\quotefill{\hfill}
+  \else
+    \if#1r
+      \def\authorfill{\hfill}\def\quotefill{}
+    \else
+      \if#1c
+        \gdef\authorfill{\hfill}\def\quotefill{\hfill}
+      \else\typeout{Invalid option}
+      \fi
+    \fi
+  \fi}
+% wrap everything in its own environment which takes one argument (author) and one optional argument
+% specifying the alignment [l, r or c]
+%
+\newenvironment{shadequote}[2][l]%
+{\authoralign{#1}
+\ifblank{#2}
+   {\def\shadequoteauthor{}\def\yshift{-2ex}\def\quotefill{\hfill}}
+   {\def\shadequoteauthor{\par\authorfill\shadedauthorformat{#2}}\def\yshift{2ex}}
+\begin{snugshade}\begin{quote}\openquote}
+{\shadequoteauthor\quotefill\closequote{\yshift}\end{quote}\end{snugshade}}
 
 % Differentials -------------------------------------------------------------- %
 \newcommand{\dt}{\,\mathrm{d}t}
@@ -192,11 +259,13 @@
 \newenvironment{answer}{}{}
 
 % Set bibliography file and path for images.
-\bibliography{references/fys4180ref.bib}
 \graphicspath{{./images/}}
 \newcommand{\includepdfgraphics}[2]{\includecombinedgraphics[#1]{./images/#2}}
 
 
+\usepackage[backend=biber,url=false]{biblatex}
+\newcommand{\comment}[1]{\ignorespaces}
+\addbibresource{/Users/morten/Documents/Master/Master/ref.bib}
 
 
 % Title
@@ -258,7 +327,7 @@ Bolotin: \url{http://iopscience.iop.org/article/10.1088/1742-6596/574/1/012088/p
 \subsection{Review of Hamiltonian classical mechanics}
 Before venturing into the land of quantum mechanics (QM), it is useful to first review the Hamiltonian formulation of classical mechanics (CM). Classical mechanics deals with the dynamics of macroscopic objects. 
 
-Hamilton's classical mechanics formalism revolves centrally around the Hamiltonian function (hereafter just refered to as \emph{the Hamiltonian}), $\H$. In order to define this function, it is necessary to first choose a set of canonical coordinates, $\q_i$ and $\p_i$. Generalized coordinate and momenta pairs are said to be canonical if they satisfy the Poisson bracket\footnote{The Poisson bracket of two functions, $f$ and $g$, w.r.t. the canonical coordinate pair $p$ and $q$, is defined as $\{f,g\}=\pder{f}{q}\pder{g}{p}-\pder{f}{p}\pder{g}{q}$. (Goldstein p388)} $\{q_i,p_j\}=\delta_{ij}$. Examples of such canonical pairs include e.g. the cartesian position and the respective linear momentum, or the polar position and the angular momentum.
+Hamilton's classical mechanics formalism revolves centrally around the Hamiltonian function (hereafter just refered to as \emph{the Hamiltonian}), $\H$. In order to define this function, it is necessary to first choose a set of canonical coordinates, $\q_i$ and $\p_i$. Generalized coordinate and momenta pairs are said to be canonical if they satisfy the Poisson bracket\footnote{The Poisson bracket of two functions, $f$ and $g$, w.r.t. the canonical coordinate pair $p$ and $q$, is defined as (Goldstein p388)$$\{f,g\}=\pder{f}{q}\pder{g}{p}-\pder{f}{p}\pder{g}{q}.$$} $\{q_i,p_j\}=\delta_{ij}$. Examples of such canonical pairs include e.g. the cartesian position and the respective linear momentum, or the polar position and the angular momentum.
 
 The \emph{phase space} of a system is the space of all possible states of the system. A system of $n$ degrees of freedom will have a cooresponding $2n$ dimensional phase space.\footnote{Although we are free to choose a set of generalized coordinates larger than the number of degrees of freedom, such a set will always be reducible to a smaller set of \emph{strictly independent} coordinates with size exactly equal to the number of degrees of freedom. Consider e.g. a point particle constrained to move along the suface of a unit sphere. We may use the three cartesian coordinates to describe the motion, however the system only has two degrees of freedom due to the constraint $x^2+y^2+z^2=r^2$, so the three are not \emph{independent}. It will thus inevitably be more convenient to use e.g. the polar and azimuthal angles, $\theta$ and $\phi$.} A point in phase space, $\xi=(\q,\p)$, specify the generalized coordinates and their respective conjugate momenta and is sufficient to uniqely determine the state of the system as a whole.
 
@@ -527,17 +596,20 @@ Rough back of the envelope estimations of the order of magnitude of the correcti
 
 
 \subsection{Born-Oppenheimer approximation}
-Let us now consider again the atomic Hamiltonian of \eq{QM5}. For a system of $N$ electrons in the presence of $M$ nuclei in three spatial dimensions, we have a system of $3(N+M)$ degrees of freedom (treating the nuclei as point particles). The solution of the TDSE is the wave function, a function depending on at least $3(N+M)$ variables. If we were to seek the solution to the Schrödinger equation for, say an isolated caffeine molecule \ce{C8H10N4O2}, then $\Psi(\R;t)$ would depend on a bit more than 300(!) coordinates. This is an unbelievably monumentous task, and we are only asking for the solution of an \emph{isolated}, fairly small molecule consisting of first row atoms. As it turns out, the wave function is a "very, very, \emph{very} complicated function" ((Kvaal, p8)) and solving the Schrödinger equation is a very, very, \emph{very} hard problem for all but the smallest of systems.
+Let us now consider again the atomic Hamiltonian of \eq{QM5}. For a system of $N$ electrons in the presence of $M$ nuclei in three spatial dimensions, we have a system of $3(N+M)$ degrees of freedom (treating the nuclei as point particles). The solution of the TDSE is the wave function, a function depending on at least $3(N+M)$ variables. If we were to seek the solution to the Schrödinger equation for, say an isolated caffeine molecule \ce{C8H10N4O2}, then $\Psi(\R;t)$ would depend on a bit more than 300(!) coordinates. This is an unbelievably monumentous task, and we are only asking for the solution of an \emph{isolated}, fairly small molecule consisting of first row atoms. As it turns out, the wave function is a "very, very, \emph{very} complicated function" ((Kvaal, p8)) and solving the Schrödinger equation is a very, very, \emph{very} hard problem for all but the smallest of systems. This was in fact realized in the very early days of quantum mechanics. Dirac, for example, wrote in 1929 that \cite{dirac1929}\comment{p1}
+\begin{shadequote}[r]{P. A. M. Dirac}
+The underlying physical laws necessary for the mathematical theory of a large part of physics and the whole of chemistry are thus completely known, and the difficulty is only that the exact application of these equations leads to equations much too complicated to be soluble. It therefore becomes desirable that approximate practical methods of applying quantum mechanics should be developed, which can lead to an explanation of the main features of complex atomic systems without too much computation.
+\end{shadequote}
 
-In general, for an arbitrary Hamiltonian (for example the full Hamiltonian of \eq{TISE} with the five correction terms of section \ref{corrections}), solving the corresponding Schrödinger equation is a problem classified in complexity theory as {\bf NP}-hard ((Bolotin)). Heuristically, we may consider this to be a problem that is not feasably soluble even in theory using a deterministic algorithm.\footnote{The {\bf P} class problems are problems which can be solved in \emph{polynomial} time using a deterministic algorithm. Assuming that {\bf P}$\not=${\bf NP} (which is belived to be true), it means that {\bf NP} problems cannot and {\bf NP}-hard problems are by definition as hard as the hardest {\bf NP} problems. In reality, this most likely means we are stuck with a theoretical best case scenario of an algorithm with runs in exponential (w.r.t. the system size) time.} As it turns out, we will need to make certain simplifications before we can proceed.
+In general, for an arbitrary Hamiltonian (for example the full Hamiltonian of \eq{TISE} with the five correction terms of section \ref{corrections}), solving the corresponding Schrödinger equation is a problem classified in complexity theory as {\bf NP}-hard ((Bolotin)). Heuristically, we may consider this to be a problem that is not feasably soluble \emph{even in theory} using a deterministic algorithm.\footnote{The {\bf P} class problems are problems which can be solved in \emph{polynomial} time using a deterministic algorithm. Assuming that {\bf P}$\not=${\bf NP} (which is belived to be true), it means that {\bf NP} problems cannot and {\bf NP}-hard problems are by definition as hard as the hardest {\bf NP} problems. In reality, this most likely means we are stuck with a theoretical best case scenario of an algorithm with runs in exponential (w.r.t. the system size) time.} As it turns out, we will need to make certain simplifications before we can proceed.
 
 In a molecular system, little momentum transfer will happen between the nuclei and the electrons on account of their differing masses ((Hjorth-Jensen, p467)). As protons are almost 2000 times heavier than electrons, their movement will be drastically slower than their lighter counterparts (assuming the momenta of the two are similar). As the electrons will relax to a stationary state much faster than the typical time scales involved in nucleonic motion, we may assume the nucleus to be effectively fixed and treat only the electronic degrees of freedom. This is very similar to the idea of a quasistatic process in thermodynamics ((Schroeder, p21)) in where change is forced upon a system sufficiently slowly to allow it to continuously equilibrate throughout\----at every instant, we may regard the system to be equilibrated despite the continual change it is undergoing. In the framework of quantum mechanics, this is known as the adiabatic theorem and sometimes the fixed nuclei approximation is called an adiabatic approximation ((Sakurai, p473)).
 
-The separation of the nuclear and electronic degrees of freedom is known as the Born-Oppenheimer approximation. Recall that the full molecular Hamiltonian reads (\eq{QM5})
+The separation of the nuclear and electronic degrees of freedom is known as the Born-Oppenheimer approximation\cite{bornoppenheimer}. Recall that the full molecular Hamiltonian reads (\eq{QM5})
 \begin{align}
 \hat H = -\sum_{i=1}^N \frac{\hbar^2}{2m_e}\nabla_i^2-\sum_{A=1}^M \frac{\hbar^2}{2m_A}\nabla^2_A - \sum_{i=1}^N\sum_{A=1}^M \frac{k_eZ_Ae^2}{|\hat {\bf r}_A - \hat \r_i|} + \sum_{i=1}^N\sum_{j=i+1}^N \frac{k_ee^2}{|\hat \r_i- \hat \r_j|} + \sum_{A=1}^M\sum_{B=A+1}^M \frac{k_ee^2Z_AZ_B}{|\r_A-\r_B|}. 
 \end{align}
-Taking the limit $m_A\rightarrow 0$ freezes out the proton motion, creating stationary \emph{clamped nuclei}. The Born-Oppenheimer Hamiltonian is given as 
+Taking the limit $m_A\rightarrow \infty$ freezes out the proton motion, creating stationary \emph{clamped nuclei}. The Born-Oppenheimer Hamiltonian is given as 
 \begin{align}
 \hat H_\text{Born-Oppenheimer} = -\sum_{i=1}^N \frac{\hbar^2}{2m_e}\nabla_i^2 - \sum_{i=1}^N\sum_{A=1}^M \frac{k_eZe^2}{|\hat {\bf r}_A - \hat \r_i|} + \sum_{i=1}^N\sum_{j=i+1}^N \frac{k_ee^2}{|\hat \r_i- \hat \r_j|} + \text{constant},
 \end{align}
@@ -646,7 +718,7 @@ So far we know that the wave function of a multi-electron system must be square 
 
 
 \subsection{The variational principle}
-For a given Hamiltonian, calculating the expectation value of $\langle \Psi | \hat H | \Psi\rangle$ (for \emph{any} $Psi\in\mathcal{L}_2$) gives an upper bound on the ground state energy. Following ((Griffits p293)), a simple proof goes as follows: Since the spectrum of $\hat H$ spans\footnote{Asumming \emph{crucially} that the Hamiltonian is hermitian. This is not the case for e.g. the similarity transformed $\bar H$ used in coupled cluster theory, predictably leading to all kinds of difficulties.} all of $\mathcal{L}_2$. We assume also that the eigenstates are orthonormalized. This means that \emph{any} normalized $\Psi$ we choose can be expressed in terms of the eigenstates of $\hat H$,
+For a given Hamiltonian, calculating the expectation value of $\langle \Psi | \hat H | \Psi\rangle$ (for \emph{any} $\Psi\in\mathcal{L}_2$) gives an upper bound on the ground state energy. Following ((Griffits p293)), a simple proof goes as follows: Since the spectrum of $\hat H$ spans\footnote{Asumming \emph{crucially} that the Hamiltonian is hermitian. This is not the case for e.g. the similarity transformed $\bar H$ used in coupled cluster theory, predictably leading to all kinds of difficulties.} all of $\mathcal{L}_2$. We assume also that the eigenstates are orthonormalized. This means that \emph{any} normalized $\Psi$ we choose can be expressed in terms of the eigenstates of $\hat H$,
 \begin{align}
 \Psi = \sum_{n=0}^\infty c_n \Phi_n, \ \ \text{ where } \ \ \hat H \Phi_n = E_n \Phi_n.
 \end{align}
