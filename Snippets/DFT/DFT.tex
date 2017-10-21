@@ -390,8 +390,15 @@ E[\{\psi_i\}] = \sum_{i=1}^N
 
 
 
+\subsection{Numerical integration grids}
+Since the integral of the exchange-correlation potential over the density is rarely (if ever) calculable analytically, we are forced to resort to numerical integration schemes in order to evaluate it. In the one dimensional case, strong and robust integration schemes based on gaussian quadrature integrate any sufficiently \emph{smooth} function to high accuracy using a modest number of integration points \cite{hjorthjensen}\comment{p116}. However, in multiple dimensions, the problem of numerically integrating a multi-variable function is considerably more challenging. Although the philosophy behind is unchanged, the actual application required a lot more thought. Before we begin discussing integrals in density functional theory, we refer the reader to a short introduction to numerical integration in section \ref{numericalintegration} of the appendix. 
 
+The integrals of interest within the framework of density functional theory are integrals over the electronic density. Since we know a priori that the density falls off exponentially in the long range limit (c.f. section \ref{wavefunction}), this reduces to a locally contained integral in some finite and \emph{small} region in space close to the nuclei. Since the potentials are in general functions of the density and its derivatives (which of course also falls off exponentially) we are guaranteed that the exchange-correlation potentials also vanishes exponentially as we move far away from the nuclei. 
 
+\subsubsection{Naive spherical grid}
+
+Voronoi grid: \cite{voronoi1} \cite{voronoi2}
+Becke grid: \cite{beckegrid}
 
 
 
@@ -444,6 +451,55 @@ For $\xi=0$ we have $A=0.0621814$, $x_0=-0.409286$, $b=13.0720$, and $c=42.7198$
 
 
 %\printbibliography
+
+
+
+\section{Appendix}
+\subsection{Basics of numerical integration\label{numericalintegration}}
+\subsubsection{Riemann integral and Riemann integrable functions}
+Given a function $f(x)$ and a closed finite subset of $\mathbb{R}$, $[a,b]$ with $a<b$, a \emph{Riemann sum} of $f$ is defined as the sum of values attained on $n$ sub-intervals of $[a,b]$, i.e.
+\begin{align}
+S_n = \sum_{i=1}^n (x_i-x_{i-1}) \, f_i.
+\end{align}
+The $x_i$s here define the partitionining into sub-intervals $[x_{i-1},x_i]$ (i.e. $a=x_0<x_1<\dots< x_{n-1}<x_n=b$), while $f_i\equiv f(\xi_i)$ with $\xi_i$ \emph{some} point in sub-interval $i$. 
+
+A sufficient condition for the \emph{Riemann integral} to exist for the function $f$ is that \emph{any} such sum (any choice of $x_i$ [for which $\max_{i}|x_i-x_{i-1}|\rightarrow0$] and $\xi_i$) converge to the same value in the limit $n\rightarrow \infty$ \cite{davis}\comment{p7}. In this case we say
+\begin{align}
+\lim_{n\rightarrow \infty} S_n = S = \int_a^b f(x)\dx,
+\end{align} 
+and that $f$ is Riemann integrable.
+
+A less strict, but still sufficient condition is to chose $\overline{f_i}=\max\{f(x):x\in[x_{i-1},x_i]\}$ and $\underline{f_i}=\min\{f(x):x\in[x_{i-1},x_i]\}$ and then only demand that the two sums converge to a common limit \cite{lindstrom}\comment{p366}, 
+\begin{align}
+\mat{rcccl}{
+\displaystyle\lim_{n\rightarrow \infty}\overline{S_n} & = & \displaystyle\lim_{n\rightarrow \infty}\sum_{i=1}^n (x_i-x_{i-1})\overline{f_i} \\
+% 
+\\[-1em] 
+%
+& = & \displaystyle\lim_{n\rightarrow \infty}\sum_{i=1}^n (x_i-x_{i-1})\underline{f_i} & = & \displaystyle\lim_{n\rightarrow \infty}\underline{S_n} \\
+%
+\\[-1.5em] 
+% 
+&&&=& \displaystyle \int_a^bf(x)\dx.
+}\nn
+\end{align}
+
+Although easier than checking \emph{every possible} Riemann sum, checking that the two upper and lower sums converge to a common limit is still a somewhat tedious procedure for checking integrability. In fact it turns out that a sufficient condition on $f$ is that it is continous and bounded on $[a,b]$ \cite{davis}\comment{p7}. The latter condition is not neccessary on a finite interval since all continous functions on a closed finite domain are bounded according to the extreme value theorem. However, if we extend the limits of integration to an infinite interval, for example $[0,\infty)$, then the boundedness of $f$ is not guaranteed by the continuity we need to explicitly demand $|f(x)|<\infty$ for all $x\in[a,b]$.
+
+It is easy to see that the converse is \emph{not} true. Any Riemann integrable function is not automatically continous. Take for example the integral over $[0,1]$ with the step function 
+\begin{align}
+f(x) = \left\{\mat{lcr}{1 & \text{if} & x>1/2 \\ 0 & \text{else} }\right..
+\end{align}
+Even though the upper and lower Riemann sums both attain the value $1/2$ in the limit $n\rightarrow \infty$ and the function is Riemann integrable, it demonstrably is not continous. A more careful analysis shows that a less strict but sufficient condition on $f$ is that it be continous \emph{almost everywhere} on $[a,b]$ (i.e. continous on all of the interval, except possibly on a subset $C\subset[a,b]$ with measure zero) \cite{mcdonald}\comment{p72}. With this condition, the converse also holds.
+
+\subsubsection{Common approximations to the numerical integral}
+Since the Riemann integral is defined in terms of the limit of a sum, numerical approximations to it arise naturally from any scheme for choosing $\xi_i$ and the partitioning. One of the simplest possible approximations is to take the midpoint value of each sub-interval to be $\xi_i$ with a uniform mesh of equispaced $x_i$s. This constitutes the {\bf midpoint rule} \cite{davis}\comment{p52}, 
+\begin{align}
+I\approx \sum_{i=1}^n f\left(\frac{x_i-x_{i-1}}{2}\right)(x_{i}-x_{i-1})=\Delta x\sum_{i=1}^n f\left(\frac{x_i-x_{i-1}}{2}\right),
+\end{align}
+where $\Delta x\equiv (x_i-x_{i-1})$ which is the same for all $i$.
+
+Instead of the midpoint, we can use the \emph{average} of the left and right endpoints of the subinterval as $f_i$. Geometrically, this means we are approximating the integral of each sub-interval by the integral over a right trapezoid
 
 
 \end{document}
