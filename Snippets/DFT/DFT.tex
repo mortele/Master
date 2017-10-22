@@ -492,15 +492,94 @@ f(x) = \left\{\mat{lcr}{1 & \text{if} & x>1/2 \\ 0 & \text{else} }\right..
 \end{align}
 Even though the upper and lower Riemann sums both attain the value $1/2$ in the limit $n\rightarrow \infty$ and the function is Riemann integrable, it demonstrably is not continous. A more careful analysis shows that a less strict but sufficient condition on $f$ is that it be continous \emph{almost everywhere} on $[a,b]$ (i.e. continous on all of the interval, except possibly on a subset $C\subset[a,b]$ with measure zero) \cite{mcdonald}\comment{p72}. With this condition, the converse also holds.
 
-\subsubsection{Common approximations to the numerical integral}
+\subsubsection{Newton-Cotes quadrature}
 Since the Riemann integral is defined in terms of the limit of a sum, numerical approximations to it arise naturally from any scheme for choosing $\xi_i$ and the partitioning. One of the simplest possible approximations is to take the midpoint value of each sub-interval to be $\xi_i$ with a uniform mesh of equispaced $x_i$s. This constitutes the {\bf midpoint rule} \cite{davis}\comment{p52}, 
 \begin{align}
-I\approx \sum_{i=1}^n f\left(\frac{x_i-x_{i-1}}{2}\right)(x_{i}-x_{i-1})=\Delta x\sum_{i=1}^n f\left(\frac{x_i-x_{i-1}}{2}\right),
+I\approx \sum_{i=1}^n f(x_{i-1}+\Delta x/2)(x_{i}-x_{i-1})=\Delta x\sum_{i=1}^n f(x_{i-1}+\Delta x/2),
 \end{align}
 where $\Delta x\equiv (x_i-x_{i-1})$ which is the same for all $i$.
 
-Instead of the midpoint, we can use the \emph{average} of the left and right endpoints of the subinterval as $f_i$. Geometrically, this means we are approximating the integral of each sub-interval by the integral over a right trapezoid
+Instead of the midpoint, we can use the \emph{average} of the left and right endpoints of the subinterval as $f_i$. Geometrically, this means we are approximating the integral of each sub-interval by the integral over a right trapezoid with base points at $(x_{i-1},0)$ and $(x_i,0)$ and upper point at the function values $(x_{i-1},f(x_{i-1}))$ and $(x_{i},f(x_{i}))$. The resulting approximation is known as the {\bf trapezoidal rule} \cite{hjorthjensen}\comment{p113},
+\begin{align}
+I\approx \sum_{i=1}^n \frac{f(x_{i-1})+f(x_{i})}{2}(x_i-x_{i-1}) = \Delta x \sum_{i=1}^n \frac{f(x_{i-1})+f(x_{i})}{2}.
+\end{align}
 
+Yet another numerical scheme arises from replacing the integrand in each sub-interval with an interpolating polynomial of degree two, which by construction coincides with $f$ at the endpoints and the midpoint. This constitutes {\bf Simpson's rule} \cite{davis}\comment{p57},
+\begin{align}
+I&\approx \sum_{i=1}^n (x_i-x_{i-1})\left(\frac{f(x_{i-1}}{6}+\frac{4f(x_{i-1}+\Delta x/2)}{6}+\frac{f(x_{i}}{6}\right) \nn\\
+&= \frac{\Delta x}{6}\sum_{i=1}^n \Big( f(x_{i-1}) + 4f(x_{i-1}+\Delta x/2) + f(x_i) \Big).
+\end{align}
+
+All three approximations are examples of Newton-Cotes quadrature rules, which approximate the intergral by replacing the integrand by interpolating polynomials of order $k$ on each of the $n$ sub-intervals. We can build arbitrarily high order methods by constructing higher order interpolating polynomials within each interval. The interpolation procedure is described for example in \cite{morken}. We have just seen Newton-Cotes method for orders zero (midpoint rule, zero order polynomial [constant]), one (trapezoidal rule, linear polynomial), and two (Simpson's rule, quadratic polynomial). The next few commonly used methods are the third order \emph{Simpson's 3/8 rule} and the fourth order \emph{Boole's rule}.
+
+\subsubsection{Gaussian quadrature}
+Note that so far we have assumed the sub-intervals to all be the same size. If we drop this requirement, we can construct more advanced rules which exploit some convenient properties of orthogonal polynomials. Gaussian quadrature rules are a set of schema for numerical intergration in which we extract a \emph{weight function} from the integrand
+\begin{align}
+\int_a^bf(x)\dx = \int_a^b W(x)g(x)\dx \approx \sum_{i=1}^n w_ig(x_i).
+\end{align}
+The weight function is associated with a set of orthogonal polynomials, and the integration points $x_i$ are chosen as the zeros of the polynomial of degree $n-1$. Note carefully that $w_i\not=W(x_i)$. The weights $w_i$ can in general be expressed as 
+\begin{align}
+w_i=\left(\frac{a_n}{a_{n-1}}\right)\frac{\int_a^b W(x) p_{n-1}(x)^2\dx}{p'_n(x_i)p_{n-1}(x_i)}
+\end{align} 
+where $p_n(x)$ is the orthogonal polynomial of degree $n$ and $a_n$ is the coefficient of the $x^n$ term in $p_n(x)$. In some cases, the weight function is present in the original integral and the extraction constitutes a strict simplification of the function. For example, with 
+Chebyshev polynomials\footnote{The Chebyshev polynomials are solutions to the differential equation 
+\begin{align}
+(1-x^2)\pder{^2y(x)}{x^2}-x\pder{y(x)}{x} + n^2y(x)=0,
+\end{align}
+with $n$ a non-negative integer. In general, the solution can be written as \cite{rottmann}\comment{p95} \begin{align}
+T_n(x)=\sum_{k=0}^{\lfloor 1/2 \rfloor}{n \choose 2k}(x^2-1)x^{n-2k}.
+\end{align}} the weight function takes the form $W(x)=1/\sqrt{1-x^2}$, so trying to apply Gauss-Chebyshev quadrature to the integrand $(x^{10}+x+2)/\sqrt{1-x^2}$ would yield simply $g(x)=x^{10}+x+2$ and we would just have to evaluate $g_i$ according to the zeroes of the $n$th Chebyshev polynomial. Each class of polynomials is associated with a specific interval of integration. For Chebyshev, this is $[-1,1]$. So using our previous example, we note that with only $3!$ integration points (exclamation point for emphasis \emph{and} factorial function) we integrate \emph{exactly}
+\begin{align}
+I\equiv \int_{-1}^1 \underbrace{\frac{x^{10}+x+2}{\sqrt{1-x^2}}}_{\equiv f(x)}\dx = \sum_{i=1}^6w_i \underbrace{(x^{10}+x+2)}_{g(x)} = \frac{575\pi}{256}.
+\end{align}
+
+In general, if $g(x)$ is a polynomial of degree $2n-1$ for a weight function associated with some class of orthogonal polynomials, then the gaussian quadrature rule associated with the same class of polynomials will integrate the original $f(x)$ (recall that $g(x)=f(x)/W(x)$) \emph{exactly} with only $n$ integration points \cite{hjorthjensen}\comment{p119}. 
+
+\subsubsection{Multiple integrals}
+Both of the aforementioned  rules are straight forward to extend to higher dimensional integrals. For the Newton-Cotes rules, we can simply apply the rule again to the sum resulting from the application of the rule, i.e.
+\begin{align}
+I_{\text{2D}} &= \int_a^b \int_a^b f(x,y)\,\mathrm{d}x\,\mathrm{d}y \approx \int_a^b\sum_{i=1}^n \Delta x f(\xi_i,y) \,\mathrm{d}y \nn\\
+&\approx \sum_{i=1}^n\sum_{j=1}^n \Delta x\Delta y f(\xi_i,\zeta_j).
+\end{align}
+Since function evaluations on the endpoints of sub-intervals (sub-areas to be precise) coincide with the endpoints of the neighbouring sub-intervals, a number of points may be evaluated multiple times and thus have a higher \emph{weight} in the final sum. For example, the 1D trapezoidal rule carries weights 
+\begin{align}
+\mat{ccccccccc}{\nicefrac{1}{2} & 1 & 1 & 1 & \dots & 1 & 1 & 1 & \nicefrac{1}{2}},
+\end{align}
+since 
+\begin{align}
+\frac{\Delta x}{2}\sum_{i=1}^n\Big(f(x_{i-1}+f(x_i)\Big) &= \frac{\Delta x}{2}\left[f(x_0) + 2\sum_{i=1}^{n-1}\Big(f(x_i)+f(x_{i+1})\Big)\right] \nn\\
+&= \frac{\Delta x}{2}\left[f(x_0) + 2\left(\sum_{i=1}^{n-1}f(x_i)\right)+f(x_{n})\right] \nn\\
+&= \frac{\Delta x}{2}\left[f(x_0) + 2f(x_1) + 2f(x_2) + \dots + 2f(x_{n-2}) +2f(x_{n-1}) + f(x_n) \right].
+\end{align}
+In a similar way, the 2D trapezoidal rule has the weights
+\newcommand{\nfh}{\nicefrac{1}{2}}
+\begin{align}
+\mat{ccccccccccc}{
+  \nfh   & 1 & 1 & 1 & \dots & 1 & 1 & 1 & \nfh \\
+  1      & 2 & 2 & 2 & \dots & 2 & 2 & 2 & 1 \\
+  1      & 2 & 2 & 2 & \dots & 2 & 2 & 2 & 1 \\
+  \vdots & \vdots &  \vdots & \vdots & \ddots &\vdots & \vdots&\vdots & \vdots \\
+  1      & 2 & 2 & 2 & \dots & 2 & 2 & 2 & 1 \\
+  1      & 2 & 2 & 2 & \dots & 2 & 2 & 2 & 1 \\
+  \nfh   & 1 & 1 & 1 & \dots & 1 & 1 & 1 & \nfh & ,
+}
+\end{align}
+while the 2D Simpson's rule attains the weights (apart from a factor $\nicefrac{1}{6}$)
+\begin{align}
+\mat{ccccccccccccc}{
+  1      & 4      & 2       & 4      & 2     & \dots  & 2     & 4      & 2      & 4    & 1    \\
+  4      & 16     & 8       & 16     & 8     & \dots  & 8     & 16     & 8      & 16   & 4    \\
+  2      & 8      & 4       & 8      & 4     & \dots  & 4     & 8      & 4      & 8    & 2    \\
+  4      & 16     & 8       & 16     & 8     & \dots  & 8     & 16     & 8      & 16   & 4    \\
+  \vdots & \vdots &  \vdots & \vdots & \vdots& \ddots &\vdots & \vdots & \vdots &\vdots& \vdots \\
+  4      & 16     & 8       & 16     & 8     & \dots  & 8     & 16     & 8      & 16   & 4    \\
+  2      & 8      & 4       & 8      & 4     & \dots  & 4     & 8      & 4      & 8    & 2    \\
+  4      & 16     & 8       & 16     & 8     & \dots  & 8     & 16     & 8      & 16   & 4    \\
+  1      & 1      & 2       & 4      & 2     & \dots  & 2     & 4      & 2      & 4    & 1 &  .
+}
+\end{align}
+
+A similar scheme yields multi-dimensional Gaussian quadrature rules, where the total weights become products of the 1D weights.
 
 \end{document}
 
