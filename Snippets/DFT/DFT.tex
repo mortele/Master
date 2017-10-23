@@ -391,11 +391,97 @@ E[\{\psi_i\}] = \sum_{i=1}^N
 
 
 \subsection{Numerical integration grids}
-Since the integral of the exchange-correlation potential over the density is rarely (if ever) calculable analytically, we are forced to resort to numerical integration schemes in order to evaluate it. In the one dimensional case, strong and robust integration schemes based on gaussian quadrature integrate any sufficiently \emph{smooth} function to high accuracy using a modest number of integration points \cite{hjorthjensen}\comment{p116}. However, in multiple dimensions, the problem of numerically integrating a multi-variable function is considerably more challenging. Although the philosophy behind is unchanged, the actual application required a lot more thought. Before we begin discussing integrals in density functional theory, we refer the reader to a short introduction to numerical integration in section \ref{numericalintegration} of the appendix. 
+Since the integral of the exchange-correlation potential over the density is rarely (if ever) calculable analytically, we are forced to resort to numerical integration schemes in order to evaluate it. In the one dimensional case, strong and robust integration schemes based on gaussian quadrature integrate any sufficiently \emph{smooth} function to high accuracy using a modest number of integration points \cite{hjorthjensen}\comment{p116}. However, in multiple dimensions, the problem of numerically integrating a multi-variable function is considerably more challenging. Although the philosophy behind is unchanged, the actual application required a lot more thought. This is in large part because all the nuclei represent singularities which hinder the sucessful application of products of gaussian quadrature rules \cite{voronoi1}. Before we begin discussing integrals in density functional theory, we refer the reader to a short introduction to numerical integration in section \ref{numericalintegration} of the appendix. 
 
 The integrals of interest within the framework of density functional theory are integrals over the electronic density. Since we know a priori that the density falls off exponentially in the long range limit (c.f. section \ref{wavefunction}), this reduces to a locally contained integral in some finite and \emph{small} region in space close to the nuclei. Since the potentials are in general functions of the density and its derivatives (which of course also falls off exponentially) we are guaranteed that the exchange-correlation potentials also vanishes exponentially as we move far away from the nuclei. 
 
-\subsubsection{Naive spherical grid}
+\subsubsection{Simple spherical grid}
+When dealing with a single nucleus, we may simply choose some cut-off radius and place integration points either linearly or in some other fashion along the radius up to this cut-off radius. Since we are primarily interested in integrands which fall off exponentially with the radius, having more points closer to the nucleus will yield a better approximation with fewer points. A simple example is logarithmically spaced points along the radius. At every such radius, we place $k^2$ angular points, $m$ linearly spaced points in the polar and the azimuthal angle respectively.
+
+The weight for each of the points is simply the volume element of the sphere at radius $r_i$, polar angle $\theta_j$, and azimuthal angle $\phi_k$. In addition we need to multiply by the finite change in $r$, $\theta$, and $\phi$. In total, we recover the familiar spherical polar volume element \cite{rottmann}\comment{p69}  { }with the addition of $\Delta r \Delta \theta \Delta \phi$,
+\begin{align}
+w_{ijk} &= r_i^2\sin\theta_j (\underbrace{r_{i}-r_{i-1}}_{\Delta r_i}) (\underbrace{\theta_j-\theta_{j-1}}_{\Delta \theta_j})(\underbrace{\phi_k-\phi_{k-1}}_{\Delta \phi_k}) \nn\\
+&= r_i^2\sin\theta_j \Delta r_i \left(\frac{\pi}{m-1}\right)\left(\frac{2\pi}{m-1}\right) \nn\\
+&= \frac{2\pi r_i^2\sin\theta_j \Delta r_i}{(m-1)^2}.
+\end{align}
+
+\newcommand{\drv}{\,\mathrm{d}^3{\bf r}}
+Under this approximation, the numerical integral over a functional of the density, $F[\rho]$, is given by (in terms of cartesian coordinates)
+\begin{align}
+\int F[\rho]\drv \approx \sum_{i=1}^n\sum_{j=1}^m\sum_{k=1}^m w_{ijk}F\left[\rho(x_\alpha,y_\beta,z_\gamma)\right],
+\end{align}
+with $x_\alpha=r_i\sin\theta_j\cos\phi_k$, $y_\beta=r_i\sin\theta_j\sin\phi_k$, and $z_\gamma=r_i\cos\theta_j$ being the normal transformation form spherical polar $\rightarrow$ cartesian coordinates.
+
+The cut-off radius may be chosen to be the radius at which the most diffuse basis function has fallen to below some pre-assigned threshold value, $\varepsilon$. With cartesian gaussian basis functions, $\{\chi_b(\r)\}_{b=1}^M=\mathcal{B}$, the cut-off takes the value 
+\begin{align}
+r_\text{cut-off}=\sqrt{\frac{\log\varepsilon}{\min\left\{|\alpha_b|:\chi_b\in\mathcal{B} \right\}}}.
+\end{align}
+
+
+\subsubsection{Efficiency of angular grids and the \emph{product Gaussian quadrature formula}}
+The naive grid described in the previous section \emph{works}, but is far from optimal. In order to derive a quadrature rule more suited to our purpose, we turn our attention to the general problem of integrating a function $f(\theta,\phi)$ on the surface of a unit sphere $\mathbb{S}^2=\{\r\in\mathbb{R}^3:|\r|=1\}$. Let us now ask: Is there an \emph{optimal} way to distribute points and find associated weights such that the approximation
+\begin{align}
+I = \int_0^\pi\mathrm{d}\theta \int_0^{2\pi}\mathrm{d}\phi \,f(\theta,\phi) \approx \sum_{i=1}^nw_if(\theta_i,\phi_i) \label{eq:sphericalapprox}
+\end{align}
+is the best possible approximation for a given number of points $n$? In order to make the question more precise, we note that any such function $f:\mathbb{S}^2\rightarrow\mathbb{R}$ may be expressed in terms of the spherical harmonics (since they form a complete basis for the square integrable functions on $\mathbb{S}^2$, $L^2(\mathbb{S}^2)$ \cite{atkinson}. So let us rephrase the question as: Is there a way to distribute points and find associated weights such that the approximation in \eq{sphericalapprox} integrates \emph{exactly} any linear combination of spherical harmonics with degree up to $L$?
+
+Before we go on to answer this question, let us define more rigorously what we mean by an expansion in terms of spherical harmonics. The spherical harmonics themselves are given by \cite{rottmann}
+\begin{align}
+Y^m_l(\theta,\phi)=\frac{1}{\sqrt{2\pi}}P^m_l(\cos\theta)e^{im\phi},
+\end{align}
+with $-l\le m \le l$ and $l,m\in\mathbb{N}$. The polynomials $P^m_l$ are the \emph{normalized associated Legendre polynomials}.\footnote{The associated Legendre polynomials are solutions to the differential equation
+\begin{align}
+\der{}{x}\left[\left(1-x^2\right)\der{}{x}P^m_l(x)\right]+\left[ l(l+1)-\frac{m^2}{1-x^2} \right]P^m_l(x)=0,
+\end{align}
+which attains non-zero and non-singular solutions in $[-1,1]$ if and only if $m$ and $l$ are both integers, with $l\ge m$ \cite{rottmann}\comment{p92}. An explicit formula for the polynomials is for example 
+\begin{align}
+P^m_l(x)=\frac{(-1)^m}{2^ll!}\sqrt{\left(1-x^2\right)^m}\der{^{l+m}}{x^{l+m}}\left(x^2-1\right)^l.
+\end{align}
+} Expanding $f$ in terms of these harmonics constitutes finding $c_{lm}$,
+\begin{align}
+\tilde f(\theta,\phi)=\sum_{l=0}^L\sum_{m=-l}^lc_{lm}Y^m_l(\theta,\phi) \label{eq:ftilde}
+\end{align}
+such that $e=\lVert\tilde f - f \rVert$ is minimized \cite{matinf5620} (in the sense that the "error" $e$ is orthogonal to the finite dimensional subspace of $L^2(\mathbb{S}^2)$ spanned by the harmonics up to and including degree $L$). This is known as the Galerkin method, and the governing equation for the coefficients is the inner product 
+\begin{align}
+c_{lm}&=\int_{\mathbb{S}^2}\mathrm{d}\theta\mathrm{d}\phi\,f(\theta,\phi)Y^m_l(\theta,\phi).
+\end{align}
+The decay rate of the coefficients with increasing $l$ determines how well $\tilde f$ approximates $f$, i.e. the convergence rate of the spherical harmonic expansion \cite{beentjes}\comment{p2}.
+
+Dealing with the problem of integrating functions across the surface of a sphere, McLaren defined in 1963 a measure of the effectiveness of a quadrature rule by how high order $L$ the rule would integrate \emph{exactly} using $K$ independent arbitrary variables used. In terms of the number of points used, the McLaren efficiency is defined as \cite{mclaren}
+\begin{align}
+E &= \frac{\text{Number of spherical harmonics up to and including order }L}{\text{Number of variables associated with }N\text{ points}} =  \frac{(L+1)^2}{3N}.
+\end{align}
+The total number of independent variables is 3 for each point\----two angles and a weight. The total number of spherical harmonics up to and including order $L$ is 
+\begin{align}
+\sum_{l=0}^L\sum_{m=-l}^l1 = \sum_{l=0}^L(2l+1) = \sum_{l=0}^L2l +\sum_{l=0}^L1 = L(L+1)+(L+1)=(L+1)(L+1)=(L+1)^2.
+\end{align} 
+In general we expect $E\le1$, although in rare cases $E>1$ \cite{atkinson}\comment{p188}.
+
+Let us now consider the efficacy of the common practice of applying a Newton-Cotes quadrature rule (for example the trapezoidal rule) in $\phi$ and a Gauss-Legendre scheme for the $\theta$ integral. An equally spaced grid of $M$ points ensures exact integration of 
+\begin{align}
+\int_0^{2\pi}\mathrm{d}\phi\,e^{im\phi},
+\end{align}
+for all $m\le M$, whereas a gaussian quadrature rule using the Legendre polynomials gives exact integration of the associated Legendre polynomials
+\begin{align}
+\int_0^\pi \mathrm{d}\theta\, P_l^m(\cos\theta),
+\end{align}
+for $l\le M$ if $(M+1)/2$ points are used \cite{beentjes}\comment{p3}. In total, the "product Gaussian quadrature formula" takes the form \cite{atkinson}\comment{p169}
+\begin{align}
+I\approx \sum_{i=1}^{M}w_i\sum_{j=0}^{\frac{L+1}{2}} w_j f(\theta_i,\phi_j),
+\end{align}
+and the efficiency is $E=2/3$ \cite{mclaren}.
+
+\subsubsection{Lebedev quadrature}
+Since the product Gaussian quadrature fails to attain $E\approx1$, it is natural to consider it's flaws and look for an improved scheme. An obvious weakness of the product scheme is the clustering of integration points at the poles. Because the spacing in the polar angle $\theta$ is linear and there are a constant number of azimuthal angle $\phi$ points for every $\theta_i$, the distance along the surface of the unit sphere between adjacent angular points $\phi_j$ and $\phi_{j+1}$ approaches zero as $\theta\rightarrow0$ or $\pi$. Intuitively, the points close to the poles should not be more important than the points at the equator, since we are fully allowed to rotate the coordinate system $90^\circ$ along the polar angle\----essentially switching the poles and the equator\----without affecting the value of the integral.
+
+In fact, this very observation is crucial in order to make progress: Any rotation or inversion (all points reversed through a given plane) that leaves the sphere invariant should also leave the quadrature invariant. This observation is the contents of a theorem due to Sobolev (for an english translation of his seminal 1962 paper, see e.g. \cite{sobolev}\comment{p461}). Essentially, Sobolev states that given a qudrature rule to integrate a spherical harmonic monomial\footnote{I.e. $f(\theta,\phi)=Y^m_l(\theta,\phi)$ for some single unique $l$ and $m$.} $f$ on $\mathbb{S}^2$, $I(f)$, the rule must neccessarily give the same result as the quadrature rule resulting from first applying a rotation or inversion,
+\begin{align}
+I(f)=I(\gamma[f]),
+\end{align}
+\emph{if $f$ is invariant under $\gamma$}. Here, $\gamma\in G$ and $G$ denotes the discrete symmetry group of the sphere. The theorem further states crucially that in order for $I$ to integrate all spherical harmonic monomials (and thus also all linear combinations of harmonics, such as the approximation $\tilde f$ from /eq{ftilde}) it is sufficient to only demand $I$ integrate exactly all the monomoials which are invariant under $\gamma\in G$ \cite{atkinson}\comment{p185}. 
+
+In the 1970s, Lebedev constructed a class of invariant quadratures based on this idea by working out the invariant spherical harmonics and solving the resulting system of non-linear equations for the points and weights \cite{lebedev}\cite{beentjes}\comment{p4}.
+
 
 Voronoi grid: \cite{voronoi1} \cite{voronoi2}
 Becke grid: \cite{beckegrid}
@@ -517,7 +603,7 @@ Note that so far we have assumed the sub-intervals to all be the same size. If w
 \begin{align}
 \int_a^bf(x)\dx = \int_a^b W(x)g(x)\dx \approx \sum_{i=1}^n w_ig(x_i).
 \end{align}
-The weight function is associated with a set of orthogonal polynomials, and the integration points $x_i$ are chosen as the zeros of the polynomial of degree $n-1$. Note carefully that $w_i\not=W(x_i)$. The weights $w_i$ can in general be expressed as 
+The weight function is associated with a set of orthogonal polynomials, and the integration points $x_i$ are chosen as the zeros of the polynomial of degree $n-1$. Note carefully that $w_i\not=W(x_i)$. The weights $w_i$ can in general be expressed as \cite{krylov}
 \begin{align}
 w_i=\left(\frac{a_n}{a_{n-1}}\right)\frac{\int_a^b W(x) p_{n-1}(x)^2\dx}{p'_n(x_i)p_{n-1}(x_i)}
 \end{align} 
