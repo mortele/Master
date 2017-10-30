@@ -41,6 +41,7 @@
 \usepackage[backend=biber,url=false]{biblatex}
 \usepackage{mdframed}
 \usepackage{tikz}
+\usepackage[version=4]{mhchem}
 \usetikzlibrary{matrix}
 
 
@@ -236,7 +237,7 @@
 
 \section{Density functional theory}
 %\subsection{Intro and motivation}
-Because the wave function is such an unbelievably complicated function, depending on $4N$ degrees of freedom (of which $3N$ are spatial coordinates), it is natural to ask the question: Is it possible to represent the state of an electronic system in a more succinct way? A natural candidate for such an entity is the electronic number density, $\rho(\r)$, which we will mostly refer to as simply \emph{the density}. It would be remarkable if we could deal with enormously complex quantum mechanical systems by means of a function depending only on three spatial coordinates and spin(!) \cite{kryachko} \comment{p163}.. 
+Because the wave function is such an unbelievably complicated function, depending on $4N$ degrees of freedom (of which $3N$ are spatial coordinates), it is natural to ask the question: Is it possible to represent the state of an electronic system in a more succinct way? A natural candidate for such an entity is the electronic number density, $\rho(\r)$, which we will mostly refer to as simply \emph{the density}. It would be remarkable if we could deal with enormously complex quantum mechanical systems by means of a function depending only on three spatial coordinates and spin(!) \cite{kryachko} \comment{p163}. 
 
 It turns out that exactly this is possible. There is a one-to-one correspondance between the ground state density, $\rho_0(\r)$, and the external potential (up to an additive constant) and thus also the Hamiltonian \cite{toulouse}\comment{p5}. Since the Hamiltonian uniquely determines all properties of a quantum mechanical system, we can in principle determine all the information in the many-body wave function (of the ground state and \emph{all} excited states) from the ground state density alone \cite{martin}\comment{p119}. The fact that the density can be determined from the wave function is almost trivially true, but that the converse is true is the content of the Hohenberg-Kohn theorems. 
 
@@ -396,6 +397,11 @@ Since the integral of the exchange-correlation potential over the density is rar
 The integrals of interest within the framework of density functional theory are integrals over the electronic density. Since we know a priori that the density falls off exponentially in the long range limit (c.f. section \ref{wavefunction}), this reduces to a locally contained integral in some finite and \emph{small} region in space close to the nuclei. Since the potentials are in general functions of the density and its derivatives (which of course also falls off exponentially) we are guaranteed that the exchange-correlation potentials also vanishes exponentially as we move far away from the nuclei. 
 
 \subsubsection{Simple spherical grid}
+\begin{SCfigure}
+\centering
+\includegraphics[width=7cm]{sphericalGrid.png}
+\caption{Example of a simple spherical shell grid for a single radius $r$. The full grid employs $m$ total such shell grids, one for each of the logarithmically spaced values $r_i$. Note the relatively higher density at the pole. This example grid uses 20 linearly spaced points in both the polar and azimuthal angles, $\theta$ and $\phi$ for a total of 400 points.\label{fig:dft2}}
+\end{SCfigure}
 When dealing with a single nucleus, we may simply choose some cut-off radius and place integration points either linearly or in some other fashion along the radius up to this cut-off radius. Since we are primarily interested in integrands which fall off exponentially with the radius, having more points closer to the nucleus will yield a better approximation with fewer points. A simple example is logarithmically spaced points along the radius. At every such radius, we place $k^2$ angular points, $m$ linearly spaced points in the polar and the azimuthal angle respectively.
 
 The weight for each of the points is simply the volume element of the sphere at radius $r_i$, polar angle $\theta_j$, and azimuthal angle $\phi_k$. In addition we need to multiply by the finite change in $r$, $\theta$, and $\phi$. In total, we recover the familiar spherical polar volume element \cite{rottmann}\comment{p69}  { }with the addition of $\Delta r \Delta \theta \Delta \phi$,
@@ -417,6 +423,7 @@ The cut-off radius may be chosen to be the radius at which the most diffuse basi
 r_\text{cut-off}=\sqrt{\frac{\log\varepsilon}{\min\left\{|\alpha_b|:\chi_b\in\mathcal{B} \right\}}}.
 \end{align}
 
+An example of such a grid is shown in \fig{dft2}. Only the shell at $r_i=1$ is shown, the full grid consists of $m$ such shells at logarithmically spaced $r_i$s.
 
 \subsubsection{Efficiency of angular grids and the \emph{product Gaussian quadrature formula}}
 The naive grid described in the previous section \emph{works}, but is far from optimal. In order to derive a quadrature rule more suited to our purpose, we turn our attention to the general problem of integrating a function $f(\theta,\phi)$ on the surface of a unit sphere $\mathbb{S}^2=\{\r\in\mathbb{R}^3:|\r|=1\}$. Let us now ask: Is there an \emph{optimal} way to distribute points and find associated weights such that the approximation
@@ -443,7 +450,7 @@ P^m_l(x)=\frac{(-1)^m}{2^ll!}\sqrt{\left(1-x^2\right)^m}\der{^{l+m}}{x^{l+m}}\le
 \end{align}
 such that $e=\lVert\tilde f - f \rVert$ is minimized \cite{matinf5620} (in the sense that the "error" $e$ is orthogonal to the finite dimensional subspace of $L^2(\mathbb{S}^2)$ spanned by the harmonics up to and including degree $L$). This is known as the Galerkin method, and the governing equation for the coefficients is the inner product 
 \begin{align}
-c_{lm}&=\int_{\mathbb{S}^2}\mathrm{d}\theta\mathrm{d}\phi\,f(\theta,\phi)Y^m_l(\theta,\phi).
+c_{lm}&=\int_{\mathbb{S}^2}\mathrm{d}\theta\mathrm{d}\phi\,f(\theta,\phi)Y^m_l(\theta,\phi).\label{eq:dft1}
 \end{align}
 The decay rate of the coefficients with increasing $l$ determines how well $\tilde f$ approximates $f$, i.e. the convergence rate of the spherical harmonic expansion \cite{beentjes}\comment{p2}.
 
@@ -472,20 +479,76 @@ I\approx \sum_{i=1}^{M}w_i\sum_{j=0}^{\frac{L+1}{2}} w_j f(\theta_i,\phi_j),
 and the efficiency is $E=2/3$ \cite{mclaren}.
 
 \subsubsection{Lebedev quadrature}
+\begin{figure}
+\centering
+\includegraphics[width=7cm]{gaussianSphere.png}\includegraphics[width=7cm]{lebedevSphere.png}
+\caption{Example of the product gaussian grid (left) and the Lebedev grid (right). The former employs 20 integration points in the Legendre quadrature and 20 points in the equidistant $\phi$ grid, for a total of 400 points. The latter is a 25th order grid, with a total of 266 points. Note the cluttering of points at the pole for the product gaussian grid. Adapted from a similar figure in \cite{beentjes}\comment{p4}.\label{fig:dft1}}
+\end{figure}
 Since the product Gaussian quadrature fails to attain $E\approx1$, it is natural to consider it's flaws and look for an improved scheme. An obvious weakness of the product scheme is the clustering of integration points at the poles. Because the spacing in the polar angle $\theta$ is linear and there are a constant number of azimuthal angle $\phi$ points for every $\theta_i$, the distance along the surface of the unit sphere between adjacent angular points $\phi_j$ and $\phi_{j+1}$ approaches zero as $\theta\rightarrow0$ or $\pi$. Intuitively, the points close to the poles should not be more important than the points at the equator, since we are fully allowed to rotate the coordinate system $90^\circ$ along the polar angle\----essentially switching the poles and the equator\----without affecting the value of the integral.
 
 In fact, this very observation is crucial in order to make progress: Any rotation or inversion (all points reversed through a given plane) that leaves the sphere invariant should also leave the quadrature invariant. This observation is the contents of a theorem due to Sobolev (for an english translation of his seminal 1962 paper, see e.g. \cite{sobolev}\comment{p461}). Essentially, Sobolev states that given a qudrature rule to integrate a spherical harmonic monomial\footnote{I.e. $f(\theta,\phi)=Y^m_l(\theta,\phi)$ for some single unique $l$ and $m$.} $f$ on $\mathbb{S}^2$, $I(f)$, the rule must neccessarily give the same result as the quadrature rule resulting from first applying a rotation or inversion,
 \begin{align}
 I(f)=I(\gamma[f]),
 \end{align}
-\emph{if $f$ is invariant under $\gamma$}. Here, $\gamma\in G$ and $G$ denotes the discrete symmetry group of the sphere. The theorem further states crucially that in order for $I$ to integrate all spherical harmonic monomials (and thus also all linear combinations of harmonics, such as the approximation $\tilde f$ from /eq{ftilde}) it is sufficient to only demand $I$ integrate exactly all the monomoials which are invariant under $\gamma\in G$ \cite{atkinson}\comment{p185}. 
+\emph{if $f$ is invariant under $\gamma$}. Here, $\gamma\in G$ and $G$ denotes the discrete symmetry group of the sphere. The theorem further states crucially that in order for $I$ to integrate all spherical harmonic monomials (and thus also all linear combinations of harmonics, such as the approximation $\tilde f$ from \eq{ftilde}) it is sufficient to only demand $I$ integrate exactly all the monomoials which are invariant under $\gamma\in G$ \cite{atkinson}\comment{p185}. 
 
-In the 1970s, Lebedev constructed a class of invariant quadratures based on this idea by working out the invariant spherical harmonics and solving the resulting system of non-linear equations for the points and weights \cite{lebedev}\cite{beentjes}\comment{p4}.
+In the 1970s, Lebedev (who was a Ph.D. student under Sobolev) constructed a class of invariant quadratures based on this idea by working out the invariant spherical harmonics and solving the resulting system of non-linear equations for the points and weights \cite{lebedev}\cite{beentjes}\comment{p4}. Lebedev published multiple articles deriving higher and higher order methods, culimnating in quadrature rules of degree over a hundred. 
 
+An example of a Lebedev grid is shown in \fig{dft1}, alongside a gaussian product grid. We note the difference in the cluttering of the points towards the poles for the gaussian grid. Lebedev's grid attains efficiency $E=1$, and as such we expect about equal integration results as when using a gaussian product grid of $3/2$ as many points \cite{beentjes}\comment{p5}. This means that the $400$ point gaussian quadrature on the left and the 266 point Lebedev quadrature on the right should in practice yield the exact same precision. We note that in using the Lebedev grid, we are implicitly expanding the integrand in terms of spherical harmonics which means the precision of the quadrature depends heavily on the relatively rapid convergence of the spherical harmonics coefficients $c_{lm}$ of \eq{dft1} \cite{voronoi1}.
 
-Voronoi grid: \cite{voronoi1} \cite{voronoi2}
-Becke grid: \cite{beckegrid}
+\subsubsection{Complete molecular grids, Voronoi and Wigner-Seitz partitioning}
+In order to expand the previous spherical shell grid to a full integral over the entire molecular volume, we need to pair it with a quadrature rule for the radius. For the case of a single atom we may simply pair the Lebedev grid with a Gauss-Laguerre scheme\footnote{The (generalized) Laguerre polynomials are the solutions to the differential equation
+\begin{align}
+x\der{^2y(x)}{x^2}+\left(1+\alpha-x\right)\der{y(x)}{x}+ny(x)=0,
+\end{align}
+with $n$ a non-negative integer and $\alpha$ an arbitrary real constant \cite{rottmann}. An explicit expression for the polynomials themselves can be found by the so-called Rodrigues formula:
+\begin{align}
+L_n(x) = x^{-\alpha}\frac{1}{n!}\left(\der{}{x}-1\right)^nx^{n+\alpha}.
+\end{align}
+The weight function $W(x)$ for the Laguerre polynomials in the setting of gaussian quadrature takes the form $W(x)=x^\alpha e^{-x}$.} for the radial integral.  
 
+However, the polyatomic case is considerably harder to deal with because of the aforementioned problem of the nuclei representing singularities which ruin the favorably low error scaling and convergence properties enjoyed by gaussian quadrature applied to more well-behaved integrands. Before we dive into the thick of things, we need to first introduce the notion of Voronoi partitioning.
+
+Assume we are given a set of $K$ points $\{\r_i\}_{i=1}^K$. We may partition any volume enclosing these points (e.g. all of $\mathbb{R}^3$) into $K$ separate regions in a unique way such that any point in region $j$ is closer to $\r_j$ than to any other $\r_i$, $i=1,2,\dots,j-1,j+1,\dots,K$. Even if the idea dates back \emph{at least} as far as the 17th century and Descartes, the procedure and the resulting structure takes its name from Russian-Ukrainian mathematician G. Voronoi\----it is called {\bf Voronoi partitioning} or a Voronoi diagram (or sometimes also Dirichlet tesselation, after German mathematician P.G.L. Dirichlet) \cite{sack}\comment{p203}. For the special case of a regular crystalline lattice of atoms in three-dimensional space is considered the Voronoi partitioning is known as Wigner-Seitz cells \cite{voronoi1}. An example of a Voronoi partitioning of a molecular volume is shown in \fig{dft3}, where the boundaries between the Voronoi cells for the \ce{H20} molecule are drawn as gray walls.
+
+\begin{SCfigure}
+\centering
+\includegraphics[width=7cm]{voronoi.png}
+\caption{Example of a Voronoi partitioning for the water molecule \ce{H2O}. Since this is a planar molecule, the Voronoi partitioning is strictly two-dimensional, with trivial vertical components. All surfaces stretch out to infinity, but is truncated in the plot at $\pm1$ and $\pm5$ for the vertical and horizontal directions, respectively. The polar covalent \ce{O-H} bonds are marked with black lines. \label{fig:dft3}}
+\end{SCfigure}
+
+In the following we will describe Boerrigter, Velde, and Baerends' integration scheme for polyatomic molecules which employ Lebedev spherical grids and handle the radial integral by partitioning the molecular volume into Voronoi cells \cite{voronoi1}. We will call the resulting quadrature rule for the {\bf Voronoi grid}.
+
+Boerrigter and co-workers note that much of the difficulty in computing the integrals for such multi-atomic molecular systems stem from the singularities inherent in the point-like nuclei. A relatively straight forward way to circumvent these divergencies is to integrate in spherical polar coordinates centered \emph{at the nuclei}. Since the $r^2$ factor of the Jacobian associated with the coordinate transformation supresses the $1/r$ factor of the Coulomb interaction, the resulting quadrature rule is well-behaved at and around $r\rightarrow0$. The proposed algorithm divides the molecular volume into a set of Voronoi cells for each atom. Next, non-overlapping spheres are constructed by fixing the largest atom-centered spheres that can be contained in each cell. This divides the entire volume into a set of spheres (on which the integration is relatively easy), and an "interstitial" region \cite{voronoi1}. 
+
+The integral over the atomic spheres is done by a Lebedev and Gauss-Legendre product (possibly with the Legendre grid split into multiple sub-regions for heavy atoms, in order to ensure enough emphasis is given to the tight core) \cite{voronoi2}.
+
+The integral over the interstitial region is split into quadrangular and triangular pyramids, as shown in \fig{dft4}. This essentially means we are integrating over what is left of the Voronoi partition, after we have already dealt with the atomic spheres. The base of the pyramids can in general be any polygon, but it is always possible to split a $n$-vertex polygon into a quadrangle and a $n-2$-vertex polygon and iteratively reduce the number of sides of the polygon while generating more and more quadrangles. Depending on if the starting side number $n$ of the original $n$-gon was even or odd, the last partition ends up as a quadrangle or a triangle. 
+
+In order to map the general truncated (atomic sphere removed) pyramid onto the unit cube, three parameters $u$, $v$, and $w$ are defined. A general point on the base is given in terms of $u$ and $v$ as
+\begin{align}
+{\bf Q}(u,v) = (1-u)(1-v){\bf A} + u(1-v){\bf B}+uv{\bf C}+(1-u)v{\bf D},
+\end{align}
+with ${\bf A}$, ${\bf B}$, ${\bf C}$, and ${\bf D}$ being the vertices of the base \cite{voronoi1}. The line $S_1$ is defined as the common line of the planes $ABO$ and $CDO$, while $S_2$ is the common line of $ADO$ and $CBO$ \cite{voronoi2}. The angles $\phi_1$ and $\phi_2$ are aligned $45^\circ$ w.r.t. the $x$ and $y$-axes. 
+
+We will leave out the rest of the technicalities here. The important take-away is that the Voronoi grid always integrates over volumes containing nuclei in terms of spherical polar coordinates centered at said nuclei. This ensures the Lebedev-Legendre quadrature is well-behaved for the atomic spheres. For the complete expressions for the quadrature points and weights for both the atomic spheres and the interstitial regions, see \cite{voronoi2}.
+
+\begin{SCfigure}
+\centering
+\includegraphics[width=7cm]{interstitial.pdf}
+\caption{Illustration of a triangular interstitial region outside of the atomic sphere. The base of the quadrangular pyramid, $ABCD$, is the edge of the Voronoi cell between the atom at $O$ and the neighbouring atom. The integral is taken over cartesian coordinates in the basal plane and radially from the atomic sphere surface $z_0(x,y)$ to $(x,y,z_B)$ at the base. This is equivalent to the beam of solid angle $\Delta \Omega$ with corresponding $\phi_1$ and $\phi_2$ associated with $x$ and $y$. The $z$ coordinate at the base is denoted $z_B$.  Figure taken from \cite{voronoi2}.\label{fig:dft4}}
+\end{SCfigure}
+
+\subsection{Becke grid}
+The Voronoi grid of Boerrigter and co-workers is unfortunately not very well suited for complete automation. A complication which was largely ignored in the previous section is that in order for optimal integral convergence, further splitting of the radial grids is needed. E.g. a partitioning of the atomic sphere into two or even three separate regions, say $(0,0.1.)$, $(0.1,0.3)$, and $(0.3,1)$ may be needed in order to obtain acceptable results \cite{voronoi1}. It is however hard to come up with \emph{general} guide lines for where exactly such splitting should occur, given arbitrary atomic charges and geometries. We will therefore end our discussion of numerical integration with the grid due to Becke \cite{beckegrid}.
+
+He suggests a scheme based on the same philosophy, dividing the molecular volume into Voronoi cells. However, instead of constructing "hard atomic spheres" and treating the left-over interstitial regions separately, he introduces a "fuzzy" cellular partitioning, i.e. a Voronoi tessellation with smooth and continous transitions between cells. 
+
+Becke starts out with a two-center coordinate system known as \emph{confocal elliptical coordinates}, $(\lambda,\mu,\phi)$, where the $\phi$ coordinate denotes the angle about the internuclear axis, while $\lambda$ and $\mu$ are defined as 
+\begin{align}
+\lambda = \frac{r_1+r_2}{R_{12}}, \ \ \text{ and } \ \ \mu=\frac{r_1-r_2}{R_{12}},
+\end{align}
+where $r_1$, $r_2$, and $R_{12}$ denote distance to nucleus one, distance to nucleus two, and the internuclear separation, respectively \cite{beckegrid}.
 
 
 
