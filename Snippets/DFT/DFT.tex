@@ -10,7 +10,7 @@
 %\usepackage{wasysym}                        % More additional symbols.
 \usepackage{mathrsfs}                        % Most additional symbols.
 \usepackage[pdftex]{graphicx}                % Improved inclusion of .pdf-graphics files.
-\usepackage{sidecap}                         % Floats with captions to the right/left.
+\usepackage[outercaption,wide]{sidecap}                         % Floats with captions to the right/left.
 \usepackage{cancel}                          % Visualize cancellations in equations.
 \usepackage{enumerate}                       % Change counters (arabic, roman, etc.).
 \usepackage{units}                           % Adds better looking fractions (nicefrac).
@@ -450,7 +450,7 @@ P^m_l(x)=\frac{(-1)^m}{2^ll!}\sqrt{\left(1-x^2\right)^m}\der{^{l+m}}{x^{l+m}}\le
 \end{align}
 such that $e=\lVert\tilde f - f \rVert$ is minimized \cite{matinf5620} (in the sense that the "error" $e$ is orthogonal to the finite dimensional subspace of $L^2(\mathbb{S}^2)$ spanned by the harmonics up to and including degree $L$). This is known as the Galerkin method, and the governing equation for the coefficients is the inner product 
 \begin{align}
-c_{lm}&=\int_{\mathbb{S}^2}\mathrm{d}\theta\mathrm{d}\phi\,f(\theta,\phi)Y^m_l(\theta,\phi).\label{eq:dft1}
+c_{lm}&=\int_{\mathbb{S}^2}\mathrm{d}\theta\mathrm{d}\phi\,f(\theta,\phi)Y^m_l(\theta,\phi).\label{eq:dft11}
 \end{align}
 The decay rate of the coefficients with increasing $l$ determines how well $\tilde f$ approximates $f$, i.e. the convergence rate of the spherical harmonic expansion \cite{beentjes}\comment{p2}.
 
@@ -513,7 +513,7 @@ Assume we are given a set of $K$ points $\{\r_i\}_{i=1}^K$. We may partition any
 
 \begin{SCfigure}
 \centering
-\includegraphics[width=7cm]{voronoi.png}
+\includegraphics[width=0.5\textwidth]{voronoi.png}
 \caption{Example of a Voronoi partitioning for the water molecule \ce{H2O}. Since this is a planar molecule, the Voronoi partitioning is strictly two-dimensional, with trivial vertical components. All surfaces stretch out to infinity, but is truncated in the plot at $\pm1$ and $\pm5$ for the vertical and horizontal directions, respectively. The polar covalent \ce{O-H} bonds are marked with black lines. \label{fig:dft3}}
 \end{SCfigure}
 
@@ -535,7 +535,7 @@ We will leave out the rest of the technicalities here. The important take-away i
 
 \begin{SCfigure}
 \centering
-\includegraphics[width=7cm]{interstitial.pdf}
+\includegraphics[width=0.5\textwidth]{interstitial.pdf}
 \caption{Illustration of a triangular interstitial region outside of the atomic sphere. The base of the quadrangular pyramid, $ABCD$, is the edge of the Voronoi cell between the atom at $O$ and the neighbouring atom. The integral is taken over cartesian coordinates in the basal plane and radially from the atomic sphere surface $z_0(x,y)$ to $(x,y,z_B)$ at the base. This is equivalent to the beam of solid angle $\Delta \Omega$ with corresponding $\phi_1$ and $\phi_2$ associated with $x$ and $y$. The $z$ coordinate at the base is denoted $z_B$.  Figure taken from \cite{voronoi2}.\label{fig:dft4}}
 \end{SCfigure}
 
@@ -548,7 +548,50 @@ Becke starts out with a two-center coordinate system known as \emph{confocal ell
 \begin{align}
 \lambda = \frac{r_1+r_2}{R_{12}}, \ \ \text{ and } \ \ \mu=\frac{r_1-r_2}{R_{12}},
 \end{align}
-where $r_1$, $r_2$, and $R_{12}$ denote distance to nucleus one, distance to nucleus two, and the internuclear separation, respectively \cite{beckegrid}.
+where $r_1$, $r_2$, and $R_{12}$ denote distance to nucleus one, distance to nucleus two, and the internuclear separation, respectively \cite{beckegrid}. The confocal coordinate system corresponds to representing positions in terms of confocal (i.e. all sharing focal points) quadrics, generalizations of the conic sections\----ellipses, hyperbolas, and parabolas. The $\mu$ coordinate represents the inter-nuclear separation, with the surface at $\mu=0$ being the edge of the Voronoi cells of nuclei 1 and 2, i.e. the surface at which $r_1=r_2$. The limit $\mu\rightarrow-1$ ($\mu\rightarrow+1$) correspond to the ray extending from the midpoint, through nucleus 1 (nucleus 2), and out to infinity \cite{rottmann}. 
+
+For nucleus $i$, taking the confocal elliptical coordinates relative to all other nuclei $j$ gives a set of coordinate systems $\{(\lambda_{ij},\mu_{ij},\phi_{ij})\}_{j=1,j\not=i}^M$, with which we can express the Voronoi cells as step functions of $\mu_{ij}$:
+\begin{align}
+s(\mu_{ij})=\left\{\mat{lcrcccr}{
+  1 & \text{ for } & -1 & \le & \mu_{ij} & \le & 0 \\
+  0 & \text{ for } & 0 & < & \mu_{ij} & \le & 1
+} \right. \label{eq:dft10}
+\end{align}
+with $P_i(\r)=\prod_{j\not=i}s(\mu_{ij})$ being the \emph{cell function} for nuclei $i$ which takes the value $1$ whenever $\r$ is inside the Voronoi cell for nuclei $i$, and $0$ otherwise \cite{beckegrid}. Becke now suggests replacing the sharp step function by a less sharp "cutoff function," yielding the aforementioned "fuzzy" Voronoi partitioning. 
+
+The cutoff function is not unique (the only neccessary properties being $f(-1)=-1$, $f(+1)=+1$, and vanishing derivatives at both these points), so Becke simply chooses the simplest one: $s_n(\mu)=[1-p^n(\mu)]/2$ with $p(\mu)=3\mu/2-\mu^3/2$ and $p^n(\mu)$ being the $n$ times iterated $p$. The iterations $p^n(\mu)$ yield progressively sharper cutoff profiles $p^n\equiv p\circ p\circ p \circ \dots \circ p$ ($n$-times functional composition), $p^n(\r)=p \left\{ p \left( \dots p \left [\r\right] \dots \right) \right\}$, with $\lim_{n\rightarrow \infty}s_n$ recovering \eq{dft10} \cite{kuczma}. Examples of the iteration for various values of $n$ is shown in \fig{dft4}.
+
+\begin{SCfigure}
+\centering
+\includegraphics[width=0.5\textwidth]{beckeIteration.pdf}
+\caption{\protect\rule{0ex}{5ex}The Becke cutoff profile as a function of the confocally elliptical inter-nuclear separation coordinate, $\mu$, for various values of iteration, $k$. We note that in the limit of very high $k$, the step function of \eq{dft10} is reproduced. Adapted from a similar figure in \cite{beckegrid}. \label{fig:dft5}}
+\end{SCfigure}
+
+Next, for each nucleus assign to each point in the (entire) molecular volume a relative weight $w_m(\r)$, such that for any given $\r$, the following holds
+\begin{align}
+\sum_{m=1}^Mw_m(\r) = 1.
+\end{align}
+We demand that $w_m(\r)$ be assigned in such a way as to take the value unity in the viscinity of nucleus $m$, and vanish in the viscinity of every other nucleus. Using the previously described cutoff functions (Becke suggests a value of $n=3$ iterations of the polynomial $p$), we can assign $w_m(\r)$ as \cite{beckegrid}
+\begin{align}
+w_n(\r) = \frac{P_n(\r)}{\sum_{m=1}^MP_m(\r)}. \label{eq:dft12}
+\end{align}
+
+Having defined the relative weight of each point in space, the only thing that remains to be done is to define around each nucleus a local spherical polar coordinate system $(r_m,\theta_m,\phi_m)$ and we can rewrite the integral any (scalar-valued) real-valued function $F(\r)$ as a sum over \emph{single center integrals} $F_m(\r)$ as
+\begin{align}
+I&=\int F(\r)\,\mathrm{d}^3\r  \label{eq:dft13} \\
+%
+&= \sum_{m=1}^M\int F_m(\r)\,\mathrm{d}^3\r. \label{eq:dft14}
+\end{align}
+Each $F_m(\r)$ is the single center integrand defined by the weight function \eq{dft12},
+\begin{align}
+F_m(\r) \equiv w_m(\r)F(\r),
+\end{align}
+and we note that since $\sum_{m=1}^Mw_m(\r)=1$, the sum over all $F_m(\r)$ is equal to $F(\r)$ for every point $\r$, and so the two integrals of Eqs. (\ref{eq:dft13}) and (\ref{eq:dft14}) are equal. 
+
+In short, the scheme proposed by Becke maps the problem of integrating across the whole molecular volume onto a series of much simpler \emph{single center integrals} over the viscinity of each nucleus. 
+
+
+
 
 
 
