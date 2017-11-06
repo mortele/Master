@@ -1,225 +1,5 @@
+\documentclass[../../master.tex]{subfiles}
 
-\documentclass[a4paper]{article}
-%Included packages ----------------------------------------------------------%
-\usepackage[utf8]{inputenc}                        % utf-8 encoding, æ, ø , å, etc.
-\usepackage{a4wide}                          % Adjust margins to better fit A4 format.
-\usepackage{array}                           % Matrices.
-\usepackage{amsmath}                         % Math symbols, and enhanced matrices.o
-\usepackage{amsfonts}                        % Math fonts.
-\usepackage{amssymb}                         % Additional symbols.
-%\usepackage{wasysym}                        % More additional symbols.
-\usepackage{mathrsfs}                        % Most additional symbols.
-\usepackage[pdftex]{graphicx}                % Improved inclusion of .pdf-graphics files.
-\usepackage[outercaption,wide]{sidecap}                         % Floats with captions to the right/left.
-\usepackage{cancel}                          % Visualize cancellations in equations.
-\usepackage{enumerate}                       % Change counters (arabic, roman, etc.).
-\usepackage{units}                           % Adds better looking fractions (nicefrac).
-\usepackage{floatrow}                        % Multi-figure floats.
-\usepackage{subfig}                          % Multi-figure floats.
-\usepackage{caption}                         % Adds functionality to captions.
-\usepackage{bm}                              % Bolded text in math mode.
-\usepackage{combinedgraphics}                % Figures; let latex handle the text itself.
-\usepackage[framemethod=default]{mdframed}   % Make boxes.
-\usepackage{listings}                        % For including source code.
-\usepackage[colorlinks]{hyperref}            % Interactive references, colored.
-\usepackage{soul}                            % Make vertical bars through text.
-\usepackage{nicefrac}                        % Nice fractions with \nicefrac.
-\usepackage{mathtools}                       % Underbrackets, overbrackets.
-\usepackage{wasysym}                         % \smiley{}-s!
-\usepackage{multicol}                        % Multiple text columns.
-\usepackage{capt-of}                         % Caption things which are not floats.
-%\usepackage[url=false]{biblatex}             % Citations (made easy).
-\usepackage{dsfont}
-\usepackage{booktabs}                        % Tables
-\usepackage{tabularx}
-\usepackage{array}
-\usepackage{multirow}% http://ctan.org/pkg/multirow
-\usepackage{hhline}% http://ctan.org/pkg/hhline
-\usepackage{siunitx}
-\usepackage[version=4]{mhchem}
-\usepackage{relsize}  % Resize parts of equations
-\usepackage[backend=biber,url=false]{biblatex}
-\usepackage{mdframed}
-\usepackage{tikz}
-\usepackage[version=4]{mhchem}
-\usetikzlibrary{matrix}
-
-
-
-
-% Differentials -------------------------------------------------------------- %
-\newcommand{\dt}{\,\mathrm{d}t}
-\newcommand{\dx}{\,\mathrm{d}x}
-\newcommand{\dr}{\,\mathrm{d}r}
-
-% Derivatives ---------------------------------------------------------------- %
-\newcommand{\der} [2]{\frac{\mathrm{d} #1}{\mathrm{d} #2}}   % Derivative.
-\newcommand{\pder}[2]{\frac{\partial   #1}{\partial   #2}}   % Partial derivative.
-
-% Matrices ------------------------------------------------------------------- %
-\newcommand{\mat} [2]{\begin{matrix}[#1]  #2 \end{matrix}}   % Nothing enclosing it.
-\newcommand{\pmat}[2]{\begin{pmatrix}[#1] #2 \end{pmatrix}}  % Enclosing parentheses.
-\newcommand{\bmat}[2]{\begin{bmatrix}[#1] #2 \end{bmatrix}}  % Enclosing square brackets.
-\newcommand{\vmat}[2]{\begin{vmatrix}[#1] #2 \end{vmatrix}}  % Enclosing vertical bars.
-\newcommand{\Vmat}[2]{\begin{Vmatrix}[#1] #2 \end{Vmatrix}}  % Enclosing double bars.
-
-% Number sets ---------------------------------------------------------------- %
-\newcommand{\R}{\mathbb{R}}
-\newcommand{\Q}{\mathbb{Q}}
-\newcommand{\N}{\mathbb{N}}
-\newcommand{\Z}{\mathbb{Z}}
-\newcommand{\C}{\mathbb{C}}
-
-% Manually set alignment of rows / columns in matrices (mat, pmat, etc.) ----- %
-\makeatletter
-\renewcommand*\env@matrix[1][*\c@MaxMatrixCols c]{%
-  \hskip -\arraycolsep
-  \let\@ifnextchar\new@ifnextchar
-  \array{#1}}
-\makeatother
-
-% References ----------------------------------------------------------------- %
-\newcommand{\Fig}[1]{Fig.\ \ref{fig:#1}}
-\newcommand{\fig}[1]{Fig.\ \ref{fig:#1}}
-\newcommand{\eq} [1]{Eq.\ (\ref{eq:#1})}
-\newcommand{\Eq} [1]{Eq.\ (\ref{eq:#1})}
-\newcommand{\tab}[1]{Table \ref{tab:#1}}
-\newcommand{\Tab}[1]{Table \ref{tab:#1}}
-
-% Paragraph formatting ------------------------------------------------------- %
-\setlength{\parindent}{5.5mm}
-\setlength{\parskip}  {0mm}
-
-% Source code listings ------------------------------------------------------- %
-\definecolor{commentGreen}{RGB}{34,139,34}
-\definecolor{keywordBlue}{RGB}{0,0,255}
-\definecolor{stringPurple}{RGB}{160,32,240}
-\lstset{language=matlab}
-\lstset{basicstyle=\ttfamily\small}
-\lstset{frame=single}
-\lstset{stringstyle=\color{stringPurple}}
-\lstset{keywordstyle=\color{keywordBlue}}
-\lstset{commentstyle=\color{commentGreen}}
-\lstset{morecomment=[l][\color{commentGreen}\bfseries]{\%\%}}
-\lstset{showspaces=false}
-\lstset{showstringspaces=false}
-\lstset{showtabs=true}
-\lstset{columns=fixed}
-\lstset{breaklines}
-\lstset{literate={~} {$\sim$}{1}}
-\lstset{numbers=left}              
-\lstset{stepnumber=1}
-\renewcommand{\ttdefault}{pcr}
-\lstdefinestyle{prt}{frame=none,basicstyle=\ttfamily\small}
-
-% Convenient shorthand notation ---------------------------------------------- %
-\newcommand{\nn}{\nonumber}
-\newcommand{\e}[1]{\cdot10^{#1}}
-\renewcommand{\i}{\hat{\imath}}
-\renewcommand{\j}{\hat{\jmath}}
-\renewcommand{\k}{\hat{k}}
-
-% Caption position of tables at the top -------------------------------------- %
-\floatsetup[table]{capposition=top}
-
-% Black frame with white background ------------------------------------------ %
-\newmdenv[linecolor=black,backgroundcolor=white]{exframe}
-
-% Including vector drawings from inkscape ------------------------------------ %
-\newenvironment{combFig}[5]{
-  \begin{figure}[#1] 
-    \centering 
-    \includecombinedgraphics[vecscale=#2, keepaspectratio]{#3} 
-    \caption{#4 \label{#5}}
-  \end{figure}
-  }
-
-  {
-}
-
-% Including pdf graphics ----------------------------------------------------- %
-\newenvironment{pdfFig}[5]{
-  \begin{figure}[#1] 
-    \centering 
-    \includegraphics[width= #2]{#3} 
-    \caption{#4 \label{#5}}
-  \end{figure}
-  }
-
-  {
-}
-
-% Exercise and subexercise counters ------------------------------------------ %
-\newcounter{excounter}
-\renewcommand\theexcounter{\arabic{excounter}}
-\newcommand\exlabel{\theexcounter}
-\setcounter{excounter}{1}
-
-\newcounter{subexcounter}
-\renewcommand\thesubexcounter{\arabic{subexcounter}}
-\newcommand\subexlabel{\thesubexcounter}
-\setcounter{subexcounter}{1}
-
-% Environments for exercises ------------------------------------------------- %
-\newenvironment{exercise}[1]{
-  \subsection*{Exercise \theexcounter: #1}
-  \setcounter{subexcounter}{1}                      % Reset the subexercise counter to a.
-  \addcontentsline{toc}{section}{\theexcounter: #1} % Add the exercise to TOC
-  }
-      % Exercise text.
-  {
-  \stepcounter{excounter}                           % Add one to the exercise counter.
-  \newpage
-}
-
-% Environment for subexercises ----------------------------------------------- %
-\newenvironment{subexercise}{
-  \begin{exframe}
-    \begin{itemize}  \setlength{\itemindent}{1cm}
-      \item[{\bf Exercise \thesubexcounter}] 
-	}
-	  % Subexercise text.
-	{
-    \end{itemize}
-  \end{exframe}
-  \stepcounter{subexcounter}                        % Add one to the exercise counter.
-}
-
-% Environment for proofs ----------------------------------------------------- %
-\newenvironment{proof}[2]{
-  \begin{exframe}
-    \begin{itemize}  \setlength{\itemindent}{0.6cm}
-      \item[{\bf #1} {\bf #2}] 
-	}
-	  % Subexercise text.
-	{
-    \end{itemize}
-  \end{exframe}
-}
-
-% Environment for answers ---------------------------------------------------- %
-\newenvironment{answer}{}{}
-
-% Set bibliography file and path for images.
-%\bibliography{references/fys4180ref.bib}
-\graphicspath{{./images/}}
-\newcommand{\includepdfgraphics}[2]{\includecombinedgraphics[#1]{./images/#2}}
-
-
-\graphicspath{{/Users/morten/Documents/Master/Master/Figures/}}
-
-
-% Title
-\title{}
-\date{}
-\author{}
-% ---------------------------------------------------------------------------- %
-% ---------------------------------------------------------------------------- %
-
-\newcommand{\comment}[1]{\ignorespaces}
-\addbibresource{/Users/morten/Documents/Master/Master/ref.bib}
-%\bibliography{/Users/morten/Documents/Master/Master/ref.bib}%{}
-%\bibliographystyle{plain}
 \begin{document}
 
 
@@ -332,10 +112,14 @@ E_V[\rho(\r)] &= \big\langle\Psi|\hat T + \hat W|\Psi\big\rangle + \big\langle\P
 \end{align}
 Having established that the external potential is a functional of the density, this gives us now almost trivially that $E_V[\rho]>E_V[\rho_0]$ for any density that is not the one associated with the true ground state corresponding to $\hat V_\text{ext}$ \cite{martin}\comment{p125}. 
 
+%If $F[\rho]$ were a known and sufficiently simple functional of $\rho$, the problem of determining the ground-state energy and density in a given external potential would be rather easy since it requires merely the minimization of a functional of the three-dimensional density function.
 \subsubsection*{The way forward}
-Essentially, the two Hohenberg-Kohn theorems say that all properties of a electronic quantum mechanical system is uniquely determined by the ground state density alone. Also, a \emph{universal functional} for the energy in terms of the density, valid for any external potential, exists and it attains a global minimum for exactly the true ground state density $\rho_0(\r)$. In the words of Hohenberg and Kohn: "If $F[\rho]$ were a known and sufficiently simple functional of $\rho$, the problem of determining the ground-state energy and density in a given external potential would be rather easy(...)." \cite{hohenberg-kohn} Indeed, all of electronic structure theory would have been \emph{solved} in one fel swoop. 
+Essentially, the two Hohenberg-Kohn theorems say that all properties of a electronic quantum mechanical system is uniquely determined by the ground state density alone. Also, a \emph{universal functional} for the energy in terms of the density, valid for any external potential, exists and it attains a global minimum for exactly the true ground state density $\rho_0(\r)$. In the words of Hohenberg and Kohn \cite{hohenberg-kohn}: 
+\begin{shadequote}[r]{P. Hohenberg \& W. Kohn}
+If $F[\rho]$ were a known and sufficiently simple functional of $\rho$, the problem of determining the ground-state energy and density in a given external potential would be rather easy since it requires merely the minimization of a functional of the three-dimensional density function.
+\end{shadequote}
 
-Predictably, this is not the case. Determination of the universal functional is anything but trivial. In order to make real progress with the approach of considering the electronic density as the primary variable, we turn now to the framework proposed by Kohn and Sham.
+Indeed, all of electronic structure theory would have been \emph{solved} in one fel swoop. Predictably, this is not the case. Determination of the universal functional is anything but trivial. In order to make real progress with the approach of considering the electronic density as the primary variable, we turn now to the framework proposed by Kohn and Sham.
 
 \subsection{Kohn-Sham ansatz}
 In their seminal 1965 paper \cite{hohenberg-kohn}, Kohn and Sham outlined a way to obtain a set of single electron equations in the density that can be solved self-consitently to obtain the total electronic energy. In order to accomplish this, they consider an auxiliary non-interacting system in place of the original one \cite{martin}\comment{p135}. 
@@ -386,7 +170,7 @@ It may seem like we have made no progress at all: We started off with an unknown
 \subsection{The Kohn-Sham equations}
 In the same way Roothan and Hall introduced orbitals to the Hartree-Fock formalism ((ref H-F section)), we now introduce a set of spin-orbitals in the DFT scheme. The single determinantal wave function is constructed from $N$ orthonormal spin-orbitals, $\{\psi_i(\r)\}_{i=1}^N$, where we have absorbed the spin quantum number into the label $i$. In the restricted case, this means that $i$ and $i+1$ are spatially pair-wise identical, with differing spin index. The energy functional can now be written in terms of the orbitals as 
 \begin{align}
-E[\{\psi_i\}] = \sum_{i=1}^N 
+E[\{\psi_i\}] = \sum_{i=1}^N %\langle \phi_i | -\frac{\nabla^2_i}{2} | \phi_i\rangle 
 \end{align}
 
 
@@ -496,7 +280,7 @@ In the 1970s, Lebedev (who was a Ph.D. student under Sobolev) constructed a clas
 
 An example of a Lebedev grid is shown in \fig{dft1}, alongside a gaussian product grid. We note the difference in the cluttering of the points towards the poles for the gaussian grid. Lebedev's grid attains efficiency $E=1$, and as such we expect about equal integration results as when using a gaussian product grid of $3/2$ as many points \cite{beentjes}\comment{p5}. This means that the $400$ point gaussian quadrature on the left and the 266 point Lebedev quadrature on the right should in practice yield the exact same precision. We note that in using the Lebedev grid, we are implicitly expanding the integrand in terms of spherical harmonics which means the precision of the quadrature depends heavily on the relatively rapid convergence of the spherical harmonics coefficients $c_{lm}$ of \eq{dft1} \cite{voronoi1}.
 
-\subsubsection{Complete molecular grids, Voronoi and Wigner-Seitz partitioning}
+\subsubsection{Complete molecular grids, Voronoi and Wigner-Seitz partitioning \label{voronoi}}
 In order to expand the previous spherical shell grid to a full integral over the entire molecular volume, we need to pair it with a quadrature rule for the radius. For the case of a single atom we may simply pair the Lebedev grid with a Gauss-Laguerre scheme\footnote{The (generalized) Laguerre polynomials are the solutions to the differential equation
 \begin{align}
 x\der{^2y(x)}{x^2}+\left(1+\alpha-x\right)\der{y(x)}{x}+ny(x)=0,
@@ -588,7 +372,7 @@ F_m(\r) \equiv w_m(\r)F(\r),
 \end{align}
 and we note that since $\sum_{m=1}^Mw_m(\r)=1$, the sum over all $F_m(\r)$ is equal to $F(\r)$ for every point $\r$, and so the two integrals of Eqs. (\ref{eq:dft13}) and (\ref{eq:dft14}) are equal. 
 
-In short, the scheme proposed by Becke maps the problem of integrating across the whole molecular volume onto a series of much simpler \emph{single center integrals} over the viscinity of each nucleus. 
+In short, the scheme proposed by Becke maps the problem of integrating across the whole molecular volume onto a series of much simpler \emph{single center integrals} over the viscinity of each nucleus. Since the weight function of nucleus $m$ vanishes close to any other nucleus, we can just integrate over a simple spherical Lebedev grid (with the $r$ integral handled by a Gauss-Chebychev quadrature of the second kind, as proposed by Becke and co-workers) for each nucleus without having to worry about the singularities at the other nucleonic centers \cite{becke2}. Since we can create a spherical grid around each nucleus with cutoff radii dependent on the orbitals of the basis centered around that nucleus, we know that we always include \emph{enough} of the surrounding space to obtain sufficient precision in the integral. This is in contrast to the scheme proposed by Boerrigter and co-workers \cite{voronoi1}, described in previously in section \ref{voronoi}. In that scheme we are guaranteed only to \emph{directly} hit the volume enclosed by the largest sphere that we can totally enclose within each Voronoi cell, and subsequently have to handle in some intricate and complicated way the "left-over volume" that is inside each Voronoi cell but not inside this sphere. 
 
 
 
