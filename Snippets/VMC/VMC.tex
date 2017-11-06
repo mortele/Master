@@ -1,0 +1,23 @@
+\documentclass[../../master.tex]{subfiles}
+\renewcommand{\R}{{\bf R}}
+\renewcommand{\r}{{\bf r}}
+
+\begin{document}
+\chapter{Variational Monte Carlo}
+A large collection of computational methods exist which attempt to solve the Schrödinger equation via the use of stochastic \emph{Monte Carlo} methods. These are collectively known as \emph{Quantum Monte Carlo methods}, and the (arguably) simplest such method is known as {\bf Variational Monte Carlo} (VMC). The VMC scheme attempts to directly evaluate the integral governing the ground state energy expectation value of a quantum mechanical system, 
+\begin{align}
+E_0=\langle \Psi|\hat H|\Psi\rangle = \frac{\int\mathrm{d}^{3N}\R\, \Psi^*(\R)\hat H(\R) \Psi(\R)}{\int\mathrm{d}^{3N}\R\, \Psi^*(\R)\Psi(\R)}, \label{eq:VMC1}
+\end{align}
+with $\R=\{\r_1,\r_2,\dots,\r_N\}$ being all electronic coordinates. It is fairly obvious from the name that said integral is evaluated using Monte Carlo integration. Any other quantum mechanical quantity of interest can be expressed in terms of the expectation value of an operator à la \eq{VMC1}, which means we can essentially formulate all of electronic structure theory in terms of such high-dimensional integrals \cite{hjorth-jensen}\comment{p457}. Since Monte Carlo methods are well suited to solving such high-dimensional integrals for which grid-based methods fail spectacularly, the matching of quantum mechanics and Monte Carlo integration has widespread applicability \cite{hammond}\comment{p48}.
+
+Of course, we do not a priori know the form of the ground state wave function, $\Psi(\R)$, and in electronic structure problems we have to construct an ansatz wave function by filling a (linear combination of) Slater determinant(s) with spin-orbitals from some chosen basis set. However, in contrast with the previously described Hartree-Fock and (Kohn-Sham) Density Functional methods, VMC does not in general require the use of spin-orbitals for which one-, and two-electron Coulombic interaction integrals can be readily calculated \cite{assaraf}\comment{p3}. Whereas we are essentially forced into using combinations of gaussian basis functions under the former schemes, the Variational Monte Carlo method offers much more freedom in the choices of orbital basis\----essentially the only requirement on the orbital basis functions is that we need to be able to write them down in closed form.
+
+The Variational Monte Carlo method is an explicitly correlated one, meaning dynamic electron-electron correlation is taken into account. Unlike the Hartree-Fock formalism which treats (opposite spin) electron-electron correlation purely in terms of a mean-field approximation, the electrons under the VMC formalism interact \emph{instanteneously}\----electrons are at all times surrounded by "correlation holes" where the probability of finding other electrons vanish. 
+
+In the following, we will derive the 
+
+\end{document}
+
+
+
+

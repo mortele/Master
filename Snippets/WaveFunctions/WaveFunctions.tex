@@ -74,7 +74,7 @@ A simple proof\footnote{More precisely, a heuristic (not entirely rigorous) just
 \end{align}
 from $\r\rightarrow \z=\r/a$ gives a single factor of $a^{-1}$ in the former and $a^{-2}$ in the latter integral. For the denominators, the integration measure $\mathrm{d}^3\r$ carries dimensions of $a^3$ which exactly cancel the $(a^{\nicefrac{-3}{2}})^2=a^{-3}$ from the wave function squared (by neccessity, since the integral represents a probability). In the $\langle V\rangle$ integral, the same happens in the numerator, and we are left with only the Coulomb potential $a^{-1}$ contribution. The numerator in the $\langle T \rangle$ integral has dimensions of $a^{-2}$, since each coordinate differentiation carries a single inverse $a$.
 
-As the exact wave function is a variational minimum of the Hamiltonian, the expectation value of $\langle H\rangle_\psi$ (note carefully that this is true only when evaluated \emph{at the exact wave function} [ground or excited states]) must be independent of variations in $\psi$. Namely, they must be independent of variations of $a$ since $\psi(\r)=a^{\nicefrac{-3}{2}}f(\z)$ ((Weinberg, p190)). The derivative of $\langle \hat T\rangle_\psi + \langle \hat V \rangle_\psi$ taken at the exact wave function must vanish, giving \eq{virial}.
+As the exact wave function is a variational minimum of the Hamiltonian, the expectation value of $\langle H\rangle_\psi$ (note carefully that this is true only when evaluated \emph{at the exact wave function} [ground or excited states]) must be independent of variations in $\psi$. Namely, they must be independent of variations of $a$ since $\psi(\r)=a^{\nicefrac{-3}{2}}f(\z)$ \cite{weinberg}\comment{p190}. The derivative of $\langle \hat T\rangle_\psi + \langle \hat V \rangle_\psi$ taken at the exact wave function must vanish, giving \eq{virial}.
 
 The virial theorem generalizes to $N$ particles in the same form as \eq{virial}.
 
@@ -100,7 +100,7 @@ The first critical configuration we will consider is the class of electronic pos
 \begin{align}
 \hat H(\r) &= -\frac{\nabla^2}{2} - \frac{Z}{|\r|},
 \end{align}
-where we take the atom to be situated at the origin. The \emph{radial} Schrödinger equation can be written as ((Thjissen, p156))
+where we take the atom to be situated at the origin. The \emph{radial} Schrödinger equation can be written as \cite{thijssen}\comment{p156}
 \begin{align}
 \left[\pder{^2}{r^2} + \frac{2}{r}\pder{}{r} + \frac{2Z}{r} - \frac{l(l+1)}{r^2} + 2E \right]R(r) = 0.
 \end{align}
@@ -108,14 +108,14 @@ For $l=0$ states, we note that the two $1/r$ terms must exactly cancel if the lo
 \begin{align}
 E_\text{local}(\r\rightarrow0)=\lim_{r\rightarrow0} \left\{\frac{1}{R(r)}\left(\frac{2}{r}\pder{}{r} +\frac{2Z}{r} + \text{ finite terms} \right)R(r)\right\},
 \end{align}
-and the exact wave function obeys ((Hammond, p156))
+and the exact wave function obeys \cite{hammond}\comment{p156}
 \begin{align}
 \lim_{r\rightarrow0}\left\{ \frac{1}{R(r)} \pder{R}{r}\right\}=-Z.
 \end{align}
 We see that a wave function of s-type symmetry which does not vanish at $r=0$ must be exponential in $r$ in the limit of $r\rightarrow0$. 
 \newcommand{\Rdo}{\pder{\tilde R}{r}}
 \newcommand{\Rd}[1]{\pder{^#1\tilde R}{r^#1}}
-What happens if $l\not=0$ or $R(0)=0$? It turns out that considering the latter issue automatically resolves the first ((Hammond, p157)), so let us take the case of $R(0)=0$. We may factor the leading $r$ dependence out of $R(r)$, and define $\tilde R(r)\equiv r^mR(r)$, so that $\tilde R(0)\not=0$. Three applications of the derivative product rule gives 
+What happens if $l\not=0$ or $R(0)=0$? It turns out that considering the latter issue automatically resolves the first \cite{hammond}\comment{p157}, so let us take the case of $R(0)=0$. We may factor the leading $r$ dependence out of $R(r)$, and define $\tilde R(r)\equiv r^mR(r)$, so that $\tilde R(0)\not=0$. Three applications of the derivative product rule gives 
 \begin{align}
 \pder{}{r}R(r) &= \pder{}{r}\left[ \tilde R(r) r^m \right] = \Rdo r^m + m\tilde R(r)r^{m-1},
 \end{align}
@@ -125,7 +125,8 @@ and
 \end{align}
 Insertion into the radial Schrödinger equation, \eq{rads}, we find that
 \begin{align}
-\Rd{2}r^m+\Rdo \frac{2(m+1)}{r}r^m + \tilde R(r)\frac{m(m+1)}{r^2}r^m + \tilde R(r)\frac{2Z}{r}r^m-\tilde R(r) \frac{l(l+1)}{r^2}r^m + 2E\tilde R(r)r^m=0.
+& \Rd{2}r^m+\Rdo \frac{2(m+1)}{r}r^m + \tilde R(r)\frac{m(m+1)}{r^2}r^m + \nn\\
+& \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \tilde R(r)\frac{2Z}{r}r^m-\tilde R(r) \frac{l(l+1)}{r^2}r^m + 2E\tilde R(r)r^m=0.
 \end{align}
 If the local energy is to remain finite once again, we need the inverse powers of $r$ to cancel, which for $1/r^2$ yields $m=l$. Furthermore, for the $1/r$ terms, we have the condition 
 \begin{align}
