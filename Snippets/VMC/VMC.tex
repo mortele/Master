@@ -14,7 +14,16 @@ Of course, we do not a priori know the form of the ground state wave function, $
 
 The Variational Monte Carlo method is an explicitly correlated one, meaning dynamic electron-electron correlation is taken into account. Unlike the Hartree-Fock formalism which treats (opposite spin) electron-electron correlation purely in terms of a mean-field approximation, the electrons under the VMC formalism interact \emph{instanteneously}\----electrons are at all times surrounded by "correlation holes" where the probability of finding other electrons vanish. 
 
-In the following, we will derive the 
+In the following, we will present the fundamentals of Monte Carlo integration and its application to the electronic quantum mechanical problem. But first of all we will derive the Metropolis algorithm which we will employ to sample the configuration space of our $N$-electron system according to the wave function squared $|\Psi(\R)|^2$ (the probability density).
+
+\section{The Metropolis-Hastings algorithm}
+The Metropolis algorithm, originally proposed by Metropolis and co-workers \cite{metropolis} and later generalized by Hastings \cite{hastings} is a method for sampling probability distributions which may be impossible to sample directly\footnote{Direct sampling in this context means e.g. \emph{inverse transform sampling}, which neccessitate inverting the cumulative distribution associated with the probability density function (PDF) \cite{numericalrecipes}. For complicated distributions, this is often either impossible of unfeasible.} \cite{assaraf}\comment{p291}. The Metropolis-Hastings algorithm (MH) generates a Markov chain of random samples distributed according to the PDF in question. 
+
+\subsection{Markov chains and diffusion}
+A Markov chain is a sequence of stochastic variables $\{X_i\}_{i=1}^n$ for which step $i+1$ depends soley on step $i$, meaning the process has no "memory." In other words, the probability of stepping from state $X_k$ to state $X_l$ depends only on the states $k$ and $l$, not on \emph{how} or \emph{when} it got to $X_k$, \cite{hammond}\comment{p25}\cite{gilks}\comment{p5}
+\begin{align}
+P\left(X_{i+1}|X_i|X_{i-1}|\dots|X_0\right)=P\left(X_{i+1}|X_i\right).
+\end{align}
 
 \end{document}
 
