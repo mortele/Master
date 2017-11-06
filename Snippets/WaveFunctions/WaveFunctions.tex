@@ -11,28 +11,19 @@
 \newcommand{\psit}{\left|\psi(t)\right\rangle}
 
 
-Salasnich: Quantum Physics of Light and Matter
-
-Wheeler,Zurek: Quantum Theory and Measurement
-
-Born: "Zur Quantenmechanik der Stossvorgänge," Zeitschrift für Physik, 37, 863-67 (1926). Translation to english by Wheeler, Zurek
-
-Weinberg: lectures on quantum mechanics
-
-Helgaker++: Molecular Electronic Sctructure Theory
-
-Gross,Runge,Heinonen: Many-particle Theory
-
-Kato article: \url{http://refhub.elsevier.com/S0009-2614(13)01451-6/h0095}
-
-Katriel,Davidson: \url{http://www.pnas.org/content/77/8/4403}
-
-Hammond: Monte Carlo Methods in Ab Initio Quantum Chemistry
-
-Weissbluth: Atoms and Molecules
+%Salasnich: Quantum Physics of Light and Matter
+%Wheeler,Zurek: Quantum Theory and Measurement
+%Born: "Zur Quantenmechanik der Stossvorgänge," Zeitschrift für Physik, 37, 863-67 (1926). Translation to english by Wheeler, Zurek
+%Weinberg: lectures on quantum mechanics
+%Helgaker++: Molecular Electronic Sctructure Theory
+%Gross,Runge,Heinonen: Many-particle Theory
+%Kato article: \url{http://refhub.elsevier.com/S0009-2614(13)01451-6/h0095}
+%Katriel,Davidson: \url{http://www.pnas.org/content/77/8/4403}
+%Hammond: Monte Carlo Methods in Ab Initio Quantum Chemistry
+%Weissbluth: Atoms and Molecules
 
 \chapter{Wave functions \label{wavefunctions}}
-In ordinary quantum mechanics, the wave function is the primary quantity of interest. It constitutes the \emph{solution} of the Schrödinger equation and encodes within it all information about the state of the isolated quantum system in question. Mathematically speaking, the wave function is the complex valued spatial projection of the abstract state vector\---which is a unitary vector in some separable Hilbert space ((Kvaal, p8)) ((Salasnich, p8)). Formally, it is the solution to the Schrödinger equation, $\hat H \psi_k=E_k\psi_k$, and it has a probabilistic interpretation originally after Born ((Born, translated by WheelerZurek)), which states that the magnitude squared is a probability density, i.e. ((Weinberg, p24))
+In ordinary quantum mechanics, the wave function is the primary quantity of interest. It constitutes the \emph{solution} of the Schrödinger equation and encodes within it all information about the state of the isolated quantum system in question. Mathematically speaking, the wave function is the complex valued spatial projection of the abstract state vector\---which is a unitary vector in some separable Hilbert space \cite{kvaal}\comment{p8}\cite{salasnich}\comment{p8}. Formally, it is the solution to the Schrödinger equation, $\hat H \psi_k=E_k\psi_k$, and it has a probabilistic interpretation originally after german physicist M. Born \cite{Born1926} (translated by \cite{wheeler}), which states that the magnitude squared is a probability density, i.e. \cite{weinberg}\comment{p24}
 \begin{align}
 \mathrm{d}P(\r) = \left|\psi(\r)\right|^2 \mathrm{d}^3\r. 
 \end{align} 
@@ -41,41 +32,41 @@ The probability $\mathrm{d}P(\r)$ denotes here the probability of finding the pa
 Even though we are unable (in the overwhelming majority of cases) to find closed form solutions to the Schrödinger equation, we may nevertheless write down a set of conditions we know the exact solution must adhere to. In the following section, we will go through properties of the exact wave function which are most relevant for atomic and molecular systems. Thereafter, we will consider the most common bases used to form approximate wave functions for many-body quantum systems.
 
 \section{Properties of the exact wave function}
-In the words of Helgaker et. al ((Helgaker, p108)) (paraphrasing), even though we are forced to make approximations in the solution of the Schrödinger equation, such approximations should not be made in a "haphazard manner." Instead we should try to incorporate as many properties of the exact wave function as feasible in our approximate guess. Some of these properties are incorporated almost without thought, such as anti-symmetry and square integrability. However, there are more subtle ones which may be easily missed without a thorough analysis of the known properties of the exact wave function. We present here an incomplete list of properties and conditions for the exact solution of the Schrödinger equation.
+In the words of Helgaker et. al \cite{helgaker}\comment{p108} (paraphrasing), even though we are forced to make approximations in the solution of the Schrödinger equation, such approximations should not be made in a "haphazard manner." Instead we should try to incorporate as many properties of the exact wave function as feasible in our approximate guess. Some of these properties are incorporated almost without thought, such as anti-symmetry and square integrability. However, there are more subtle ones which may be easily missed without a thorough analysis of the known properties of the exact wave function. We present here an incomplete list of properties and conditions for the exact solution of the Schrödinger equation.
 
 
 
 \subsubsection*{Eigenfunction of the number operator, $\hat N$}
-The exact wave function is a function of the spatial and spin degrees of freedom of the particles it describes. For an atomic or molecular system, under the Born-Oppenheimer approximation, the wave function depends only parametrically on the positions of the nuclei, $\Psi=\Psi(\r_1,\r_2,\dots,\r_N,\sigma_1,\sigma_2,\dots,\sigma_N;\r_A,\r_B,\dots,\r_C)$. The approximation we choose should thus be an eigenfunction of the number operator, $\hat N|\psi\rangle=N|\psi\rangle$. The number operator is defined under second quantization as $\hat N = \sum_q c_q^\dagger c_q$, where the sum is taken to run over all possible single particle states ((Kvaal, p24)). 
+The exact wave function is a function of the spatial and spin degrees of freedom of the particles it describes. For an atomic or molecular system, under the Born-Oppenheimer approximation, the wave function depends only parametrically on the positions of the nuclei, $\Psi=\Psi(\r_1,\r_2,\dots,\r_N,\sigma_1,\sigma_2,\dots,\sigma_N;\r_A,\r_B,\dots,\r_C)$. The approximation we choose should thus be an eigenfunction of the number operator, $\hat N|\psi\rangle=N|\psi\rangle$. The number operator is defined under second quantization as $\hat N = \sum_q c_q^\dagger c_q$, where the sum is taken to run over all possible single particle states \cite{kvaal}\comment{p24}. 
 
 \subsubsection*{Totally anti-symmetric under exchange of particles}
-A fermionic wave function must be totally anti-symmetric w.r.t. exhange of two particles ((Griffiths)). In accordance with this, we must choose the approximating wave function to be an eigenfunction of the permutation operator, $\hat P_{ij}$, which interchanges particles $i$ and $j$. We must also demand that the eigenvalue is $-1$, i.e. $\hat P_{ij} |\psi\rangle = -1|\psi\rangle$. 
+A fermionic wave function must be totally anti-symmetric w.r.t. exhange of two particles \cite{griffiths}. In accordance with this, we must choose the approximating wave function to be an eigenfunction of the permutation operator, $\hat P_{ij}$, which interchanges particles $i$ and $j$. We must also demand that the eigenvalue is $-1$, i.e. $\hat P_{ij} |\psi\rangle = -1|\psi\rangle$. 
 
 Both of the aforementioned conditions are satisfied if we take the approximation to be an $N \times N$ (or a linear combination of) Slater determinant(s) filled with single electron orbitals.
 
 \subsubsection*{Square integrability and normalization}
-For a bound state, the exact wave function is square integrable and normalized to unity, $\langle \Psi|\Psi\rangle = 1$ ((Helgaker, p108)). This means that the exact wave function is finite almost everywhere\footnote{Mathematically, it is finite except possibly on a set of measure zero such that the integral over space is not affected by the divergent value.} w.r.t. the $L^2$ norm. A sufficient and natural way to ensure this holds for the approximating wave function is to build it from finite single-electron orbitals, i.e. populate the Slater determinant(s) with spin-orbitals which are themselves parts of $L^2$. 
+For a bound state, the exact wave function is square integrable and normalized to unity, $\langle \Psi|\Psi\rangle = 1$ \cite{helgaker}\comment{p108}. This means that the exact wave function is finite almost everywhere\footnote{Mathematically, it is finite except possibly on a set of measure zero such that the integral over space is not affected by the divergent value.} w.r.t. the $L^2$ norm. A sufficient and natural way to ensure this holds for the approximating wave function is to build it from finite single-electron orbitals, i.e. populate the Slater determinant(s) with spin-orbitals which are themselves parts of $L^2$. 
 
 \subsubsection*{Size-extensivity}
-The exact wave function is size-extensive in that a system of non-interacting subsystems have the same total energy as the sum of the energies of the subsystems ((Helgaker, p109)). It is thus reasonable to demand of the the approximate wave function that (in some chosen calculational scheme) the energy found by calculating the total energy of a system of non-interacting subsystems to exactly coincide with the energies of the subsystems themselves. In practice, we may check such a condition by separating subsystems by a large distance and comparing the calculated energy with the energy resulting from calculating the energies of the subsystems individually. 
+The exact wave function is size-extensive in that a system of non-interacting subsystems have the same total energy as the sum of the energies of the subsystems \cite{helgaker}\comment{p109}. It is thus reasonable to demand of the the approximate wave function that (in some chosen calculational scheme) the energy found by calculating the total energy of a system of non-interacting subsystems to exactly coincide with the energies of the subsystems themselves. In practice, we may check such a condition by separating subsystems by a large distance and comparing the calculated energy with the energy resulting from calculating the energies of the subsystems individually. 
 
 \subsubsection*{Eigenfunction of the total spin and projected spin operators, $\hat S^2$ and $\hat S_z$}
-In non-relativistic theory, the exact wave function is an eigenfunction of the total spin operator $\hat S^2$ and the spin projection operator $\hat S_z$ ((Gross,Runge,Heionen p67)). It would be natural to demand that the approximating wave function also be an eigenfunction of these two operators. Taking the approximation to be a single Slater determinant, populated with spin-orbitals of definite spin projection automatically means the total wave function is an eigenfunction of $\hat S_z$. However, single determinants are not \emph{necessarily} eigenfunctions of $\hat S^2$ ((Szabo, p100)). Linear combinations of determinants may be formed which by construction are eigenfunctions of $\hat S^2$ ((Helgaker, p51)). Such wave functions are called spin-adapted. 
+In non-relativistic theory, the exact wave function is an eigenfunction of the total spin operator $\hat S^2$ and the spin projection operator $\hat S_z$ \cite{gross}\comment{p67}. It would be natural to demand that the approximating wave function also be an eigenfunction of these two operators. Taking the approximation to be a single Slater determinant, populated with spin-orbitals of definite spin projection automatically means the total wave function is an eigenfunction of $\hat S_z$. However, single determinants are not \emph{necessarily} eigenfunctions of $\hat S^2$ \cite{szabo}\comment{p100}. Linear combinations of determinants may be formed which by construction are eigenfunctions of $\hat S^2$ \cite{helgaker}\comment{p51}. Such wave functions are called spin-adapted. 
 
 \subsubsection*{Asymptotic behaviour of the electronic density}
-Katriel and Davidson ((Katriel,Davidson article)) showed that the electron density decays exponentially as
+Katriel and Davidson \cite{katriel} showed that the electron density decays exponentially as
 \begin{align}
 \rho(\r)\approx \exp\left( -2\sqrt{2I}r \right),
 \end{align}
-in the limit of large $r$. Here $I$ denotes the first ionization potential of the molecule, i.e. the energy needed in order to remove the least tightly bound electron. Since the ionization potential is not known before the solution to the Schrödinger equation is found, an a priori treatment of the long-range exponential decay of the density is impossible ((Helgaker, p110)). 
+in the limit of large $r$. Here $I$ denotes the first ionization potential of the molecule, i.e. the energy needed in order to remove the least tightly bound electron. Since the ionization potential is not known before the solution to the Schrödinger equation is found, an a priori treatment of the long-range exponential decay of the density is impossible \cite{helgaker}\comment{p110}. 
 
 \newcommand{\z}{{\bf z}}
 \subsubsection*{Virial theorem}
-The exact wave function obeys the \emph{virial theorem}, which states that (for a Coulombic potential $\hat V$) ((Weisbluth, p570))
+The exact wave function obeys the \emph{virial theorem}, which states that (for a Coulombic potential $\hat V$) \cite{weissbluth}\comment{p570}
 \begin{align}
 \langle \hat T \rangle &= -\frac{1}{2}\langle \hat V\rangle. \label{eq:virial}
 \end{align}
-A simple proof\footnote{More precisely, a heuristic (not entirely rigorous) justification.} by dimensional analysis due to Weinberg ((Weinberg, p190)) for the one-particle case illustrates the condtion: Since the square of the wave function has to integrate over space to a probability, it must have dimensions of $\text{Length}^{\nicefrac{-3}{2}}$. Letting $a$ denote the chosen length scale, we can express the wave function as $\psi(\r)=a^{\nicefrac{-3}{2}}f(\r/a)$, with $\z\equiv\r/a$ and $f(\z)$ being a dimensionless function of a dimensionless argument. Changing integration variables in the expressions for $\langle \hat V\rangle$ and $\langle \hat T\rangle$,
+A simple proof\footnote{More precisely, a heuristic (not entirely rigorous) justification.} by dimensional analysis due to Weinberg \cite{weinberg}\comment{p190} for the one-particle case illustrates the condtion: Since the square of the wave function has to integrate over space to a probability, it must have dimensions of $\text{Length}^{\nicefrac{-3}{2}}$. Letting $a$ denote the chosen length scale, we can express the wave function as $\psi(\r)=a^{\nicefrac{-3}{2}}f(\r/a)$, with $\z\equiv\r/a$ and $f(\z)$ being a dimensionless function of a dimensionless argument. Changing integration variables in the expressions for $\langle \hat V\rangle$ and $\langle \hat T\rangle$,
 \begin{align}
 \langle \psi|\hat V|\psi\rangle = \langle \hat V\rangle_\psi&= \frac{\int \mathrm{d}^3\r \, V(\r) |\psi(\r)|^2}{\int \mathrm{d}^3\r \,|\psi(\r)|^2}, \ \ \text{ and}\\
 %
@@ -88,7 +79,7 @@ As the exact wave function is a variational minimum of the Hamiltonian, the expe
 The virial theorem generalizes to $N$ particles in the same form as \eq{virial}.
 
 \subsubsection*{Cusp conditions}
-First described by Kato ((Kato article)), cusp conditions describe known properties of the quantum system and wave function at the divergent points of the inter-electron and electron-nucleus Coulomb potentials. These two cases will be described in depth in sections \ref{section:eecusp} and \ref{section:encusp}. 
+First described by Kato \cite{kato}, cusp conditions describe known properties of the quantum system and wave function at the divergent points of the inter-electron and electron-nucleus Coulomb potentials. These two cases will be described in depth in sections \ref{section:eecusp} and \ref{section:encusp}. 
 
 
 \subsection{Electron-nucleus cusp \label{section:eecusp}}

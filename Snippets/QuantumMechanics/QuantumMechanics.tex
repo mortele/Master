@@ -313,7 +313,8 @@ In a molecular system, little momentum transfer will happen between the nuclei a
 
 The separation of the nuclear and electronic degrees of freedom is known as the Born-Oppenheimer approximation\cite{bornoppenheimer}. Recall that the full molecular Hamiltonian reads (\eq{QM5})
 \begin{align}
-\hat H = -\sum_{i=1}^N \frac{\hbar^2}{2m_e}\nabla_i^2-\sum_{A=1}^M \frac{\hbar^2}{2m_A}\nabla^2_A - \sum_{i=1}^N\sum_{A=1}^M \frac{k_eZ_Ae^2}{|\hat {\bf r}_A - \hat \r_i|} + \sum_{i=1}^N\sum_{j=i+1}^N \frac{k_ee^2}{|\hat \r_i- \hat \r_j|} + \sum_{A=1}^M\sum_{B=A+1}^M \frac{k_ee^2Z_AZ_B}{|\r_A-\r_B|}. 
+\hat H &= -\sum_{i=1}^N \frac{\hbar^2}{2m_e}\nabla_i^2-\sum_{A=1}^M \frac{\hbar^2}{2m_A}\nabla^2_A - \sum_{i=1}^N\sum_{A=1}^M \frac{k_eZ_Ae^2}{|\hat {\bf r}_A - \hat \r_i|} + \nn\\
+& \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \sum_{i=1}^N\sum_{j=i+1}^N \frac{k_ee^2}{|\hat \r_i- \hat \r_j|} + \sum_{A=1}^M\sum_{B=A+1}^M \frac{k_ee^2Z_AZ_B}{|\r_A-\r_B|}. 
 \end{align}
 Taking the limit $m_A\rightarrow \infty$ freezes out the proton motion, creating stationary \emph{clamped nuclei}. The Born-Oppenheimer Hamiltonian is given as 
 \begin{align}
@@ -325,7 +326,7 @@ where the constant is just the nucleus-nucleus interaction term,
 \end{align}
 If the nuclei are all stationary, this is just a constant and can be disregarded as a constant term in the Hamiltonian wont affect the dynamics.  Crucially, the Born-Oppenheimer Hamiltonian and the nuclei position operators $\hat \R_A$ commute so it is possible to find solutions which are simultaneously eigenfunctions of $\hat H_\text{Born-Oppenheimer}$ \emph{and} have a definite value of the $\R_A$s \cite{weinberg}\comment{p192}. It is important to note that solution of the corresponding Schrödinger equation now depends only \emph{parametrically} on the nuclei positions, $\R_A$. This reduces the number of degrees of fredom by $3M$ \cite{szabo}\comment{p43}. 
 
-If we are able to somehow find a solution to the electronic Schrödinger equation, $\Psi(\R;\R_A)$, it would then be possible to use a similar argument as before to find a solution to the nuclear Schrödinger equation. When considering the motion of the nucleus, it is reasonable to approximate the electronic influence by an averaging of their coordinates over the electronic wave function ((Szabo p44)). This gives the nuclear Hamiltonian 
+If we are able to somehow find a solution to the electronic Schrödinger equation, $\Psi(\R;\R_A)$, it would then be possible to use a similar argument as before to find a solution to the nuclear Schrödinger equation. When considering the motion of the nucleus, it is reasonable to approximate the electronic influence by an averaging of their coordinates over the electronic wave function \cite{szabo}\comment{p44}. This gives the nuclear Hamiltonian 
 \begin{align}
 \hat H_\text{Nuclear} &= -\sum_{A=1}^M \frac{\hbar^2}{2m_A}\nabla^2_A  + \sum_{A=1}^M\sum_{B=A+1}^M \frac{k_ee^2Z_AZ_B}{|\r_A-\r_B|} \nn\\
 %

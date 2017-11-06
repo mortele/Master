@@ -163,27 +163,13 @@
 \setlength{\parindent}{5.5mm}
 \setlength{\parskip}  {0mm}
 
-% Source code listings ------------------------------------------------------- %
-\definecolor{commentGreen}{RGB}{34,139,34}
-\definecolor{keywordBlue}{RGB}{0,0,255}
-\definecolor{stringPurple}{RGB}{160,32,240}
-\lstset{language=matlab}
-\lstset{basicstyle=\ttfamily\small}
-\lstset{frame=single}
-\lstset{stringstyle=\color{stringPurple}}
-\lstset{keywordstyle=\color{keywordBlue}}
-\lstset{commentstyle=\color{commentGreen}}
-\lstset{morecomment=[l][\color{commentGreen}\bfseries]{\%\%}}
-\lstset{showspaces=false}
-\lstset{showstringspaces=false}
-\lstset{showtabs=true}
-\lstset{columns=fixed}
-\lstset{breaklines}
-\lstset{literate={~} {$\sim$}{1}}
-\lstset{numbers=left}              
-\lstset{stepnumber=1}
-\renewcommand{\ttdefault}{pcr}
-\lstdefinestyle{prt}{frame=none,basicstyle=\ttfamily\small}
+% Code listings font --------------------------------------------------------- %
+\usepackage{ifxetex}
+\ifxetex
+  \usepackage{fontspec}
+  \newfontfamily\listingsfontfamily[Scale=0.85]{Droid Sans Mono}
+  \renewcommand{\listingsfont}{\listingsfontfamily}
+\fi
 
 % Convenient shorthand notation ---------------------------------------------- %
 \newcommand{\nn}{\nonumber}
@@ -335,8 +321,8 @@ In part one we do things, and in part two we do more things. In part three we do
 \subfile{Snippets/DFT/DFT}
 
 \part{Advanced theory, implementation and results}
-\subfile{Snippets/VMCValidation/VMCValidation}
 \subfile{Snippets/Hartree-FockValidation/Hartree-FockValidation}
+\subfile{Snippets/VMCValidation/VMCValidation}
 
 \part{Conclusions and future work}
 
