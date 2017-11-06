@@ -1,4 +1,11 @@
-\documentclass{book}
+\documentclass[twoside,english]{uiofysmaster}
+% STUFF IS LOCATED IN /Users/morten/.texmf/tex/latex/uiofysmaster
+%
+% Check 
+% 
+% https://tex.stackexchange.com/questions/96976/install-custom-cls-using-tex-live-in-local-directory
+%
+% for how to fix placement.
 
 %Included packages ----------------------------------------------------------%
 \usepackage[utf8]{inputenc}                  % utf-8 encoding, æ, ø , å, etc.
@@ -10,7 +17,7 @@
 \usepackage{amssymb}                         % Additional symbols.
 %\usepackage{wasysym}                        % More additional symbols.
 \usepackage{mathrsfs}                        % Most additional symbols.
-\usepackage[pdftex]{graphicx}                % Improved inclusion of .pdf-graphics files.
+%\usepackage[pdftex]{graphicx}                % Improved inclusion of .pdf-graphics files.
 \usepackage[outercaption,wide]{sidecap}      % Floats with captions to the right/left.
 \usepackage{cancel}                          % Visualize cancellations in equations.
 \usepackage{enumerate}                       % Change counters (arabic, roman, etc.).
@@ -22,7 +29,6 @@
 \usepackage{combinedgraphics}                % Figures; let latex handle the text itself.
 \usepackage[framemethod=default]{mdframed}   % Make boxes.
 \usepackage{listings}                        % For including source code.
-\usepackage[colorlinks]{hyperref}            % Interactive references, colored.
 \usepackage{soul}                            % Make vertical bars through text.
 \usepackage{nicefrac}                        % Nice fractions with \nicefrac.
 \usepackage{mathtools}                       % Underbrackets, overbrackets.
@@ -39,11 +45,10 @@
 \usepackage{siunitx}
 \usepackage[version=4]{mhchem}
 \usepackage{relsize}  % Resize parts of equations
-\usepackage[backend=biber,url=false]{biblatex}
+\usepackage[backend=biber]{biblatex}
 \usepackage[version=4]{mhchem}
 \usepackage{ifxetex,ifluatex}
 \usepackage{etoolbox}
-\usepackage[svgnames]{xcolor}
 \usepackage{tikz}
 \usepackage{framed}
 \usetikzlibrary{matrix}
@@ -85,7 +90,7 @@
    \node (CQ) {\quotefont\fontsize{\quotesize}{\quotesize}\selectfont''};}
 
 % select a colour for the shading
-\colorlet{shadecolor}{Azure}
+\colorlet{shadecolor}{listingsbackgroundcolor}
 
 \newcommand*\shadedauthorformat{\emph} % define format for the author argument
 
@@ -253,23 +258,11 @@
   \stepcounter{subexcounter}                        % Add one to the exercise counter.
 }
 
-% Environment for proofs ----------------------------------------------------- %
-\newenvironment{proof}[2]{
-  \begin{exframe}
-    \begin{itemize}  \setlength{\itemindent}{0.6cm}
-      \item[{\bf #1} {\bf #2}] 
-	}
-	  % Subexercise text.
-	{
-    \end{itemize}
-  \end{exframe}
-}
-
 % Environment for answers ---------------------------------------------------- %
 \newenvironment{answer}{}{}
 
 % Set bibliography file and path for images.
-%\bibliography{references/fys4180ref.bib}
+\addbibresource{ref.bib}
 \graphicspath{{./images/}}
 \newcommand{\includepdfgraphics}[2]{\includecombinedgraphics[#1]{./images/#2}}
 
@@ -288,15 +281,65 @@
 \addbibresource{/Users/morten/Documents/Master/Master/ref.bib}
 
 
+\author{Morten Ledum}
+\title{Molecule stuff}
+\date{December 2017}
+
 
 \begin{document}
+\maketitle
 
-\subfile{Snippets/WaveFunctions/WaveFunctions}
+\begin{abstract}
+Stuff was done. It worked.
+\end{abstract}
+
+
+\begin{dedication}
+  To someone
+  \\\vspace{12pt}
+  This is a dedication to my cat.
+\end{dedication}
+
+\begin{acknowledgements}
+  I acknowledge my acknowledgements.
+\end{acknowledgements}
+
+\tableofcontents
+
+\chapter{Introduction}
+This is an intro to stuff.
+
+\section{Molecular dynamics}
+Molecular dynamics is fast but inaccurate.
+
+\section{Quantum dynamics}
+Direct quantum dynamics by solving the time dependent Schrödinger equation is accurate but unfeasably slow.
+
+\section{Neural networks in molecular dynamics}
+Neural networks can parameterize the data from millions of electronic structure calculations and in theory provide accuracy close to the direct quantum mechanical calculations at a fraction of the calculational cost.
+
+\section{Goals}
+The goals of the thesis are as follows:
+\begin{itemize}
+  \item World peace.
+  \item Ending human suffering.
+\end{itemize}
+
+\section{Structure of the thesis}
+In part one we do things, and in part two we do more things. In part three we dont do any things, but make up for it in part four in which thousands of things are done.
+
+\part{Introductory theory}
 \subfile{Snippets/QuantumMechanics/QuantumMechanics}
+\subfile{Snippets/WaveFunctions/WaveFunctions}
 \subfile{Snippets/Hartree-Fock/Hartree-Fock}
 \subfile{Snippets/DFT/DFT}
 
+\part{Advanced theory, implementation and results}
 \subfile{Snippets/VMCValidation/VMCValidation}
 \subfile{Snippets/Hartree-FockValidation/Hartree-FockValidation}
 
+\part{Conclusions and future work}
+
+
+\printbibliography
 \end{document}

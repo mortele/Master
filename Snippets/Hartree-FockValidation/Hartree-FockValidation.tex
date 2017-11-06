@@ -11,7 +11,7 @@
 \newcommand{\psit}{\left|\psi(t)\right\rangle}
 
 
-\section{Hartree-Fock validation tests}
+\chapter{Hartree-Fock validation tests}
 .
 
 Szabo,Ostlund: p191
@@ -98,7 +98,7 @@ CO        &  -112.093 &   -112.093 & &  -112.770 &   -112.770 & &  -112.791  \\
 % \caption{ ((Langhoff)) \label{tab:hfv3}}
 % \end{table}
 
-\subsection{Dissociation of the hydrogen molecule ion, \texorpdfstring{\ce{H2+}}{H2+}}
+\section{Dissociation of the hydrogen molecule ion, \texorpdfstring{\ce{H2+}}{H2+}}
 The conceptually simplest possible diatomic molecule is the hydrogen molecule ion, \ce{H2+}, sometimes also called the dihydrogen cation. Being a positively ionized hydrogen molecule, it consists of a single electron in the Coulomb field of two hydrogen atoms. Dissociation of this molecule involves breaking up the covalent one-electron bond, \ce{H2+ <=> H+ + H}. The \emph{dissociation energy}, $D_e$, is calculated as the difference between the energy of the bound molecule and the sum of the energies of the constituent parts at infinite separation.
 
 Fixing the intermolecular distance, $R$, it is relatively straight forward to calculate variational bounds on the dissociation energy using simple trail wave functions (armed with no more than pen, paper, and some patience). Using a single 1s hydrogen orbital centered on each molecule gives a bond length of $R_e=2.4a_0$ with a corresponding dissociation energy of $D_e=0.07E_h$, see e.g. ((Griffiths p304)). A natural next step in improving on this is to include more orbitals. Hinchliffe notes that adding 2p orbitals centered on the nuclei yields $R_e=2.005a_0$ and $D_e=0.09981E_h$. It is a testament to the simplicity of the problem that this is already within $0.1\%$ and $3\%$ of the experimental values of $R_e$ and $D_e$, respectively ((Hinchliffe p81)).
@@ -111,7 +111,7 @@ There appears to be two distinct jumps in accuracy: The first one when going fro
 
 As a validation example, we feel confident that our unrestricted Hartree-Fock code works as it should for small systems. With a basis set consisting of only 15 contracted gaussians (17 total primitives) per atom, we calculate the dissociation energy of \ce{H2+} to within about $0.3\%$ accuracy. As we will not be very focused on large Hartree-Fock basis sets in the present work, we declare ourselves satisfied with this and move on to testing larger diatomic systems.
 
-\subsection{Calculating the energies of the "ten-electron series"}
+\section{Calculating the energies of the "ten-electron series"}
 We will now concern ourselves with calculating the total energy for a series of molecular systems totalling ten-electrons. We will also consider \ce{H2}, \ce{N2}, and \ce{CO}. Geometry optimization will not be done here, but we will instead use bond lengths given in ((Szabo p191)). The atomic configuration used throughout this section is shown in \tab{hfv1}. For methane (\ce{CH4}), a tetrahedral structure is assumed: The four hydrogen atoms placed at the four corners of a tetrahedron with the carbon atom in the center. The bond angle refers to the \ce{H}\---\ce{C}\---\ce{H} angle between any of the four hyrogen atoms. Similarily, the ammonia molecule (\ce{NH3}) assumes a trigonal pyramid structure with the shortest \ce{H}\---\ce{N}\---\ce{H} angle between any two hydrogen atoms being the bond angle. Reference energies are also taken from ((Szabo p192)), where the authors have used the 4-31G and 6-31G* basis sets, in addition to STO-G3. 
 
 As the the total energy is the primary quantity available in any \emph{ab initio} calculation such as ours ((Szabo p191)), it seems like a good place to start validation for larger systems. Using two different basis sets, 3-21G and 6-311++G**, we calculate the energies for all the ten-electron series molecules in addition to \ce{CO}, \ce{N2} and \ce{H2}. The results are shown in \tab{hfv2}. We note that in every case, our results are better than the corresponding results of ((Szabo p192)) using the 6-31G** basis set\----as expected, we are using a larger basis. Our results are also consistent with the results of ((dragly s84)), from which we can directly compare results for the 6-311++G** basis set. We also notice that the restricted and unrestricted versions of our code seem to output the exact same values, meaning that forcing electrons pairs to occupy the same molecular orbitals is a valid assumption we can make in these cases.

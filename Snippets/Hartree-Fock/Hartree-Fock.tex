@@ -6,7 +6,7 @@
 \newcommand{\psiz}{|\Psi_0\rangle}
 
 
-\section{Hartree-Fock}
+\chapter{Hartree-Fock}
 The Hartree-Fock (HF) method is one of the most important models in all of quantum chemistry, not only because it may yield acceptable approximations in certain scenarios, but because it is also an important stepping stone on the way to more accurate methods. Only a few of the more sophisticated quantum chemistry methods bypass HF entirely, while \emph{most} of them use it as a first step and then build on the HF orbitals to obtain more accurate descriptions\cite{szabo}\comment{p108}. In particular, for larger systems, the Hartree-Fock approach may be the only feasible one and it is the only approximate method that is \emph{routinely} being applied to \emph{large} systems of several hundred atoms and molecules\cite{helgaker}\comment{p433}.
 
 The Hartree-Fock method is a \emph{mean field} method in that it treats the inter electron interaction only in an averaged way\cite{kvaal}\comment{p44}. Any single electron does not feel the effect of every other localized electron, but rather just an averaged potential from all other remaining ones. This is sometimes also called an \emph{independent-particle} model. The Hartree-Fock approximation usually \emph{defines} the dynamical coulomb correlation between electrons by saying the difference between the Hartree-Fock energy and the exact quantum mechanical energy is the correlation energy. Hartree-Fock nevertheless deals exactly with the electron correlations arising from the anti-symmetry condition of Pauli, namely the exchange correlations. 
@@ -16,7 +16,7 @@ In essence, the Hartree-Fock procedure finds the most energetically favorable el
 In the following we will apply the variational principle to the single Slater determinant ansatz wave function for the interacting system of $N$ electrons. We will then expand the solution in a given basis and derive the Roothan-Hall and Pople-Nesbet equations, for the closed-shell and open-shell systems respectively. 
 
 
-\subsection{Single Slater determinant ansatz}
+\section{Single Slater determinant ansatz}
 The method itself essentially finds the most energetically favorable electronic wave function, under the assumption that the full ground state consists of \emph{a single} Slater determinant populated by orthonormal spin-orbitals, $\phi_i$. We denote this Slater determinant $|\Psi\rangle$,
 \begin{align}
 |\Psi\rangle &= |\phi_0\phi_1\phi_2\dots\phi_{N-1}\phi_{N}\rangle, \ \ \ \langle \phi_i|\phi_j\rangle = \delta_{ij}.
@@ -43,7 +43,7 @@ where we have defined the \emph{one-body operator} $\hat h_i=-\nabla^2/2-\sum_AZ
 
 
 
-\subsection{Exchange correlation}
+\section{Exchange correlation}
 With only applying the Slater determinant ansatz, the electrons are already correlated. If we consider the probability of finding two electrons at coordinates $\x_1$ and $\x_2$ respectively, \cite{thijssen}\comment{p53}
 \begin{align}
 \rho(\x_1,\x_2) &= \int\mathrm{d}\x_3\,\mathrm{d}\x_4\,\dots\,\mathrm{d}\x_N\,|\Psi(\x_1,\x_2,\dots,\x_N)|^2 \nn\\
@@ -97,7 +97,7 @@ When working in a separable Hilbert space as we always do in quantum mechanics, 
 meaning we can think of a functional $F[f]$ as a \emph{function} of the vector of coefficients relative to the basis set, ${\bf c}=(c_1,c_2,\dots)$ \cite{kvaal}\comment{p151}.
 
 \begin{exframe}
-\subsubsection{Short mathematical interlude \label{HFmath}}
+\subsection{Short mathematical interlude \label{HFmath}}
 Let $B(X,Y)$ denote the set of all continous linear transformations from normed vector spaces $X$ and $Y$ (over the algebraic scalar field $\mathbb{F}$\footnote{Meaning $X$ and $Y$ are closed under scalar multiplication with elements $c\in\mathbb{F}$.}). For example we may consider $X=\mathbb{R}^n$ and $Y=\mathbb{R}^m$, i.e. the set of real vectors of length $n$ and $m$, respectively. The set of continous linear transformations from $X$ to $Y$, $B(X,Y)$, thus consists of real valued matrices of dimensions $m\times n$, so we may write $B(\mathbb{R}^n,\mathbb{R}^m)=\mathbb{R}^{m\times n}$. 
 
 A \emph{Banach space} is a normed vector space which is complete under the metric associated with the norm. Since any norm, $\Vert \cdot \Vert$ induces as metric by $d({\bf x},{\bf y})=\Vert {\bf x}-{\bf y} \Vert$, and the inner product $\langle \cdot|\cdot\rangle$ induces a norm by $\Vert \cdot \Vert = \sqrt{\langle \cdot|\cdot\rangle}$ we can define a \emph{Hilbert space} as a Banach space which is complete w.r.t. this specific metric \cite{lindstrom}\comment{p153}\cite{mcdonald}\comment{p461}.
@@ -107,7 +107,7 @@ The space of linear transformations from $X$ to $\mathbb{F}$, with $X$ being som
 In the following, we take $f\in\mathcal{H}^*$ to be a linear functional on $\mathcal{H}$ and $x\in\mathcal{H}$ to be a function in the Hilbert space itself. It can be shown that for any such $x$ there exists a \emph{unique} $y\in\mathcal{H}$ such that $f[x]=f_y[x]=\langle x|y\rangle$, where the functional $f_y[\cdot]\equiv\langle \cdot|y\rangle$ \cite{rynne}\comment{p123}\cite{mcdonald}\comment{p472}. This is known as the Riesz representation theorem or sometimes the Riesz-Fréchet theorem. Essentially, this means that we can associate the dual space of $\mathcal{H}$ with the space itself since there is a correspondance between the functionals and the elements of the space itself. This is more succintly stated as Hilbert spaces are \emph{self-dual}, and it is this property that justifies the use of Dirac bra-ket notation since we are guaranteed that any ket has a unique corresponding bra which is its Hermitian conjugate.
 \end{exframe}
 
-\subsubsection{Functional differentials and derivatives}
+\subsection{Functional differentials and derivatives}
 The differential of a functional $F[f]$ is the part of the difference $F[f+\delta f]-F[f]$ that depends linearly on $\delta f$, where $\delta f$ is an infinitesimal variation of the argument function $f$ \cite{yangparr}\comment{246}. Since we need to account for the continous variation of $F$ over the infinitesimal range $[f,f+\delta f]$ we take the integral
 \begin{align}
 \delta F[f] = \int \frac{\delta F[f]}{\delta f(x)}\delta f(x)\dx,
