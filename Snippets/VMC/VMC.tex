@@ -8,24 +8,88 @@ A large collection of computational methods exist which attempt to solve the Sch
 \begin{align}
 E_0=\langle \Psi|\hat H|\Psi\rangle = \frac{\int\mathrm{d}^{3N}\R\, \Psi^*(\R)\hat H(\R) \Psi(\R)}{\int\mathrm{d}^{3N}\R\, \Psi^*(\R)\Psi(\R)}, \label{eq:VMC1}
 \end{align}
-with $\R=\{\r_1,\r_2,\dots,\r_N\}$ being all electronic coordinates. It is fairly obvious from the name that said integral is evaluated using Monte Carlo integration. Any other quantum mechanical quantity of interest can be expressed in terms of the expectation value of an operator à la \eq{VMC1}, which means we can essentially formulate all of electronic structure theory in terms of such high-dimensional integrals \cite{hjorth-jensen}\comment{p457}. Since Monte Carlo methods are well suited to solving such high-dimensional integrals for which grid-based methods fail spectacularly, the matching of quantum mechanics and Monte Carlo integration has widespread applicability \cite{hammond}\comment{p48}.
+with $\R=\{\r_1,\r_2,\dots,\r_N\}$ being all electronic coordinates. It is fairly obvious from the name that said integral is evaluated using Monte Carlo integration. Any other quantum mechanical quantity of interest can be expressed in terms of the expectation value of an operator à la \eq{VMC1}, which means we can essentially formulate all of electronic structure theory in terms of such high-dimensional integrals \cite{hjorth-jensen}\comment{p457}. Since Monte Carlo methods are well suited to solving such integrals (for which grid-based methods fail spectacularly) the matching of quantum mechanics and Monte Carlo integration has widespread applicability \cite{hammond}\comment{p48}.
 
 Of course, we do not a priori know the form of the ground state wave function, $\Psi(\R)$, and in electronic structure problems we have to construct an ansatz wave function by filling a (linear combination of) Slater determinant(s) with spin-orbitals from some chosen basis set. However, in contrast with the previously described Hartree-Fock and (Kohn-Sham) Density Functional methods, VMC does not in general require the use of spin-orbitals for which one-, and two-electron Coulombic interaction integrals can be readily calculated \cite{assaraf}\comment{p3}. Whereas we are essentially forced into using combinations of gaussian basis functions under the former schemes, the Variational Monte Carlo method offers much more freedom in the choices of orbital basis\----essentially the only requirement on the orbital basis functions is that we need to be able to write them down in closed form.
 
-The Variational Monte Carlo method is an explicitly correlated one, meaning dynamic electron-electron correlation is taken into account. Unlike the Hartree-Fock formalism which treats (opposite spin) electron-electron correlation purely in terms of a mean-field approximation, the electrons under the VMC formalism interact \emph{instanteneously}\----electrons are at all times surrounded by "correlation holes" where the probability of finding other electrons vanish. 
+The Variational Monte Carlo method is an explicitly correlated one, meaning dynamic electron-electron correlation is taken into account. Unlike the Hartree-Fock formalism which treats (opposite spin) electron-electron correlation purely in terms of a mean-field approximation, the electrons under the VMC formalism interact \emph{instanteneously}\----electrons are at all times surrounded by "correlation holes" where the probability of finding other electrons vanish. Introducing explicit many-body correlation terms in Hartre-Fock and post Hartree-Fock methods lead to the introduction of molecular integrals which are significantly harder to solve numerically than otherwise ignoring such terms. For this reason, the vast majority of such work is done using Slater detemrinants filled with independent-particle orbitals. However, due to the flexibility of the Monte Carlo integration scheme, we may (and should) relatively easily include correlation terms explicitly in the VMC wave function \cite{bressanini}\comment{p9}.
 
 In the following, we will present the fundamentals of Monte Carlo integration and its application to the electronic quantum mechanical problem. But first of all we will derive the Metropolis algorithm which we will employ to sample the configuration space of our $N$-electron system according to the wave function squared $|\Psi(\R)|^2$ (the probability density).
 
-\section{The Metropolis-Hastings algorithm}
-The Metropolis algorithm, originally proposed by Metropolis and co-workers \cite{metropolis} and later generalized by Hastings \cite{hastings} is a method for sampling probability distributions which may be impossible to sample directly\footnote{Direct sampling in this context means e.g. \emph{inverse transform sampling}, which neccessitate inverting the cumulative distribution associated with the probability density function (PDF) \cite{numericalrecipes}. For complicated distributions, this is often either impossible of unfeasible.} \cite{assaraf}\comment{p291}. The Metropolis-Hastings algorithm (MH) generates a Markov chain of random samples distributed according to the PDF in question. 
+\section{The Metropolis algorithm}
+The Metropolis algorithm, originally proposed by Metropolis and co-workers \cite{metropolis} and later generalized by Hastings \cite{hastings} is a method for sampling probability distributions which may be impossible to sample directly\footnote{Direct sampling in this context means e.g.\ \emph{inverse transform sampling}, which neccessitate inverting the cumulative distribution associated with the probability density function (PDF) \cite{numericalrecipes}. For complicated distributions, this is often either impossible of unfeasible.} \cite{assaraf}\comment{p291}. The Metropolis-Hastings algorithm (MH) generates a Markov chain of random samples distributed according to the PDF in question. 
 
-\subsection{Markov chains and diffusion}
+\subsection{Markov chains, detailed balance and ergodicity}
 A Markov chain is a sequence of stochastic variables $\{X_i\}_{i=1}^n$ for which step $i+1$ depends soley on step $i$, meaning the process has no "memory." In other words, the probability of stepping from state $X_k$ to state $X_l$ depends only on the states $k$ and $l$, not on \emph{how} or \emph{when} it got to $X_k$, \cite{hammond}\comment{p25}\cite{gilks}\comment{p5}
 \begin{align}
-P\left(X_{i+1}|X_i|X_{i-1}|\dots|X_0\right)=P\left(X_{i+1}|X_i\right).
+W\left(X_{i+1};i+1|X_i;i|X_{i-1};i-1|\dots|X_0;0\right)=W\left(X_{i+1};i+1|X_i;i\right).
+\end{align}
+Given the state $X_i$, the step to the next configuration\----the state $X_{i+1}$\----is governed by the stepping probability $W(\,\cdot\,;i+1|X_i;i)$. Even though the stepping probability has no \emph{memory}, the probability of finding the chain in configuration $Y$ at step $i$ is dependent on the starting configuration, $X_0$. The \emph{Markov assumption} means we can write the conditional probability of the chain going from $X_0$, through $X_1$, $X_2$, $\dots$, $X_{i}$, and finally to $Y$ (at step $i+1$) as a simple product \cite{gardiner}\comment{p43}
+\begin{align}
+P^{(i)}(Y|X_i|X_{i-1}|\dots|X_0) = W(Y;i+1|X_{i};i)W(X_{i};i|X_{i-1};i-1)\dots W(X_1;1|X_0;0).
 \end{align}
 
+In order for the Markov chain to be of much use to use, we need to demand that given \emph{any} starting point, after sufficient time has passed the chain must gradually "forget" about its initial value. In other words, $P^{(i)}(\,\cdot\,|X_0)$ must converge to some \emph{unique stationary} distribution independent of $X_0$ for large $i$ \cite{gilks}\comment{p5}. Neccessary and sufficient conditions for this to hold will be derived shortly.
+
+\subsubsection*{Markov chain as a random walk}
+We can visualize the evolution of the Markov chain as a \emph{walker}, taking steps around in the configuration space according to the stepping probability. The attributes of the walker define completely the state of the system, $X$, which in the present work is the coordinate configuration of all electrons $\R=\{r_1,r_2,\dots,r_N\}$. Standing at position $X$ in the configuration space, the probability of the walker of stepping to configuration $Y$ in the next step is then given by the stepping probability $W(Y|X)$. 
+
+If the configuration space is discrete, i.e.\ only a finite number $K$ of configurations are possible, then the stepping probability is a $K\times K$ matrix, with the configurations of the system being represented by $K$-dimensional unit vectors. The states of the walker then become $K$-dimensional vectors, with  the elements representing the probability of the system being in any given configuration. For a system in which the configurations take continous values, the stepping probability is a more general operator. 
+
+It is important to note that even though the configuration space consists of quantities with continous ranges, the \emph{sample path} of the Markov chain is still discrete \cite{gardiner}. In other words, stepping from Markov step $i$ to the next step $i+1$ involves some finite (not infinitesimal) change in the configuration.\footnote{Infinitesimal changes are of course in general also allowed. This ensures for example that there is a non-zero chance of the system remaining in place at the $i\rightarrow i+1$ step.} Since the stepping probability is in fact a \emph{probability}, the following equation must hold
+\begin{align}
+\sum_{Y\in\mathcal{X}}W(Y;i+1|X;i)=1, \ \ \text{ or } \ \ \int_{\mathcal{X}}\mathrm{d}Y\,W(Y;i+1|X;i)=1, \label{eq:VMC2}
+\end{align}
+in the discrete and continous cases, respectively \cite{hammond}. The set of all possible configurations of the system is here denoted $\mathcal{X}$. \eq{VMC2} essentially states the when the walker is situated at configuration $X$, a Markov step means the walker either moves or stays put.
+
+A related but somewhat more useful relation can be found when considering a subsequent step from one of all the possible intermediate configurations $Y$, to some state $Z$. Summing (integrating) over the intermediate state yields the Chapman-Kolmogorov equation, \cite{gardiner}
+\begin{align}
+W(Z;i+2|X;i) &= \sum_{Y\in\mathcal{X}}W(Z;i+2|Y;i+1)W(Y;i+1|X;i), \ \ \text{ or} \\
+% 
+W(Z;i+2|X;i) &= \int_{\mathcal{X}}\mathrm{d}Y\,W(Z;i+2|Y;i+1)W(Y;i+1|X;i). \label{eq:VMC3}
+\end{align}
+This is also sometimes known as the Einstein–Smoluchowski–Kolmogorov–Chapman or the Chapman-Einstein-Enskog-Kolmogorov relation \cite{chaichian}\comment{p21}\cite{hjorth-jensen}\comment{p401}.\footnote{Or apparently pretty much \emph{any} combination of two or more of the names Chapman, Kolmogorov Einstein, Smoluchowski, and Enskog; depending on who you ask.} 
+
+In the following, we drop the temporal $i$-indices on the stepping probability which we assume to not depend on the \emph{Markov time}. In addition, without any loss of generality, we split it into two parts\----a proposal probability and a corresponding acceptance probability. We write thus
+\begin{align}
+W(Y;i+1|X;i) = W(Y|X) \equiv T(Y\leftarrow X)A(Y\leftarrow X),
+\end{align}
+where $T$ and $A$ are proposal and acceptance probabilities, respectively. When the temporal indices are omitted, a single step is always assumed. It turns out that we can express the condition that resulting probability density converge to some \emph{unique} distirbution in terms of the Chapman-Kolmogorov relation of \eq{VMC3}. Since the probability of the walker being in configuration $X$ at time $i$ is $P^{(i)}(X)$, the total probability of being in state $Y$ at time $i+1$ is the sum of probabilities of \emph{being in $X$ and stepping into $Y$} (for all possible state $X$) plus the probability of \emph{being in $Y$ and rejecting a suggested move out to any other state $X$} \cite{kalos}\comment{p65}:
+\begin{align}
+P^{(i+1)}(Y)&=\int_{\mathcal{X}}\mathrm{d}X\,\left[P^{(i)}(X)W(Y|X) + P^{(i)}(Y)\neg W(X|Y)\right] \nn\\
+%
+&=\int_{\mathcal{X}}\mathrm{d}X\,\Big[P^{(i)}(X)T(Y\leftarrow X)A(Y\leftarrow X) + \nn\\
+& \ \ \ \ \  \ \ \ \ \  \ \ \ \ \   \ \ \ \ \   \ \ \ \ \  \ \ \ \ \  P^{(i)}(Y) T(X\leftarrow Y)\left\{1-A(X\leftarrow Y)\right\}\Big]. \nn\\
+%
+&=\int_{\mathcal{X}}\mathrm{d}X\,\Big[P^{(i)}(X)T(Y\leftarrow X)A(Y\leftarrow X) + P^{(i)}(Y)T(X\leftarrow Y)- \nn\\
+& \ \ \ \ \  \ \ \ \ \  \ \ \ \ \   \ \ \ \ \   \ \ \ \ \  \ \ \ \ \  P^{(i)}(Y) T(X\leftarrow Y)A(X\leftarrow Y)\Big]. \label{eq:VMC4}
+\end{align}
+Since the integral of $T(X\leftarrow Y)$ over all possible $X$ neccessarily must be unity, the middle term is simply $P^{(i)}(Y)$ \cite{hjorth-jensen}\comment{p401}. This means we can rewrite \eq{VMC4} as
+\begin{align}
+P^{(i+1)}(Y)-P^{(i)}(Y) &= \int_{\mathcal{X}}\mathrm{d}X\, \Big[P^{(i)}(X)T(Y\leftarrow X)A(Y\leftarrow X) - \nn\\
+& \ \ \ \ \  \ \ \ \ \  \ \ \ \ \   \ \ \ \ \   \ \ \ \ \  \ \ \ \ \  P^{(i)}(Y) T(X\leftarrow Y)A(X\leftarrow Y)\Big],
+\end{align}
+and the condition that once equilibrium is reached, the Markov chain cannot exit the equilibirium again can now be stated as $P^{(i+1)}(Y)-P^{(i)}(Y)=0$, i.e.\
+\begin{align}
+P^{(i)}(X)T(Y\leftarrow X)A(Y\leftarrow X) &= P^{(i)}(Y) T(X\leftarrow Y)A(X\leftarrow Y) \nn\\
+%
+\frac{P^{(i)}(X)}{P^{(i)}(Y)} &= \frac{T(X\leftarrow Y)A(X\leftarrow Y)}{T(Y\leftarrow X)A(Y\leftarrow X)}.
+\end{align}
+This is known as {\bf detailed balance} \cite{thijssen}\comment{p301}.
+
+
+
+
+
+
+
+
 \end{document}
+
+
+
+
+
 
 
 
