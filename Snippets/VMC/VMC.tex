@@ -10,37 +10,37 @@ E_0=\langle \Psi|\hat H|\Psi\rangle = \frac{\int\mathrm{d}^{3N}\R\, \Psi^*(\R)\h
 \end{align}
 with $\R=\{\r_1,\r_2,\dots,\r_N\}$ being all electronic coordinates. It is fairly obvious from the name that said integral is evaluated using Monte Carlo integration. Any other quantum mechanical quantity of interest can be expressed in terms of the expectation value of an operator à la \eq{VMC1}, which means we can essentially formulate all of electronic structure theory in terms of such high-dimensional integrals \cite{hjorth-jensen}\comment{p457}. Since Monte Carlo methods are well suited to solving such integrals (for which grid-based methods fail spectacularly) the matching of quantum mechanics and Monte Carlo integration has widespread applicability \cite{hammond}\comment{p48}.
 
-Of course, we do not a priori know the form of the ground state wave function, $\Psi(\R)$, and in electronic structure problems we have to construct an ansatz wave function by filling a (linear combination of) Slater determinant(s) with spin-orbitals from some chosen basis set. However, in contrast with the previously described Hartree-Fock and (Kohn-Sham) Density Functional methods, VMC does not in general require the use of spin-orbitals for which one-, and two-electron Coulombic interaction integrals can be readily calculated \cite{assaraf}\comment{p3}. Whereas we are essentially forced into using combinations of gaussian basis functions under the former schemes, the Variational Monte Carlo method offers much more freedom in the choices of orbital basis\----essentially the only requirement on the orbital basis functions is that we need to be able to write them down in closed form.
+Of course, we do not a priori know the form of the ground state wave function, $\Psi(\R)$, and in electronic structure problems we have to construct an ansatz wave function by filling a (linear combination of) Slater determinant(s) with spin-orbitals from some chosen basis set. However, in contrast with the previously described Hartree-Fock and (Kohn-Sham) Density Functional methods, VMC does not in general require the use of spin-orbitals for which one-, and two-electron Coulombic interaction integrals can be readily calculated \cite{assaraf}\comment{p3}. Whereas we are essentially forced into using combinations of gaussian basis functions under the former schemes, the Variational Monte Carlo method offers much more freedom in the choices of orbital basis. Essentially the only requirement on the orbital basis functions is that we need to be able to write them down in closed form.
 
-The Variational Monte Carlo method is an explicitly correlated one, meaning dynamic electron-electron correlation is taken into account. Unlike the Hartree-Fock formalism which treats (opposite spin) electron-electron correlation purely in terms of a mean-field approximation, the electrons under the VMC formalism interact \emph{instanteneously}\----electrons are at all times surrounded by "correlation holes" where the probability of finding other electrons vanish. Introducing explicit many-body correlation terms in Hartre-Fock and post Hartree-Fock methods lead to the introduction of molecular integrals which are significantly harder to solve numerically than otherwise ignoring such terms. For this reason, the vast majority of such work is done using Slater detemrinants filled with independent-particle orbitals. However, due to the flexibility of the Monte Carlo integration scheme, we may (and should) relatively easily include correlation terms explicitly in the VMC wave function \cite{bressanini}\comment{p9}.
+The Variational Monte Carlo method is an explicitly correlated one, meaning dynamic electron-electron correlation is taken into account. Unlike the Hartree-Fock formalism which treats (opposite spin) electron-electron correlation purely in terms of a mean-field approximation, the electrons under the VMC formalism interact \emph{instanteneously}. Electrons are at all times surrounded by "correlation holes" where the probability of finding other electrons vanish. Introducing explicit many-body correlation terms in Hartre-Fock and post Hartree-Fock methods lead to the introduction of molecular integrals which are significantly harder to solve numerically than otherwise ignoring such terms. For this reason, the vast majority of such work is done using Slater detemrinants filled with independent-particle orbitals. However, due to the flexibility of the Monte Carlo integration scheme, we may (and should) relatively easily include correlation terms explicitly in the VMC wave function \cite{bressanini}\comment{p9}.
 
 In the following, we will present the fundamentals of Monte Carlo integration and its application to the electronic quantum mechanical problem. But first of all we will derive the Metropolis algorithm which we will employ to sample the configuration space of our $N$-electron system according to the wave function squared $|\Psi(\R)|^2$ (the probability density).
 
 \section{The Metropolis algorithm}
-The Metropolis algorithm, originally proposed by Metropolis and co-workers \cite{metropolis} and later generalized by Hastings \cite{hastings} is a method for sampling probability distributions which may be impossible to sample directly\footnote{Direct sampling in this context means e.g.\ \emph{inverse transform sampling}, which neccessitate inverting the cumulative distribution associated with the probability density function (PDF) \cite{numericalrecipes}. For complicated distributions, this is often either impossible of unfeasible.} \cite{assaraf}\comment{p291}. The Metropolis-Hastings algorithm (MH) generates a Markov chain of random samples distributed according to the PDF in question. 
+The Metropolis algorithm, originally proposed by Metropolis and co-workers \cite{metropolis} and later generalized by Hastings \cite{hastings} is a method for sampling probability distributions which may be impossible to sample directly\footnote{Direct sampling in this context means e.g.\ \emph{inverse transform sampling}, which neccessitate inverting the cumulative distribution associated with the probability density function (PDF) \cite{numericalrecipes}. For complicated distributions, this is often either impossible of unfeasible \cite{assaraf}.} \cite{assaraf}\comment{p291}. The Metropolis-Hastings algorithm (MH) generates a Markov chain of random samples distributed according to the PDF in question. 
 
-\subsection{Markov chains, detailed balance and ergodicity}
-A Markov chain is a sequence of stochastic variables $\{X_i\}_{i=1}^n$ for which step $i+1$ depends soley on step $i$, meaning the process has no "memory." In other words, the probability of stepping from state $X_k$ to state $X_l$ depends only on the states $k$ and $l$, not on \emph{how} or \emph{when} it got to $X_k$, \cite{hammond}\comment{p25}\cite{gilks}\comment{p5}
+\subsection{Markov chains, detailed balance and ergodicity \label{markov}}
+A Markov chain is a sequence of stochastic variables $\{X_i\}_{i=1}^n$ for which step $i+1$ depends soley on step $i$, meaning the process has no "memory." In other words, the probability of stepping from state $X_k$ to state $X_l$ depends only on the states $k$ and $l$, not on \emph{how} it got to $X_k$, \cite{hammond}\comment{p25}\cite{gilks}\comment{p5}
 \begin{align}
 W\left(X_{i+1};i+1|X_i;i|X_{i-1};i-1|\dots|X_0;0\right)=W\left(X_{i+1};i+1|X_i;i\right).
 \end{align}
-Given the state $X_i$, the step to the next configuration\----the state $X_{i+1}$\----is governed by the stepping probability $W(\,\cdot\,;i+1|X_i;i)$. Even though the stepping probability has no \emph{memory}, the probability of finding the chain in configuration $Y$ at step $i$ is dependent on the starting configuration, $X_0$. The \emph{Markov assumption} means we can write the conditional probability of the chain going from $X_0$, through $X_1$, $X_2$, $\dots$, $X_{i}$, and finally to $Y$ (at step $i+1$) as a simple product \cite{gardiner}\comment{p43}
+Given the state $X_i$, the step to the next configuration\textemdash the state $X_{i+1}$\textemdash is governed by the stepping probability $W(\,\cdot\,;i+1|X_i;i)$. Even though the stepping probability has no \emph{memory}, the probability of finding the chain in configuration $Y$ at step $i$ is implicitly dependent on the starting configuration, $X_0$. The \emph{Markov assumption} means we can write the conditional probability of the chain going from $X_0$, through $X_1$, $X_2$, $\dots$, $X_{i}$, and finally to $Y$ (at step $i+1$) as a simple product \cite{gardiner}\comment{p43}
 \begin{align}
 P^{(i)}(Y|X_i|X_{i-1}|\dots|X_0) = W(Y;i+1|X_{i};i)W(X_{i};i|X_{i-1};i-1)\dots W(X_1;1|X_0;0).
 \end{align}
 
-In order for the Markov chain to be of much use to use, we need to demand that given \emph{any} starting point, after sufficient time has passed the chain must gradually "forget" about its initial value. In other words, $P^{(i)}(\,\cdot\,|X_0)$ must converge to some \emph{unique stationary} distribution independent of $X_0$ for large $i$ \cite{gilks}\comment{p5}. Neccessary and sufficient conditions for this to hold will be derived shortly.
+In order for the Markov chain to be of much use to us, we need to demand that given \emph{any} starting point, after sufficient time has passed the chain must gradually "forget" about its initial value. In other words, $P^{(i)}(\,\cdot\,|X_0)$ must converge to some \emph{unique stationary} distribution independent of $X_0$ for large $i$ \cite{gilks}\comment{p5}. Neccessary and sufficient conditions for this to hold will be derived shortly.
 
-\subsubsection*{Markov chain as a random walk}
-We can visualize the evolution of the Markov chain as a \emph{walker}, taking steps around in the configuration space according to the stepping probability. The attributes of the walker define completely the state of the system, $X$, which in the present work is the coordinate configuration of all electrons $\R=\{r_1,r_2,\dots,r_N\}$. Standing at position $X$ in the configuration space, the probability of the walker of stepping to configuration $Y$ in the next step is then given by the stepping probability $W(Y|X)$. 
+\subsubsection{Markov chain as a random walk}
+We can visualize the evolution of the Markov chain as a \emph{walker}, taking steps around in the configuration space according to the stepping probability. The attributes of the walker define completely the state of the system, $X$, which in the present work is the coordinate configuration of all electrons $\R=\{\r_1,\r_2,\dots,\r_N\}$. Standing at position $X$ in the configuration space, the probability of the walker of stepping to configuration $Y$ in the next step is then given by the stepping probability $W(Y|X)$. 
 
-If the configuration space is discrete, i.e.\ only a finite number $K$ of configurations are possible, then the stepping probability is a $K\times K$ matrix, with the configurations of the system being represented by $K$-dimensional unit vectors. The states of the walker then become $K$-dimensional vectors, with  the elements representing the probability of the system being in any given configuration. For a system in which the configurations take continous values, the stepping probability is a more general operator. 
+If the configuration space is discrete, i.e.\ only a finite number $K$ of configurations are possible, then the stepping probability is a $K\times K$ matrix, with the configurations of the system being represented by $K$-dimensional unit vectors. The states of the walker then become $K$-dimensional vectors, with  the elements representing the probability of the system being in any given configuration. For a system in which the configurations take continous values, the stepping probability is an operator on an infinite dimensional vector space. We will ignore any possible subtle complications introduced by considering the continous integrals as opposed to discrete sums, and refer to $W$ as a matrix also in the continous case.
 
 It is important to note that even though the configuration space consists of quantities with continous ranges, the \emph{sample path} of the Markov chain is still discrete \cite{gardiner}. In other words, stepping from Markov step $i$ to the next step $i+1$ involves some finite (not infinitesimal) change in the configuration.\footnote{Infinitesimal changes are of course in general also allowed. This ensures for example that there is a non-zero chance of the system remaining in place at the $i\rightarrow i+1$ step.} Since the stepping probability is in fact a \emph{probability}, the following equation must hold
 \begin{align}
 \sum_{Y\in\mathcal{X}}W(Y;i+1|X;i)=1, \ \ \text{ or } \ \ \int_{\mathcal{X}}\mathrm{d}Y\,W(Y;i+1|X;i)=1, \label{eq:VMC2}
 \end{align}
-in the discrete and continous cases, respectively \cite{hammond}. The set of all possible configurations of the system is here denoted $\mathcal{X}$. \eq{VMC2} essentially states the when the walker is situated at configuration $X$, a Markov step means the walker either moves or stays put.
+in the discrete and continous cases, respectively \cite{hammond}. The set of all possible configurations of the system is here denoted $\mathcal{X}$. \eq{VMC2} essentially states the when the walker is situated at configuration $X$, a Markov step means the walker either moves or stays put. In addition, non-negativity $W(Y|X)\ge0$ must hold \cite{assaraf}\comment{p292}. This means $W$ is a \emph{stochastic matrix}. 
 
 A related but somewhat more useful relation can be found when considering a subsequent step from one of all the possible intermediate configurations $Y$, to some state $Z$. Summing (integrating) over the intermediate state yields the Chapman-Kolmogorov equation, \cite{gardiner}
 \begin{align}
@@ -50,7 +50,7 @@ W(Z;i+2|X;i) &= \int_{\mathcal{X}}\mathrm{d}Y\,W(Z;i+2|Y;i+1)W(Y;i+1|X;i). \labe
 \end{align}
 This is also sometimes known as the Einstein–Smoluchowski–Kolmogorov–Chapman or the Chapman-Einstein-Enskog-Kolmogorov relation \cite{chaichian}\comment{p21}\cite{hjorth-jensen}\comment{p401}.\footnote{Or apparently pretty much \emph{any} combination of two or more of the names Chapman, Kolmogorov Einstein, Smoluchowski, and Enskog; depending on who you ask.} 
 
-In the following, we drop the temporal $i$-indices on the stepping probability which we assume to not depend on the \emph{Markov time}. In addition, without any loss of generality, we split it into two parts\----a proposal probability and a corresponding acceptance probability. We write thus
+In the following, we drop the temporal $i$-indices on the stepping probability which we assume to not depend on the \emph{Markov time}. In addition, without any loss of generality, we split it into two parts: a proposal probability and a corresponding acceptance probability. We write thus
 \begin{align}
 W(Y;i+1|X;i) = W(Y|X) \equiv T(Y\leftarrow X)A(Y\leftarrow X),
 \end{align}
@@ -73,16 +73,48 @@ and the condition that once equilibrium is reached, the Markov chain cannot exit
 \begin{align}
 P^{(i)}(X)T(Y\leftarrow X)A(Y\leftarrow X) &= P^{(i)}(Y) T(X\leftarrow Y)A(X\leftarrow Y) \nn\\
 %
-\frac{P^{(i)}(X)}{P^{(i)}(Y)} &= \frac{T(X\leftarrow Y)A(X\leftarrow Y)}{T(Y\leftarrow X)A(Y\leftarrow X)}.
+\frac{P^{(i)}(X)}{P^{(i)}(Y)} &= \frac{T(X\leftarrow Y)A(X\leftarrow Y)}{T(Y\leftarrow X)A(Y\leftarrow X)}. \label{eq:VMC5}
 \end{align}
 This is known as {\bf detailed balance} \cite{thijssen}\comment{p301}.
 
+Systems generated by random walks such as this one can be characterized into a few catergories. If, after vising $X$, the probability of later re-visiting the neighbourhood around $X$ vanishes we classify the system as \emph{null}. If, on the other hand, after vising $X$, the walker re-visits $X$ every subsequent $T$ steps, we call the system \emph{periodic}. Crucially, a system which is neither null nor periodic is called {\bf ergodic}: revisiting $X$ is allowed but is not done periodically \cite{kalos}\comment{67}. The ergodicity condition can be stated as: For every pair of states $X$ and $Y$ there exists a non-zero stepping probability (possibly with intermediate steps)
+\begin{align}
+W^{(n)}(Y|X)=W(Y|Z_n)W(Z_n|Z_{n-1})\dots W(Z_1|X)\not=0,
+\end{align}
+where the $W$-superscript denotes the number of steps taken. In short, ergodicity ensures we can reach any configuration in finite time, regardless of starting point.
 
+It turns out that detailed balance and ergodicity are exactly sufficient\footnote{Although not neccessary: detailed balance is more stringent demand than needed \cite{assaraf}\comment{p293}.} for the conditions stated at the end of section \ref{markov} to hold, i.e. the asymptotical distribution after a large number $M$ of Markov steps converges to a unique distribution independently of starting configuration \cite{wood}.
 
+\subsubsection{Connecting stepping probability with the asymptotic probability density}
+Having shown that under certain conditions, the asymptotic probability density resulting from the Markov chain is unique, it is now time to ask how we can construct the stepping probability in a way which produces the desired $P(X)$. It is exactly this the Metropolis algorithm achieves. The stepping probability $W(Y|X)$ associated with the known probability density $P(X)$ is in general unknown, and often too complicated to even easily write down \cite{hjorth-jensen}\comment{p400}. However, according to Metropolis and co-workers, we can use a uniform suggestion probability $T$ and accept any suggested step with the probability 
+\begin{align}
+A(Y\leftarrow X) = \min\left\{1,\frac{P(Y)}{P(X)}\right\}. \label{eq:VMC6}
+\end{align}
+This ensures the sampled Markov steps adhere to the correct relative probabilities within the distirbution \cite{hammond}\comment{p30}. For completeness, the transition matrix can under the Metropolis-scheme be written as \cite{assaraf}\comment{p294}
+\begin{align}
+W(Y|X)=\left\{\mat{lcr}{
+	T(Y\leftarrow X)A(Y\leftarrow X) & & Y\not=X \\
+	1-\int_{\mathcal{X}}\mathrm{d}Z\, T(Z\leftarrow X)A(Z\leftarrow X) & & Y=X
+}\right..
+\end{align}
 
+The steps of the basic Metropolis algorithm (sometimes referred to as brute-force Metropolis) can be written as
+\begin{shadeframe}
+\begin{itemize}
+	\item[(1)] Start in configuration $X_0$.
+	\item[(2)] Generate a suggested new configuration $Y$, according to the uniform suggestion probability $T(Y\leftarrow X)$.
+	\item[(3)] Accept the new value with probability $\min\{1,A(Y\leftarrow X)\}$. The acceptance probability is given by $A(Y\leftarrow X)=P(Y)/P(X)$.
+	\item[(4)] Assign $X_1=Y$ if step (3) was accepted, else assign $X_1=X_0$.
+	\item[(5)] Repeat steps (2)-(4).
+\end{itemize}
+\end{shadeframe}
 
-
-
+\subsection{The Metropolis-Hastings algorithm}
+The uniform suggestion probability proposed by Metropolis and co-workers is just \emph{one way} of satisfying the detailed balance condition. More generally, we need \eq{VMC5} to hold and thus
+\begin{align}
+A(Y\leftarrow X) = \min\left\{ 1,\frac{T(X\leftarrow Y)P(Y)}{T(Y\leftarrow X)P(X)} \right\}.
+\end{align}
+It is immediately that if the proposal probability $T(Y\leftarrow X)$ is uniform in the sense that the probability is constant within hyper-cube in the configration space\textemdash any configuration with $\vert\r_i^\text{new}-\r_i^\text{old}\vert\le \Delta x$ for all $i$ is equiprobable \textemdash then the $T$s drop out and we are left with the maximized $A(Y\leftarrow X)$ of \eq{VMC6} \cite{assaraf}\comment{295}.
 
 \end{document}
 
