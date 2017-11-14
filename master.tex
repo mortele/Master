@@ -249,23 +249,18 @@
 \newenvironment{answer}{}{}
 
 % Set bibliography file and path for images.
-\addbibresource{ref.bib}
 \graphicspath{{./images/}}
 \newcommand{\includepdfgraphics}[2]{\includecombinedgraphics[#1]{./images/#2}}
 
 
 \graphicspath{{/Users/morten/Documents/Master/Master/Figures/}}
 
-
-% Title
-\title{}
-\date{}
-\author{}
 % ---------------------------------------------------------------------------- %
 % ---------------------------------------------------------------------------- %
 
 \renewcommand{\comment}[1]{\ignorespaces}
-\addbibresource{/Users/morten/Documents/Master/Master/ref.bib}
+%\addbibresource{/Users/morten/Documents/Master/Master/ref.bib}
+\addbibresource{ref.bib}
 
 
 \author{Morten Ledum}
@@ -274,6 +269,7 @@
 
 
 \begin{document}
+\newcommand{\mainfile}{}
 \maketitle
 
 \begin{abstract}
@@ -333,6 +329,6 @@ In part one we do things, and in part two we do more things. In part three we do
 
 \part{Conclusions and future work}
 
-
 \printbibliography
+%\printbibliography[heading=bibintoc]
 \end{document}

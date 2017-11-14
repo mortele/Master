@@ -105,24 +105,163 @@ The steps of the basic Metropolis algorithm (sometimes referred to as brute-forc
 	\item[(2)] Generate a suggested new configuration $Y$, according to the uniform suggestion probability $T(Y\leftarrow X)$.
 	\item[(3)] Accept the new value with probability $\min\{1,A(Y\leftarrow X)\}$. The acceptance probability is given by $A(Y\leftarrow X)=P(Y)/P(X)$.
 	\item[(4)] Assign $X_1=Y$ if step (3) was accepted, else assign $X_1=X_0$.
-	\item[(5)] Repeat steps (2)-(4).
+	\item[(5)] Repeat steps (2)\textemdash(4).
 \end{itemize}
 \end{shadeframe}
 
-\subsection{The Metropolis-Hastings algorithm}
-The uniform suggestion probability proposed by Metropolis and co-workers is just \emph{one way} of satisfying the detailed balance condition. More generally, we need \eq{VMC5} to hold and thus
+\subsection{The Metropolis-Hastings algorithm and importance sampling}
+The uniform suggestion probability proposed by Metropolis and co-workers is just \emph{one way} of satisfying the detailed balance condition \cite{metropolis}. More generally, we need \eq{VMC5} to hold and thus
 \begin{align}
 A(Y\leftarrow X) = \min\left\{ 1,\frac{T(X\leftarrow Y)P(Y)}{T(Y\leftarrow X)P(X)} \right\}.
 \end{align}
-It is immediately that if the proposal probability $T(Y\leftarrow X)$ is uniform in the sense that the probability is constant within hyper-cube in the configration space\textemdash any configuration with $\vert\r_i^\text{new}-\r_i^\text{old}\vert\le \Delta x$ for all $i$ is equiprobable \textemdash then the $T$s drop out and we are left with the maximized $A(Y\leftarrow X)$ of \eq{VMC6} \cite{assaraf}\comment{295}.
+It is immediately obvious that if the proposal probability $T(Y\leftarrow X)$ is uniform in the sense that the probability is constant within the hyper-cube in the configration space\textemdash any configuration with $\vert\r_i^\text{new}-\r_i^\text{old}\vert\le \Delta x$ for all $i$ is equiprobable\textemdash then the $T$s drop out and we are left with the maximized $A(Y\leftarrow X)$ of \eq{VMC6} \cite{assaraf}\comment{295}.
 
+In general, we have a lot of freedom in the choice of $T(Y\leftarrow X)$. The only conditions being that it must be stochastic\textemdash in the sense of a stochastic matrix, i.e. non-zero and satisfying $\int_\mathcal{X}\mathrm{d}Y\, T(Y\leftarrow X)=1$\textemdash and we must be able to easily directly sample it. Instead of using a $T$ uniform in all degrees of freedom, we can instead take advantage of information about the target distribution. A clever choice of such a sampling probability can take into account the local gradient of $P(X)$, and steer the Markov chain towards areas of higher probability. A good choice turns out to be the Greens function of the short-time approximation Fokker-Planck equation \cite{assaraf}\comment{p296}. 
+
+\subsubsection{Fokker-Planck equation}
+In order to derive the Fokker-Planck equation, we first backtrack a short distance. Recall that the Chapman-Kolmogorov equation for a (in general time-dependent) transition probability takes the form 
+\begin{align}
+W(Y;t_2|X;t_0) = \int_\mathcal{X}\mathrm{d}Z\, W(Y;t_2|Z;t_1)W(Z;t_1|X;t_0). 
+\end{align} 
+%Setting $t_1=t_0$, we find upon inspecting this integral that in order for the right hand side to yield $W(Y;t_2|X;t_0)$ the integrand must simply be the delta function $\delta(Z-X)$.
+Let now $P(X)$ be the probability distribution associated with the transition matrix $W(Y;t_1|X;t_0)$. We assume that the following holds:
+\begin{align}
+\lim_{t\rightarrow \tau}  \frac{1}{(t-\tau)} \int_\mathcal{X}\mathrm{d}Y\,(Y-X)\phantom{{}^{a+b}}\,W(Y;t|X;\tau)&=A(X,\tau), \\
+%
+\lim_{t\rightarrow \tau} \frac{1}{(t-\tau)} \int_\mathcal{X}\mathrm{d}Y\,(Y-X)^2\phantom{{}^{+k}}\,W(Y;t|X;\tau)&=2B(X,\tau), \ \ \text{ and }\\
+%
+\lim_{t\rightarrow \tau} \frac{1}{(t-\tau)} \int_\mathcal{X}\mathrm{d}Y\,(Y-X)^{3+k}\,W(Y;t|X;\tau)&=0,
+\end{align}
+for any non-negative integer $k=0,1,2,\dots$. These integrals are sometimes called \emph{Kramers-Moyal-expansions}. If we take the distribution to represent e.g.\ the position of a particle, the first condition constraints the mean velocity of the particle to be $A(X,\tau)$ \cite{gilks}. Similarily, the second condition describes the influence on the particle's position by some random force. The third condition essentially ensures the motion must be continous, in that $W(Y;t_1|X;t_0)$ must vanish for $Y\not=X$ if $t_1\not=t_0$ \cite{gardiner}\comment{p48}. We will denote these integrals themselves (sans the denominator and limit) by $\langle (Y-X)^n\rangle$.
+
+We will now consider some arbitrary function $g(x)$ which vanishes along with it's first derivative on the edges of our configuration space, $g(X\rightarrow \pm\infty)\rightarrow 0$ and $g'(X\rightarrow \pm\infty)\rightarrow 0$. Taking the integral of $g(x)$ weighed by $W(Y;t|X;0)$ over the all possible configurations, and employing the Chapman-Kolmogorov relation, yiels
+\begin{align}
+\int_\mathcal{X}\mathrm{d}Y\,g(Y)W(Y;t|X;0) &= \int_\mathcal{X}\int_\mathcal{X}\mathrm{d}Y\mathrm{d}Z\,g(Y)W(Y;t|Z;\tau)W(Z;\tau|X;0). \label{eq:VMC7}
+\end{align}
+Exchanging $g$ for it's Taylor series to second order around $Z$ gives next
+\begin{align}
+(\ref{eq:VMC7}) &\approx \int_\mathcal{X}\mathrm{d}Z\,g(Z)W(Z;\tau|X;0) + \nn\\
+%
+& \phantom{---} \int_\mathcal{X}\mathrm{d}Z\,g'(Z)W(Z;\tau|X;0)\big\langle(Y-Z) \big\rangle +\nn\\
+%
+& \phantom{------} \frac{1}{2}\int_\mathcal{X}\mathrm{d}Z\,g''(Z)W(Z;\tau|X;0)\big\langle(Y-Z)^2 \big\rangle. \label{eq:VMC8}
+\end{align}
+Dividing this by $(t-\tau)$ and taking the limit $t\rightarrow \tau$ gives finally (after integration by parts and interchanging the limit and the integral)
+\begin{align}
+\int_\mathcal{X}\mathrm{d}Y\, g(Y)\left[\pder{W}{t}+\pder{AW}{Y}-\pder{^2BW}{Y^2} \right]=0,
+\end{align}
+where we used the fact that $g$ vanishes at infinity to handle the boundary term arising from the integration by parts \cite{chaichian}\comment{p60}. We note that in the limit of vanishing $t-\tau$, the approximation of \eq{VMC8} is \emph{exact} since all terms of order three or higher in the Taylor expansion vanish after the integration.
+
+Since $g$ is completely arbitrary, we see that 
+\begin{align}
+\pder{W}{t}+\pder{(AW)}{X}-\pder{^2(BW)}{X^2}=0 \label{eq:VMC9}
+\end{align}
+must hold. This is known as the {\bf Fokker-Planck equation} or sometimes \emph{the second Kolmogorov equation}. It describes the time evolution of the prabability density of a particle (such as a Markovian walker) subject to a drift force. With $A(X,t)=0$ and $B(X,t)=B(X)$, the Fokker-Planck equation reduces to a simple diffusion equation. 
+
+By taking the \emph{Master equation} as a starting point, we can show that a corresponding equation also holds for the probability density itself, i.e.\ \cite{hauge}
+\begin{align}
+\pder{P(X,t)}{t}+\pder{\big[A(X,t)P(X,t)\big]}{X}-\pder{^2\big[B(X,t)P(X,t)\big]}{X^2}=0. \label{eq:VMC10}
+\end{align}
+Alternatively, note that $P(X,t)=\int_\mathcal{X}\mathrm{d}X_0\,W(X;t|X_0;0)P(X_0,t)$\textemdash thus if we assume $P(X_0,0)=\delta(X-X_0)$ then $W(X;t|X_0;0)=P(X,t)$\textemdash hence \eq{VMC9} immideately implies \eq{VMC10}.
+
+\subsubsection{Solving the Fokker-Planck equation}
+Isotropic Brownian motion adheres to the usual diffusion equation in the same way that a Markovian random walker subject to a drift force satisfies the Fokker-Planck equation. A natural question thus arises: Can we solve the Fokker-Planck equation in the case of a random walker traversing the configuration space of our electronic positions? The answer is yes, and it will help us to improve the efficiency of the Metropolis algorithm.
+
+Let now $P(\R,t)$ be a probability distribution function subject to a drift force ${\bf F}(\R)=(F_1, F_2,\dots, F_N)$, where $\R=\{{\bf r}_i\}_{i=1}^N$ as usual and $F_i=F_i(x_i)$ denotes the drift term on compontent $i$ of $\R$.\footnote{The $i$-th component of ${\bf F}$ is the drift term corresponding to coordinate $i\bmod d$ of electron $\lfloor i/d\rfloor$ in $d$ dimensions.} This probability density satisfies the Fokker-Planck equation \cite{hammond}\comment{53}
+\begin{align}
+\pder{P(\R,t)}{t} = \sum_{i=1}^{dN} D \pder{}{x_i}\left(\pder{}{x_i} -F_i(x_i)\right)P(\R,t). \label{eq:VMC11}
+\end{align}
+The constant (spatially and temporally constant) diffusion constant is here denoted by $D$ while lowercase $d$ indicates the number of spatial dimensions. Since we are interested in probability which converges to $P(\R,t)=P(\R)=|\Psi(\R)|^2$ (assuming for the moment that $\Psi(\R)$ is normalized), we look for the solution in the case where the left hand side of \eq{VMC11} vanishes. An obviously sufficient (but possibly not neccessary) condition for this equation to hold is if it holds for each individual term of the sum, such that 
+\begin{align}
+\pder{^2P(\R)}{x_i^2}&= P(\R)\pder{F_i(x_i)}{x_i}+F_i(x_i)\pder{P(\R)}{x_i}.
+\end{align}
+We note that in order for the right hand side to include a second derivative of $P(\R)$, we must require 
+\begin{align}
+{\bf F}_i(\r) \sim g[P]\pder{P(\R)}{x_i}.
+\end{align}
+In addition, in order for cancellation of the $P$ in the first term on the right hand side, $g[P]=1/P(\R)$. It can be shown that the drift vector which results in a stationary probability density $P(\R)=|\Psi(\R)|^2$ is 
+\begin{align}
+{\bf F}=2\frac{1}{\Psi(\R)}\nabla \Psi(\R),
+\end{align}
+with $\nabla=(\nabla_1,\nabla_2,\dots,\nabla_N)$ being the vector of gradients w.r.t.\ each of the electrons \cite{hjorth-jensen}\comment{488}. This quantity is sometimes referred to as the \emph{quantum force}, and acts to push the Markovian random walker in the direction of higher probability density. \footnote{Please note that even though the quanitity ${\bf F}$ is called a quantum \emph{force}, it is strictly speaking not a force. In fact it has dimensions of inverse length. We may instead think of the combination $D{\bf F}$ as a \emph{drift velocity}. With $D$ having dimensions of length squared per time, the combination has dimensions of lenght per time. This is in fact the combination which we will encounter (multiplied with a time step $\delta t$) shortly in the Green's function of the Fokker-Planck equation.}
+
+It turns out that a good choice for the transition probability $T(Y\leftarrow X)$ which incorporates the information in the quantum force ${\bf F}$ is the \emph{Green's function} of the Fokker-Planck equation in the limit of small $\Vert X-Y\Vert$ \cite{assaraf}\comment{p296}. We can rewrite the Fokker-Planck equation in terms of a differential operator $\mathcal{L}$,  
+\begin{align}
+\pder{P}{t}=\mathcal{L}P, \ \ \ \text{ with } \ \ \ \mathcal{L}\equiv D\nabla \cdot (\nabla - {\bf F}). \label{eq:VMC12}
+\end{align} 
+The Green's function $G(Y,X;\delta t)$ is then the \emph{operator inverse} of $\mathcal{L}$ in the sense that \cite{hassani}\comment{p553}
+\begin{align}
+\mathcal{L}G(Y,X;\delta t) = \delta(\underbrace{t_Y-t_X}_{\delta t})\delta(Y-X).
+\end{align}
+The finite time step $\delta t$ is the temporal distance between configurations $X$ and $Y$.
+
+By inspection of we can straight away write down a representation of the solution, the Green's function is simply given by $G(Y,X;\delta t)=\exp(-\delta t \mathcal{L})$ \cite{hammond}\comment{p55}. Assuming a short time step $\delta t$, we can assume also correspondingly short spatial step $\Vert Y-X\Vert$ meaning the quantum force will remain essentially unchanged between the two configurations. Under this assumption, we can integrate the Green's function,
+\begin{align}
+G(Y,X;\delta t) = \exp\left(D\delta t \left[\nabla^2-\nabla \cdot {\bf F}-{\bf F}\cdot \nabla \right]\right),
+\end{align} 
+over the time interval $\delta t$ to obtain 
+\begin{align}
+G(Y,X;\delta t)=\left(\frac{1}{4\pi D \delta t}\right)^{-3N/2}\exp\left(\frac{-\left[Y-X-D\delta t {\bf F}(X)\right]^2}{4D\delta t}\right).
+\end{align}
+Recall that $X$ here denotes a full configuration of the system, meaning all the electronic coordinates. This means that a more natural labelling of $X$ and $Y$ would be $Y=\R_\text{new}$ and $X=\R_\text{old}$, however we keep the $X$s and $Y$s to remain in line with the notation of the previous sections.
+
+\subsubsection{The Langevin equation}
+Having found the solution, we are still left with the question of how to generate Fokker-Planck trajectories in practice. This is where we need to introduce the {\bf Langevin equation}
+\begin{align}
+\pder{x(t)}{t} = D{\bf F}(x(t))+\eta. \label{eq:VMC13}
+\end{align}
+The Langevin equation which corresponds to our Fokker-Planck equation describes e.g.\ the movement of a particle under the influence of a rapid and irregularly fluctuating random function of time \cite{gardiner}\comment{p80}. The random force $\eta$ is distributed according to a multidimensional Gaussian with a vanishing mean and variance $2D$.
+
+The Langevin approach of adding random terms to the equations of motion, sometimes called \emph{noise sources}, is fundamentally different but mathematically equivalent to the Fokker-Planck equation \cite{vankampen}\comment{p219}. Whereas the former describes the evolution of the degrees of freedom of a system, the latter describes the evolution of the probability density of said degrees of freedom.
+
+Integrating \eq{VMC13} over a short time interval $\delta t$ gives rise to a time discrete form which we will find useful in generating Markov trajectories for use with the generalized Metropolis-Hastings algorithm: \cite{hammond}\comment{p54}
+\begin{align}
+y = x + D{\bf F}(x)\delta t + \chi.
+\end{align}
+The random variable $\chi=\eta \delta t$ is a rescaled Gaussian, now with variance $2D\delta t$. 
+
+\subsubsection{Importance sampling}
+Having introduced both the Fokker-Planck and the Langevin equation we are now ready to extend the original Metropolis algorithm with a non-uniform proposal distribution. The standard approach used to implement the Metropolis-Hastings algorithm with importance sampling in quantum mechanical problems is the following: Use the Langevin equation to propose moves and then accept or reject them according to the solution of the corresponding Fokker-Planck equation \cite{hjorth-jensen}\comment{p409}. 
+
+The new poposal probability 
+
+
+
+
+
+\section{Monte Carlo integration}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+%\iffalse \bibliography{ref.bib} \fi
 \end{document}
-
-
-
-
-
-
-
-
-
