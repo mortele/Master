@@ -51,6 +51,7 @@
 \usepackage{etoolbox}
 \usepackage{tikz}
 \usepackage{framed}
+\usepackage{relsize}
 \usetikzlibrary{matrix}
 
 \captionsetup{labelfont=bf}
@@ -171,12 +172,16 @@
   \renewcommand{\listingsfont}{\listingsfontfamily}
 \fi
 
+
+
 % Convenient shorthand notation ---------------------------------------------- %
 \newcommand{\nn}{\nonumber}
 \newcommand{\e}[1]{\cdot10^{#1}}
 \renewcommand{\i}{\hat{\imath}}
 \renewcommand{\j}{\hat{\jmath}}
 \renewcommand{\k}{\hat{k}}
+\usepackage{ifthen}
+\newcommand*\CC{\texttt{C}\kern-0.2ex\raisebox{0.2ex}{\scalebox{0.9}{+\kern-0.2ex+}}}
 
 % Caption position of tables at the top -------------------------------------- %
 \floatsetup[table]{capposition=top}
@@ -209,44 +214,6 @@
   {
 }
 
-% Exercise and subexercise counters ------------------------------------------ %
-\newcounter{excounter}
-\renewcommand\theexcounter{\arabic{excounter}}
-\newcommand\exlabel{\theexcounter}
-\setcounter{excounter}{1}
-
-\newcounter{subexcounter}
-\renewcommand\thesubexcounter{\arabic{subexcounter}}
-\newcommand\subexlabel{\thesubexcounter}
-\setcounter{subexcounter}{1}
-
-% Environments for exercises ------------------------------------------------- %
-\newenvironment{exercise}[1]{
-  \subsection*{Exercise \theexcounter: #1}
-  \setcounter{subexcounter}{1}                      % Reset the subexercise counter to a.
-  \addcontentsline{toc}{section}{\theexcounter: #1} % Add the exercise to TOC
-  }
-      % Exercise text.
-  {
-  \stepcounter{excounter}                           % Add one to the exercise counter.
-  \newpage
-}
-
-% Environment for subexercises ----------------------------------------------- %
-\newenvironment{subexercise}{
-  \begin{exframe}
-    \begin{itemize}  \setlength{\itemindent}{1cm}
-      \item[{\bf Exercise \thesubexcounter}] 
-	}
-	  % Subexercise text.
-	{
-    \end{itemize}
-  \end{exframe}
-  \stepcounter{subexcounter}                        % Add one to the exercise counter.
-}
-
-% Environment for answers ---------------------------------------------------- %
-\newenvironment{answer}{}{}
 
 % Set bibliography file and path for images.
 \graphicspath{{./images/}}
@@ -286,7 +253,7 @@ Not much was done. It worked... ish.
 \begin{acknowledgements}
   I acknowledge my acknowledgements.
 
-  Lastly, I wish to thank Jason, the interestingly unlikely tank-driving Icelandic camel for all the stimulating conversations throughout the time working on this thesis.
+  Lastly I wish to thank Jason, the interestingly unlikely tank-driving Icelandic camel for all the stimulating distractions throughout the time working on this thesis.
 \end{acknowledgements}
 
 \tableofcontents
@@ -324,6 +291,7 @@ In part one we do things, and in part two we do more things. In part three we do
 \subfile{Snippets/VMC/VMC}
 
 \part{Implementation and results}
+\subfile{Snippets/VMCImplementation/VMCImplementation}
 \subfile{Snippets/Hartree-FockValidation/Hartree-FockValidation}
 \subfile{Snippets/VMCValidation/VMCValidation}
 

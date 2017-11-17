@@ -3,21 +3,21 @@
 \renewcommand{\r}{{\bf r}}
 
 \begin{document}
-\chapter{Variational Monte Carlo}
+\chapter{Variational Monte Carlo \label{VMC}}
 A large collection of computational methods exist which attempt to solve the Schrödinger equation via the use of stochastic \emph{Monte Carlo} methods. These are collectively known as \emph{Quantum Monte Carlo methods}, and the (arguably) simplest such method is known as {\bf Variational Monte Carlo} (VMC). The VMC scheme attempts to directly evaluate the integral governing the ground state energy expectation value of a quantum mechanical system, 
 \begin{align}
 E_0=\langle \Psi|\hat H|\Psi\rangle = \frac{\int\mathrm{d}^{3N}\R\, \Psi^*(\R)\hat H(\R) \Psi(\R)}{\int\mathrm{d}^{3N}\R\, \Psi^*(\R)\Psi(\R)}, \label{eq:VMC1}
 \end{align}
 with $\R=\{\r_1,\r_2,\dots,\r_N\}$ being all electronic coordinates. It is fairly obvious from the name that said integral is evaluated using Monte Carlo integration. Any other quantum mechanical quantity of interest can be expressed in terms of the expectation value of an operator à la \eq{VMC1}, which means we can essentially formulate all of electronic structure theory in terms of such high-dimensional integrals \cite{hjorth-jensen}\comment{p457}. Since Monte Carlo methods are well suited to solving such integrals (for which grid-based methods fail spectacularly) the matching of quantum mechanics and Monte Carlo integration has widespread applicability \cite{hammond}\comment{p48}.
 
-Of course, we do not a priori know the form of the ground state wave function, $\Psi(\R)$, and in electronic structure problems we have to construct an ansatz wave function by filling a (linear combination of) Slater determinant(s) with spin-orbitals from some chosen basis set. However, in contrast with the previously described Hartree-Fock and (Kohn-Sham) Density Functional methods, VMC does not in general require the use of spin-orbitals for which one-, and two-electron Coulombic interaction integrals can be readily calculated \cite{assaraf}\comment{p3}. Whereas we are essentially forced into using combinations of gaussian basis functions under the former schemes, the Variational Monte Carlo method offers much more freedom in the choices of orbital basis. Essentially the only requirement on the orbital basis functions is that we need to be able to write them down in closed form.
+Of course, we do not a priori know the form of the ground state wave function, $\Psi(\R)$, and in electronic structure problems we have to construct an ansatz wave function by filling a (linear combination of) Slater determinant(s) with spin-orbitals from some chosen basis set. However, in contrast with the previously described Hartree-Fock and (Kohn-Sham) Density Functional methods, VMC does not in general require the use of spin-orbitals for which one-, and two-electron Coulombic interaction integrals can be readily calculated \cite{assaraf}\comment{p3}. Whereas we are essentially forced into using combinations of gaussian basis functions under the former schemes, the Variational Monte Carlo method offers much more freedom in the choices of orbital basis. Essentially the only requirement on the orbital basis functions is that we need to be able to evaluate the orbitals and their second derivatives realatively efficiently.
 
 The Variational Monte Carlo method is an explicitly correlated one, meaning dynamic electron-electron correlation is taken into account. Unlike the Hartree-Fock formalism which treats (opposite spin) electron-electron correlation purely in terms of a mean-field approximation, the electrons under the VMC formalism interact \emph{instanteneously}. Electrons are at all times surrounded by "correlation holes" where the probability of finding other electrons vanish. Introducing explicit many-body correlation terms in Hartre-Fock and post Hartree-Fock methods lead to the introduction of molecular integrals which are significantly harder to solve numerically than otherwise ignoring such terms. For this reason, the vast majority of such work is done using Slater detemrinants filled with independent-particle orbitals. However, due to the flexibility of the Monte Carlo integration scheme, we may (and should) relatively easily include correlation terms explicitly in the VMC wave function \cite{bressanini}\comment{p9}.
 
 In the following, we will present the fundamentals of Monte Carlo integration and its application to the electronic quantum mechanical problem. But first of all we will derive the Metropolis algorithm which we will employ to sample the configuration space of our $N$-electron system according to the wave function squared $|\Psi(\R)|^2$ (the probability density).
 
-\section{The Metropolis algorithm}
-The Metropolis algorithm, originally proposed by Metropolis and co-workers \cite{metropolis} and later generalized by Hastings \cite{hastings} is a method for sampling probability distributions which may be impossible to sample directly\footnote{Direct sampling in this context means e.g.\ \emph{inverse transform sampling}, which neccessitate inverting the cumulative distribution associated with the probability density function (PDF) \cite{numericalrecipes}. For complicated distributions, this is often either impossible of unfeasible \cite{assaraf}.} \cite{assaraf}\comment{p291}. The Metropolis-Hastings algorithm (MH) generates a Markov chain of random samples distributed according to the PDF in question. 
+\section{The Metropolis algorithm \label{metropolis}}
+The Metropolis algorithm, originally proposed by Metropolis and co-workers \cite{metropolis} and later generalized by Hastings \cite{hastings} is a method for sampling probability distributions which may be impossible to sample directly\footnote{Direct sampling in this context means e.g.\ \emph{inverse transform sampling}, which neccessitate inverting the cumulative distribution associated with the probability density function (PDF) \cite{numericalrecipes}. For complicated distributions, this is often either impossible of unfeasible \cite{assaraf}.} \cite{assaraf}\comment{p291}. The Metropolis-Hastings algorithm  generates a Markov chain of random samples distributed according to the PDF in question. 
 
 \subsection{Markov chains, detailed balance and ergodicity \label{markov}}
 A Markov chain is a sequence of stochastic variables $\{X_i\}_{i=1}^n$ for which step $i+1$ depends soley on step $i$, meaning the process has no "memory." In other words, the probability of stepping from state $X_k$ to state $X_l$ depends only on the states $k$ and $l$, not on \emph{how} it got to $X_k$, \cite{hammond}\comment{p25}\cite{gilks}\comment{p5}
@@ -112,7 +112,7 @@ The steps of the basic Metropolis algorithm (sometimes referred to as brute-forc
 \subsection{The Metropolis-Hastings algorithm and importance sampling}
 The uniform suggestion probability proposed by Metropolis and co-workers is just \emph{one way} of satisfying the detailed balance condition \cite{metropolis}. More generally, we need \eq{VMC5} to hold and thus
 \begin{align}
-A(Y\leftarrow X) = \min\left\{ 1,\frac{T(X\leftarrow Y)P(Y)}{T(Y\leftarrow X)P(X)} \right\}.
+A(Y\leftarrow X) = \min\left\{ 1,\frac{T(X\leftarrow Y)P(Y)}{T(Y\leftarrow X)P(X)} \right\}. \label{eq:VMC14}
 \end{align}
 It is immediately obvious that if the proposal probability $T(Y\leftarrow X)$ is uniform in the sense that the probability is constant within the hyper-cube in the configration space\textemdash any configuration with $\vert\r_i^\text{new}-\r_i^\text{old}\vert\le \Delta x$ for all $i$ is equiprobable\textemdash then the $T$s drop out and we are left with the maximized $A(Y\leftarrow X)$ of \eq{VMC6} \cite{assaraf}\comment{295}.
 
@@ -223,16 +223,32 @@ The random variable $\chi=\eta \delta t$ is a rescaled Gaussian, now with varian
 \subsubsection{Importance sampling}
 Having introduced both the Fokker-Planck and the Langevin equation we are now ready to extend the original Metropolis algorithm with a non-uniform proposal distribution. The standard approach used to implement the Metropolis-Hastings algorithm with importance sampling in quantum mechanical problems is the following: Use the Langevin equation to propose moves and then accept or reject them according to the solution of the corresponding Fokker-Planck equation \cite{hjorth-jensen}\comment{p409}. 
 
-The new poposal probability 
+Whereas the Metropolis suggestion step described previously assigned equal probability of stepping to any point inside a $3N$ dimensional hyper-box of side lengths $\Vert y_i - x_i\Vert<\Delta x$, the importance sampled Metropolis-Hastings suggestions take the form
+\begin{align}
+x_i^\text{new} = x_i^\text{old} + D\delta t {\bf F}(x_i) + \chi. \label{eq:VMC15}
+\end{align}
+The random variable $\chi$ is as a Gaussian around zero with variance $2D\Delta t$. Without the velocity drift term, this is the stepping scheme for an isotropic Brownian random walk in configuration space. However, with the added quantum force, the walker is pushed in the direction of higher probability, meaning more significant areas of the configuration space are visited proportionally more often.
 
+Once a step has been suggested, the Metropolis test is performed. The full probability of accepting the step now has a non-vanishing contribution from $T(x_i^\text{new}\leftarrow x_i^\text{old})$: the ratio of the Green's functions of the Fokker-Planck equation. The acceptance probability is thus\textemdash according to \eq{VMC14}\textemdash the following \cite{assaraf}\comment{p296}
+\begin{align}
+A(x_i^\text{new}\leftarrow x_i^\text{old}) = \min\left\{1, \frac{G(x_i^\text{new},x_i^\text{old};\delta t)|\Psi(\R^\text{new})|^2}{G(x_i^\text{old},x_i^\text{new};\delta t)|\Psi(\R^\text{old})|^2}  \right\}. \label{eq:VMC16}
+\end{align}
 
+In summary, the Metropolis-Hastings algorithm with importance sampling consists of the following steps
+\begin{shadeframe}
+\begin{itemize}
+	\item[(1)] Start in configuration $X_0$.
+	\item[(2)] Generate a suggested new configuration $Y$ according to the solution of the Langevin equation, \eq{VMC15}.
+	\item[(3)] Accept the new value with probability $\min\{1,A(Y\leftarrow X)\}$. The acceptance probability is given by the Green's function ratio of \eq{VMC16}.
+	\item[(4)] Assign $X_1=Y$ if step (3) was accepted, else assign $X_1=X_0$.
+	\item[(5)] Repeat steps (2)\textemdash(4).
+\end{itemize}
+\end{shadeframe}
 
 
 
 \section{Monte Carlo integration}
-
-
-
+Monte Carlo integration is a numerical scheme for estimating the value of definite integrals. The method differs from the usual grid-based methods in that the evaluation points are chosen at random. Whereas grid-based methods fail spectacularly as the number of dimensions increase past \emph{a few}\footnote{As of November 2017, the fastest super computer in the world is situated at the National Supercomputing Center in Wuxi, China: it has a performance of about $100 \,\text{petaFLOPS}=10^{17}\,\text{FLOPS}$ \cite{top500}. Let us say we wish to perform an integral over some electronic observable for a Neon atom. Under the Born-Oppenheimer approximation, this integral would be $30$-dimensional. Using a conventional grid-based method, a conservative estimate for the number of grid points needed in each dimension to get a somewhat decent approximation may be e.g.\ $30$. This means the grid would be $30$ by $30$ by $\dots$ by $30=30^{30}\sim 10^{44}$ large. Assuming every evaluation of the integrand consists of a single FLOP (again, a [very] conservative estimate), this means the total problem involves on the order of $10^{44}\,\text{FLOPs}$. Running on the aforementioned Chinese super-computer, this would take on the order of $10^{27}\,\text{s}\sim 10^{19}\,\text{yr}$ or about $10^{10}$ times the current age of the universe \cite{hjorth-jensen}. This is clearly not feasible.}, the Monte Carlo scheme can somewhat overcome this "curse of dimensionality." 
 
 
 
