@@ -165,6 +165,7 @@
 \setlength{\parskip}  {0mm}
 
 % Code listings font --------------------------------------------------------- %
+\lstset{basicstyle=\scriptsize}
 \usepackage{ifxetex}
 \ifxetex
   \usepackage{fontspec}
@@ -172,6 +173,7 @@
   \renewcommand{\listingsfont}{\listingsfontfamily}
 \fi
 
+\newcommand{\inlinecc}[1]{\lstinline[language={[std]c++}]{#1}}
 
 
 % Convenient shorthand notation ---------------------------------------------- %
