@@ -176,7 +176,7 @@ where $C_{ij}$ is the $i,j$ \emph{cofactor} of $D$, i.e.\ the determinant of the
 \begin{align}
 x_i=\frac{|A_i({\bf b})|}{|A|}, \ \ \ \text{ where } \ \ i=1,2,\dots,n,
 \end{align}
-where $A_i({\bf b})$ is the matix formed by replacing the $i$-th column of $A$ by ${\bf b}$ \cite{lay}\comment{p177}.} we can find an explicit expression for the matrix inverse in terms of the determinant as \cite{hjorth-jensen}\comment{p521}
+where $A_i({\bf b})$ is the matix formed by replacing the $i$-th column of $A$ by ${\bf b}$ \cite{lay}\comment{p177}.} we can find an explicit expression for the matrix inverse in terms of the determinant as \cite{hassani}\comment{p98}
 \begin{align}
 D^{-1}=\frac{\text{adj}D}{|D|}.
 \end{align}
@@ -191,7 +191,7 @@ By definition, the Slater matrix and it's inverse must satisfy
 \begin{align}
 \sum_{k=1}^n D_{ik}D^{-1}_{kj}=\delta_{ij},
 \end{align}
-meaning the denominator drops out of \eq{VMCI2} and $R_\text{SD}$ simplifies immensely to \cite{hammond,ceperley,hjorth-jensen}\comment{p276}\comment{}\comment{p521}
+meaning the denominator drops out of \eq{VMCI2} and $R_\text{SD}$ simplifies immensely to \cite{hammond,ceperly,hjorth-jensen}\comment{p276}\comment{}\comment{p521}
 \begin{align}
 \frac{D(\R_\text{new})}{D(\R_\text{old})}=R_\text{SD}&=\frac{\sum_{j=1}^n D_{ij}(\r_\text{new})C_{ji}(\r_\text{old}) }{\sum_{j=1}^n D_{ij}(\r_\text{old})C_{ji}(\r_\text{old}) } \nn\\
 %
@@ -206,11 +206,11 @@ Note carefully that the inverse need only be re-calculated \emph{if} the new con
 void SlaterWithJastrow::computeSlaterRatio() {
     Electron* iElectron = m_system->getElectrons().at(m_changedElectron);
     int    	i  			= iElectron->getSpinIndex();
+    int     nElectrons  = (m_spinChanged == 1 ? m_numberOfSpinUpElectrons :
+                                                m_numberOfSpinDownElectrons);
     double 	xi 			= iElectron->getPosition().at(0);
     double 	yi 			= iElectron->getPosition().at(1);
     double 	zi 			= iElectron->getPosition().at(2);
-    double  nElectrons  = (m_spinChanged == 1 ? m_numberOfSpinUpElectrons :
-                                                m_numberOfSpinDownElectrons);
     mat&    slater      = (m_spinChanged == 1 ? m_slaterUp : m_slaterDown);
 
     double sum = 0;
@@ -225,6 +225,89 @@ The \inlinecc{m_changedElectron} is communicated to the \inlinecc{WaveFunction} 
 The \inlinecc{m_orbital} variable holds an instance of the class corresponding to the spin-orbitals which populate the Slater determinant. We give an outline of the \inlinecc{Orbital} in section \ref{orbital}.
 
 \subsubsection{Updating the inverse}
+The algorithm of the previous section requires the inverse of the Slater matrix, evaluated at the previous electronic configuration, to be know. In principle we may simply directly evaluate the inverse for every Monte Carlo cycle, but the $\mathcal{O}(N^3)$ computational scaling cost quickly makes this approach unfeasible. We require therefore a more efficient algorithm which makes use of the fact that when we update it, the inverse is already known at the old configuration. Recall that the new Slater matrix differs from the old one only in a single row.
+
+We use an algorithm based on the Sherman-Morrison formula \cite{sherman}. The method due to Sherman and Morrison updates the inverse given a single changed index in the original matrix, but this is readily extended to give the change in $D^{-1}$ given the replacement of a full row of the matrix $D$. The full update formula is given by \cite{hammond}\comment{p277}
+\begin{align}
+D_{kj}^{-1}(\r_\text{new}) = \left\{ \mat{lccr}
+{
+	\displaystyle D_{kj}^{-1}(\r_\text{old}) - \frac{1}{R_\text{SD}}D^{-1}_{ji}(\r_\text{new})\sum_{l=1}^n D_{il}(\r_\text{new})D_{lj}^{-1}(\r_\text{new}) & & \text{if} & j\not=i \\
+	%
+	\displaystyle \frac{1}{R_\text{SD}}D_{kj}^{-1}(\r_\text{old}) & & \text{if} & j=i 
+}\right. \label{eq:VMCI4}
+\end{align}
+The modified Sherman-Morrison scheme of \eq{VMCI4} is implemented in the VMC framework as 
+\begin{lstlisting}[language={[std]c++}]
+
+void SlaterWithJastrow::updateSlaterInverse() {
+    Electron*  iElectron  = m_system->getElectrons().at(m_changedElectron);
+
+    const int    i       = iElectron->getSpinIndex();
+    const int    sc      = m_spinChanged;
+    const double x    	 = iElectron->getPosition().at(0);
+    const double y    	 = iElectron->getPosition().at(1);
+    const double z       = iElectron->getPosition().at(2);
+
+    mat& newS        = (m_spinChanged == 1 ? m_slaterUp    : m_slaterDown);
+    mat& oldS        = (m_spinChanged == 1 ? m_slaterUpOld : m_slaterDownOld);
+    int  nElectrons  = (m_spinChanged == 1 ? m_numberOfSpinUpElectrons :
+                                             m_numberOfSpinDownElectrons);
+
+    for (int k = 0; k < nElectrons; k++) {
+        for (int j = 0; j < nElectrons; j++) {
+            if (j != i) {
+                double sum = 0;
+                for (int l = 0; l < nElectrons; l++) {
+                    sum += oldS(l,j) * m_orbital->evaluate(x,y,z,l,sc);
+                }
+                newS(k,j) = oldS(k,j) - oldS(k,i) * sum / m_Rsd;
+            } else {
+                newS(k,j) = oldS(k,i) / m_Rsd;
+            }
+        }
+    }
+}
+\end{lstlisting}
+The Slater matrix evaluated at the old configuration is contained in the variables \inlinecc{m_slaterUpOld} and \inlinecc{m_slaterDownOld}. Note carefully that the $R_\text{SD}$ value stored in \inlinecc{m_Rsd} here is the \emph{updated} value, which is independent of $D^{-1}(\R_\text{new})$ and so can be calculated before we update the inverse in this member function.
+
+At the very start of the Metropolis run, the full Slater matrix needs to be calculated and inverted \emph{once}. This is done (in addition to a whole range of other operations) in \inlinecc{SlaterWithJastrow::evaluateWaveFunctionInitial},
+\begin{lstlisting}[language={[std]c++}]
+void SlaterWithJastrow::evaluateWaveFunctionInitial() {
+    ...
+    const int eUp   = m_numberOfSpinUpElectrons;
+    const int eDown = m_numberOfSpinDownElectrons;
+    m_slaterUp      = zeros<mat>(eUp,   eUp);
+    m_slaterDown    = zeros<mat>(eDown, eDown);
+
+    vector<Electron*> spinUpElectrons   = m_system->getSpinUpElectrons();
+    vector<Electron*> spinDownElectrons = m_system->getSpinDownElectrons();
+
+    for (int electron = 0; electron < eUp; electron++) {
+        const double x = spinUpElectrons.at(electron)->getPosition().at(0);
+        const double y = spinUpElectrons.at(electron)->getPosition().at(1);
+        const double z = spinUpElectrons.at(electron)->getPosition().at(2);
+
+        for (int basis = 0; basis < eUp; basis++) {
+            m_slaterUp(electron,basis) = m_orbital->evaluate(x,y,z,basis,1);
+        }
+    }
+    for (int electron = 0; electron < eDown; electron++) {
+        const double x = spinDownElectrons.at(electron)->getPosition().at(0);
+        const double y = spinDownElectrons.at(electron)->getPosition().at(1);
+        const double z = spinDownElectrons.at(electron)->getPosition().at(2);
+
+        for (int basis = 0; basis < eDown; basis++) {
+            m_slaterDown(electron,basis) = m_orbital->evaluate(x,y,z,basis,0);
+        }
+    }
+
+    m_slaterUp   = m_slaterUp.i();
+    m_slaterDown = m_slaterDown.i();
+    ...
+}
+\end{lstlisting}
+
+\subsubsection{Efficient evaluation of the gradient, $\nabla_i |D|$}
 
 
 
