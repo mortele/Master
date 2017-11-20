@@ -109,13 +109,13 @@ Here, a STO-3G Gaussian Hartree-Fock basis set is used.
 \subsection{The SlaterWithJastrow class}
 The work-horse of the VMC program is the \inlinecc{WaveFunction} class and associated sub-classes. The code can in principle be run with any trial wave function, as long as it can be evaluated, and allows the computation of the Laplacian (and the gradient if importance sampling is desired). 
 
-The particular sub-class used in the entirety of the current work is the \inlinecc{SlaterWithJastrow} class. It represents a product of a Slater determinant $D(\R)$ and a two-body Jastrow factor $J(\R)$,
+The particular sub-class used in the entirety of the current work is the \inlinecc{SlaterWithJastrow} class. It represents a product of a Slater determinant $|D(\R)|$ and a two-body Jastrow factor $J(\R)$,
 \begin{align}
-\Psit(\R) = D(\R)J(\R).
+\Psit(\R) = |D(\R)|J(\R).
 \end{align}
 The determinant is populated with orbitals represented by the \inlinecc{Orbital} class. When using a \emph{restricted} set of orbitals\textemdash in the sense that each \emph{spatial} orbital is doubly occupied by one spin-up and one spin-down electron\textemdash the full Slater determinant 
 \begin{align}
-D(\R) = \frac{1}{\sqrt{N!}}\vmat{ccccc}{
+|D(\R)| = \frac{1}{\sqrt{N!}}\vmat{ccccc}{
 	\pphi_1(\r_1) & \pphi_2(\r_1) & \pphi_3(\r_1) & \dots  & \pphi_N(\r_1) \\
 	\pphi_1(\r_2) & \pphi_2(\r_2) & \pphi_3(\r_2) & \dots  & \pphi_N(\r_2) \\
 	\pphi_1(\r_3) & \pphi_2(\r_3) & \pphi_3(\r_3) & \dots  & \pphi_N(\r_3) \\
@@ -125,7 +125,7 @@ D(\R) = \frac{1}{\sqrt{N!}}\vmat{ccccc}{
 \end{align}
 is \emph{singular}. The restricted orbitals $\pphi(\r)$ are spatially pairwise equal, odd indices carry spin-up while even indices carry spin-down. This means we can write the determinant in terms of \emph{spatial} orbitals $\phi_{k}(\r)$ and $\phi_{k}(\r)$ as
 \begin{align}
-D(\R) = \frac{1}{\sqrt{N!}}\vmat{cccccc}{
+|D(\R)| = \frac{1}{\sqrt{N!}}\vmat{cccccc}{
 	\phi_{1\uparrow}(\r_1) & \phi_{1\downarrow}(\r_1) & \phi_{2\uparrow}(\r_1) & \phi_{2\downarrow}(\r_1) & \dots  & \phi_{N/2\downarrow}(\r_1) \\
 	\phi_{1\uparrow}(\r_2) & \phi_{1\downarrow}(\r_2) & \phi_{2\uparrow}(\r_2) & \phi_{2\downarrow}(\r_2) & \dots  & \phi_{N/2\downarrow}(\r_2) \\
 	\phi_{1\uparrow}(\r_3) & \phi_{1\downarrow}(\r_3) & \phi_{2\uparrow}(\r_3) & \phi_{2\downarrow}(\r_3) & \dots  & \phi_{N/2\downarrow}(\r_3) \\
@@ -141,11 +141,11 @@ is invariant under a splitting of the determinant. We can split the Slater in tw
 
 The full split-determinant trial wave function takes the form
 \begin{align}
-\Psi_\text{T}=D_\uparrow(\R) D_\downarrow(\R) J(\R),
+\Psi_\text{T}=|D_\uparrow(\R)| |D_\downarrow(\R)| J(\R),
 \end{align}
 where 
 \begin{align}
-D_\uparrow(\R)\propto \vmat{ccccc}{
+|D_\uparrow(\R)|\propto \vmat{ccccc}{
 	\phi_{1\uparrow}(\r_1) & \phi_{2\uparrow}(\r_1) & \phi_{3\uparrow}(\r_1) & \dots  & \phi_{N/2\uparrow}(\r_1) \\
 	\phi_{1\uparrow}(\r_2) & \phi_{2\uparrow}(\r_2) & \phi_{3\uparrow}(\r_2) & \dots  & \phi_{N/2\uparrow}(\r_2) \\
 	\phi_{1\uparrow}(\r_3) & \phi_{2\uparrow}(\r_3) & \phi_{3\uparrow}(\r_3) & \dots  & \phi_{N/2\uparrow}(\r_3) \\
@@ -153,7 +153,7 @@ D_\uparrow(\R)\propto \vmat{ccccc}{
 	\phi_{1\uparrow}(\r_N) & \phi_{2\uparrow}(\r_N) & \phi_{3\uparrow}(\r_N) & \dots  & \phi_{N/2\uparrow}(\r_N)
 },
 \end{align}
-and a corresponding expression for $D_\downarrow(\R)$. Since we are always working with ratios of wave functions in the Metropolis-Hastings algorithm, the normalization factor of the determinant does not enter our equations and we can safely forget about it from now on.
+and a corresponding expression for $|D_\downarrow(\R)|$. Since we are always working with ratios of wave functions in the Metropolis-Hastings algorithm, the normalization factor of the determinant does not enter our equations and we can safely forget about it from now on.
 
 \subsubsection{Evaluating the wave function ratio}
 In order to perform the Metropolis test step of the Metropolis-Hastings algorithm, we need to be able to calculate the ratio 
@@ -162,7 +162,7 @@ R=\frac{\Psi_\text{T}(\R_\text{new})}{\Psi_\text{T}(\R_\text{old})}.
 \end{align}
 We may of course directly evaluate the determinant at every Monte Carlo step. After the splitting, we can rewrite $R$ in a more convenient form:
 \begin{align}
-R=\left[\frac{D_\uparrow(\R_\text{new})D_\downarrow(\R_\text{new})}{D_\uparrow(\R_\text{old})D_\downarrow(\R_\text{old})}\right] \left.\frac{J(\R_\text{new})}{J(\R_\text{old})} \right.\equiv R_\text{SD}R_\text{J}. \label{eq:VMCI1}
+R=\left[\frac{|D_\uparrow(\R_\text{new})||D_\downarrow(\R_\text{new})|}{|D_\uparrow(\R_\text{old})||D_\downarrow(\R_\text{old})|}\right] \left.\frac{J(\R_\text{new})}{J(\R_\text{old})} \right.\equiv R_\text{SD}R_\text{J}. \label{eq:VMCI1}
 \end{align}
 From this it is immediately obvious that if the new coordinate set $\R_\text{new}$ differs from the old $\R_\text{old}$ for \emph{only a single electron} of spin $\uparrow$ ($\downarrow$) then the spin-down (spin-up) determinants falls out of \eq{VMCI1}. In other words: moving only one electron at the time the ostensibly halves the required computation cost associated with $R_\text{SD}$. This of course comes at the cost of correlation\textemdash subsequent samples are less correlated if we simultaneously move multiple electrons\textemdash a complication which we will return to shortly.
 
@@ -182,22 +182,22 @@ D^{-1}=\frac{\text{adj}D}{|D|}.
 \end{align}
 The \emph{adjugate} matrix\footnote{Sometimes, rather confusingly, called the \emph{adjoint}. In more modern terminology, the \emph{adjoint} is reserved for the complex conjugate-transpose, while the transposed cofactor matrix is called the \emph{adjugate} or the \emph{classical adjoint} \cite{householder,hjorth-jensen}\comment{p166-168}\comment{521}.}, $\text{adj}D$, is simply the transposed matrix of cofactors. In terms of the entries, we can write
 \begin{align}
-|D|=\sum_{j=1}^n \frac{C_{ji}}{D^{-1}_{ij}} = \sum_{j=1}^n D_{ij}C_{ji}.
+|D|=\sum_{j=1}^N \frac{C_{ji}}{D^{-1}_{ij}} = \sum_{j=1}^n D_{ij}C_{ji}.
 \end{align}
 
 As only one electron is moved at each Monte Carlo step, only a single row of the Slater matrix changes at each cycle. Recall that the $i,j$ cofactors are determinants of the sub-matrix resulting from removing column $i$ and row $j$ from $D$. This means that as row $i$ of $D$ is changed, the $i$-th column of the adjugate remains unchanged. In short, $C_{ij}(\r_\text{new})=\text{adj}D_{ij}(\r_\text{old})=C_{ji}(\r_\text{old})$ \cite{hjorth-jensen}\comment{p521}.
 
 By definition, the Slater matrix and it's inverse must satisfy 
 \begin{align}
-\sum_{k=1}^n D_{ik}D^{-1}_{kj}=\delta_{ij},
+\sum_{k=1}^N D_{ik}D^{-1}_{kj}=\delta_{ij},
 \end{align}
 meaning the denominator drops out of \eq{VMCI2} and $R_\text{SD}$ simplifies immensely to \cite{hammond,ceperly,hjorth-jensen}\comment{p276}\comment{}\comment{p521}
 \begin{align}
-\frac{D(\R_\text{new})}{D(\R_\text{old})}=R_\text{SD}&=\frac{\sum_{j=1}^n D_{ij}(\r_\text{new})C_{ji}(\r_\text{old}) }{\sum_{j=1}^n D_{ij}(\r_\text{old})C_{ji}(\r_\text{old}) } \nn\\
+\frac{|D(\R_\text{new})|}{|D(\R_\text{old})|}=R_\text{SD}&=\frac{\sum_{j=1}^N D_{ij}(\r_\text{new})C_{ji}(\r_\text{old}) }{\sum_{j=1}^N D_{ij}(\r_\text{old})C_{ji}(\r_\text{old}) } \nn\\
 %
-&= \frac{\sum_{j=1}^n D_{ij}(\r_\text{new})D^{-1}_{ji}(\r_\text{old})|D(\r_\text{old})| }{\sum_{j=1}^n D_{ij}(\r_\text{old})D^{-1}_{ji}(\r_\text{old})|D(\r_\text{old})| } \label{eq:VMCI2}\\
+&= \frac{\sum_{j=1}^N D_{ij}(\r_\text{new})D^{-1}_{ji}(\r_\text{old})|D(\r_\text{old})| }{\sum_{j=1}^N D_{ij}(\r_\text{old})D^{-1}_{ji}(\r_\text{old})|D(\r_\text{old})| } \label{eq:VMCI2}\\
 %
-&= \sum_{j=1}^n D_{ij}(\r_\text{new})D^{-1}_{ji}(\r_\text{old}). \label{eq:VMCI3}
+&= \sum_{j=1}^N D_{ij}(\r_\text{new})D^{-1}_{ji}(\r_\text{old}). \label{eq:VMCI3}
 \end{align}
 Note carefully that the inverse need only be re-calculated \emph{if} the new configuration is accepted in the Metropolis test.
 
@@ -225,33 +225,80 @@ The \inlinecc{m_changedElectron} is communicated to the \inlinecc{WaveFunction} 
 The \inlinecc{m_orbital} variable holds an instance of the class corresponding to the spin-orbitals which populate the Slater determinant. We give an outline of the \inlinecc{Orbital} in section \ref{orbital}.
 
 \subsubsection{Updating the inverse}
-The algorithm of the previous section requires the inverse of the Slater matrix, evaluated at the previous electronic configuration, to be know. In principle we may simply directly evaluate the inverse for every Monte Carlo cycle, but the $\mathcal{O}(N^3)$ computational scaling cost quickly makes this approach unfeasible. We require therefore a more efficient algorithm which makes use of the fact that when we update it, the inverse is already known at the old configuration. Recall that the new Slater matrix differs from the old one only in a single row.
+The algorithm of the previous section requires the inverse of the Slater matrix, evaluated at the previous electronic configuration, to be know. In principle we may simply directly evaluate the inverse for every Monte Carlo cycle, but the $\mathcal{O}(N^3)$ computational scaling cost quickly makes this approach unfeasible. We require therefore a more efficient algorithm which makes use of the fact that when we update it, the inverse is already known at the old configuration. Recall that the new Slater matrix differs from the old one only in a single row. In the eloquent words of William H. Press and co-workers in the third edition of \emph{Numerical Recipes} \cite{numericalrecipes}\comment{p76}
+\begin{shadequote}[r]{W. H. Press, S. A. Teukolsky, W. T. Vetterling, and B. P. Flannery}
+Suppose you have already obtained, by herculean effort, the inverse matrix $A^{-1}$ of a square matrix $A$. Now you want to make a "small" change in $A$, for example change (...) one row, or one column. Is there any way of calculating the corresponding $A^{-1}$ without repeating your difficult labors?
+\end{shadequote}
 
-We use an algorithm based on the Sherman-Morrison formula \cite{sherman}. The method due to Sherman and Morrison updates the inverse given a single changed index in the original matrix, but this is readily extended to give the change in $D^{-1}$ given the replacement of a full row of the matrix $D$. The full update formula is given by \cite{hammond}\comment{p277}
+It turns out that such a convenient formula exists. It is known as the \emph{Sherman-Morrison formula}. The original formulation due to Sherman and Morrison deals with the problem of updating the inverse of a matrix, given a change in a single element. However, what is normally referred to as \emph{the Sherman-Morrison formula} (and indeed what we will be referring to by that name) is a straightforward extension of this. The formula states the following: Suppose a square $n\times n$ matrix $A$ and it's inverse $A^{-1}$ is (by heroic effort) known. Assume ${\bf u}$ and ${\bf v}$ are elements in $\mathbb{R}^n$, then the matrix inverse of $A+{\bf u}{\bf v}^T$ is given by
+\begin{align}
+\left(A+{\bf u}{\bf v}^T\right)^{-1}=A^{-1} - \frac{A^{-1}{\bf u}{\bf v}^TA^{-1}}{1+{\bf v}^TA^{-1}{\bf u}}.
+\end{align}
+Note that ${\bf u}{\bf v}^T$ (sometimes dentoed ${\bf u}\otimes {\bf v}$) is the \emph{outer} product, and in our case ${\bf u}$ is the $k$-th unit vector, with $k$ corresponding to the index of the moved electron. The vector ${\bf v}$ contains the change in the orbitals for the moved electron, 
+\begin{align}
+v_i = \phi_i(\r^\text{new}_k)-\phi_i(\r^\text{old}_k)\equiv \mathit{\Delta} \phi_i(\r_k).
+\end{align} 
+In short, ${\bf u}{\bf v}^T$ is a matrix with vanishing elements in all but a single row\textemdash row number $k$\textemdash which contains the change in the Slater matrix due to the moving of a single electron.
+
+The Sherman-Morrison formula can be derived as follows: Finding the matrix inverse of $(A+{\bf u}{\bf v}^T)$ constitutes finding a vector ${\bf x}$ such that $(A+{\bf u}{\bf v}^T){\bf x}={\bf y}$ is satisfied for some given ${\bf y}$. Expanding and defining $s\equiv {\bf v}^T{\bf x}$, we find \cite{shermanproof}
+\begin{align}
+\left(A+{\bf u}{\bf v}^T\right){\bf x} &= {\bf y} \nn\\
+%
+A{\bf x}&={\bf y}-{\bf u}{\bf v}^T{\bf x} \nn\\
+%
+{\bf x}&= A^{-1}{\bf y}-A^{-1}{\bf u}\underbrace{{\bf v}^T{\bf x}}_{=s}.
+\end{align}
+Insertion of ${\bf x}$ into the the expression for $s$ yields
+\begin{align}
+s &= {\bf v}^T{\bf x} \nn\\
+%
+&= {\bf v}^TA^{-1}{\bf y}-{\bf v}^TA^{-1}{\bf u}s \nn\\
+%
+s\left(1 + {\bf v}^TA^{-1}{\bf u}\right) &= {\bf v}^TA^{-1}{\bf y} \nn\\
+%
+s &= \frac{{\bf v}^TA^{-1}{\bf y}}{1+{\bf v}^TA^{-1}{\bf u}}. \label{eq:VMCI5}
+\end{align}
+Substituting finally \eq{VMCI5} into the previous expression for ${\bf x}$ gives
+\begin{align}
+{\bf x} &= A^{-1}{\bf y} - \frac{A^{-1}{\bf u}{\bf v}^TA^{-1}{\bf y}}{1+{\bf v}^TA^{-1}{\bf u}} \nn\\
+%
+&= \bigg(\underbrace{A^{-1} - \frac{A^{-1}{\bf u}{\bf v}^TA^{-1}}{1+{\bf v}^TA^{-1}{\bf u}}}_{\displaystyle (A+{\bf u}{\bf v}^T)^{-1}}\bigg){\bf y}. \label{eq:VMCI6}
+\end{align}
+
+In terms of the matrix entires, we have
+\begin{align}
+\left(A + {\bf u}{\bf v}^T\right)^{-1}_{kj}=A^{-1}_{kj}-\frac{A^{-1}_{ki}\left({\bf u}{\bf v}^T\right)_{il}A^{-1}_{lj}}{1+\lambda},
+\end{align}
+where $\lambda\equiv 1+{\bf v}^TA^{-1}{\bf u}$. The index $i$ of the recently displaced electron dictate which row of ${\bf u}{\bf v}^T$ takes non-zero values. Inserting $v_a=\mathit{\Delta}\phi_a(\r_i)$, $A^{-1}_{bc}=D^{-1}_{bc}(\r^\text{old})$, and $u_d=\delta_{id}$, Hammond finds \cite{hammond}\comment{p277}
 \begin{align}
 D_{kj}^{-1}(\r_\text{new}) = \left\{ \mat{lccr}
 {
-	\displaystyle D_{kj}^{-1}(\r_\text{old}) - \frac{1}{R_\text{SD}}D^{-1}_{ji}(\r_\text{new})\sum_{l=1}^n D_{il}(\r_\text{new})D_{lj}^{-1}(\r_\text{new}) & & \text{if} & j\not=i \\
+	\displaystyle D_{kj}^{-1}(\r_\text{old}) - \frac{1}{R_\text{SD}}D^{-1}_{ji}(\r_\text{new})\sum_{l=1}^n D_{il}(\r_\text{new})D_{lj}^{-1}(\r_\text{old}) & & \text{if} & j\not=i \\
 	%
 	\displaystyle \frac{1}{R_\text{SD}}D_{kj}^{-1}(\r_\text{old}) & & \text{if} & j=i 
 }\right. \label{eq:VMCI4}
 \end{align}
+where $D^{-1}_{kj}(\r_\text{new})$ corresponds to $(A+{\bf u}{\bf v}^T)^{-1}$ of \eq{VMCI6} and 
+\begin{align}
+R_\text{SD}=\frac{|D(\R_\text{new})|}{|D(\R_\text{old})|}=\sum_{e=1}^n D_{ie}(\r_\text{new})D^{-1}_{ei}(\r_\text{old})
+\end{align}
+as per \eq{VMCI3}.
+
 The modified Sherman-Morrison scheme of \eq{VMCI4} is implemented in the VMC framework as 
 \begin{lstlisting}[language={[std]c++}]
-
 void SlaterWithJastrow::updateSlaterInverse() {
     Electron*  iElectron  = m_system->getElectrons().at(m_changedElectron);
 
-    const int    i       = iElectron->getSpinIndex();
-    const int    sc      = m_spinChanged;
-    const double x    	 = iElectron->getPosition().at(0);
-    const double y    	 = iElectron->getPosition().at(1);
-    const double z       = iElectron->getPosition().at(2);
+    const int    i   = iElectron->getSpinIndex();
+    const int    sc  = m_spinChanged;
+    const double x   = iElectron->getPosition().at(0);
+    const double y   = iElectron->getPosition().at(1);
+    const double z   = iElectron->getPosition().at(2);
 
-    mat& newS        = (m_spinChanged == 1 ? m_slaterUp    : m_slaterDown);
-    mat& oldS        = (m_spinChanged == 1 ? m_slaterUpOld : m_slaterDownOld);
-    int  nElectrons  = (m_spinChanged == 1 ? m_numberOfSpinUpElectrons :
-                                             m_numberOfSpinDownElectrons);
+    mat& newS        = (sc == 1 ? m_slaterUp    : m_slaterDown);
+    mat& oldS        = (sc == 1 ? m_slaterUpOld : m_slaterDownOld);
+    int  nElectrons  = (sc == 1 ? m_numberOfSpinUpElectrons :
+                                  m_numberOfSpinDownElectrons);
 
     for (int k = 0; k < nElectrons; k++) {
         for (int j = 0; j < nElectrons; j++) {
@@ -270,7 +317,7 @@ void SlaterWithJastrow::updateSlaterInverse() {
 \end{lstlisting}
 The Slater matrix evaluated at the old configuration is contained in the variables \inlinecc{m_slaterUpOld} and \inlinecc{m_slaterDownOld}. Note carefully that the $R_\text{SD}$ value stored in \inlinecc{m_Rsd} here is the \emph{updated} value, which is independent of $D^{-1}(\R_\text{new})$ and so can be calculated before we update the inverse in this member function.
 
-At the very start of the Metropolis run, the full Slater matrix needs to be calculated and inverted \emph{once}. This is done (in addition to a whole range of other operations) in \inlinecc{SlaterWithJastrow::evaluateWaveFunctionInitial},
+At the very start of the Metropolis run, the full Slater matrix needs to be calculated and inverted \emph{once}. This is done (in addition to a whole range of other operations) in \inlinecc{SlaterWithJastrow::evaluateWaveFunctionInitial}:
 \begin{lstlisting}[language={[std]c++}]
 void SlaterWithJastrow::evaluateWaveFunctionInitial() {
     ...
@@ -307,7 +354,131 @@ void SlaterWithJastrow::evaluateWaveFunctionInitial() {
 }
 \end{lstlisting}
 
-\subsubsection{Efficient evaluation of the gradient, $\nabla_i |D|$}
+\subsubsection{Efficient evaluation of the gradient, $\nabla_i D(\R)$}
+The calculation of the quantum force involved in the importance sampling of the Metropolis-Hastrings algorithm requires the evaluation of the ratio of the gradient to the wave function itself. Since, by repeated application of the product rule, 
+\begin{align}
+\frac{\nabla_i\Psit}{\Psit} &= \frac{\nabla_i\big[|D_\downarrow(\R)||D_\uparrow(\R)|J(\R) \big]}{\Psit} \nn\\
+%
+&= \frac{J(\R)\nabla_i\big[|D_\downarrow(\R)||D_\uparrow(\R)|\big]+|D_\downarrow(\R)||D_\uparrow(\R)|\nabla_i J(\R)}{\Psit} \nn\\
+%
+&= \frac{J(\R)|D_\downarrow(\R)|\nabla_i |D_\uparrow(\R)|}{\Psit}+\frac{J(\R)|D_\uparrow(\R)|\nabla_i|D_\downarrow(\R)|}{\Psit} + \nn\\
+& \ \ \ \  \ \ \ \  \ \ \ \  \ \ \ \  \ \ \ \  \ \ \ \  \ \ \ \frac{|D_\downarrow(\R)||D_\uparrow(\R)|\nabla_i J(\R)}{\Psit} \nn\\
+%
+&= \frac{\nabla_i |D_\uparrow(\R)|}{|D_\uparrow(\R)|}+\frac{\nabla_i |D_\downarrow(\R)|}{|D_\downarrow(\R)|} +  \frac{\nabla_i J(\R)}{J(\R)},
+\end{align}
+we require an efficient algorithm for calculating $\nabla_i |D(\R)|/|D(\R)|$ terms. The indexed del operator $\nabla_i$ denotes differentiation w.r.t.\ the coordinates of electron $i$. We note that if said electron has spin projection $\sigma_i=\chi(\uparrow)$, then $\nabla_i |D_\downarrow|$ neccessaily vanishes. The same is true of $\nabla_i |D_\uparrow|$ if the spin state is flipped. This means we only ever need to calculate one such term for every Monte Carlo move. 
+
+A similar derivation to the one resulting in $R_\text{SD}$ gives an expression for $\nabla_i|D(\R)|$ in terms of the inverse Slater matrix as \cite{hjorth-jensen}\comment{p522}
+\begin{align}
+\frac{\nabla_i|D(\R_\text{old})|}{|D(\R_\text{old})|} = \sum_{j=1}^n \nabla_iD_{ij}(\r_\text{old})D^{-1}_{ji}(\r_\text{old})=\sum_{j=1}^n\nabla_i \phi_j(\r_i^\text{old})D^{-1}_{ji}(\r^\text{old}),
+\end{align}
+where $D(\R)$ denotes either one of $D_\uparrow$ or $D_\downarrow$ (whichever contains electron $i$). When the gradient evaluated at the new positions is needed, the equation changes to \cite{hammond}\comment{p276}
+\begin{align}
+\frac{\nabla_i|D(\R_\text{new})|}{|D(\R_\text{new})|}  &= \frac{|D(\R_\text{old})|}{|D(\R_\text{new})|}\sum_{j=1}^n\nabla_i \phi_j(\r_i^\text{new})D^{-1}_{ji}(\r^\text{old}) \nn\\
+&= \frac{1}{R_\text{SD}}\sum_{j=1}^n\nabla_i \phi_j(\r_i^\text{new})D^{-1}_{ji}(\r^\text{old}).  \label{eq:VMCI7}
+\end{align}
+
+The implementation of \eq{VMCI7} is straightforward:
+\begin{lstlisting}[language={[std]c++}]
+void SlaterWithJastrow::updateSlaterGradient(double Rsd, int electron) {
+    Electron*   iElectron   = m_system->getElectrons().at(electron);
+    int cs              = iElectron->getSpin();
+    int i               = iElectron->getSpinIndex();
+    int nElectron       = (cs == 1 ? m_numberOfSpinUpElectrons :
+                                     m_numberOfSpinDownElectrons);
+    mat& slaterInverse  = (cs == 1 ? m_slaterUp         : m_slaterDown);
+    mat& slaterGradient = (cs == 1 ? m_slaterGradientUp :
+                                     m_slaterGradientDown);
+
+    const double x = iElectron->getPosition().at(0);
+    const double y = iElectron->getPosition().at(1);
+    const double z = iElectron->getPosition().at(2);
+
+    for (int dimension = 0; dimension < m_numberOfDimensions; dimension++) {
+        double sum = 0;
+        for (int j = 0; j < nElectrons; j++) {
+            sum += m_orbital->computeDerivative(x,y,z,j,dimension,cs) *
+                   slaterInverse(j,i);
+        }
+        slaterGradient(i, dimension) = sum / Rsd;
+    }
+}
+\end{lstlisting}
+Please note that instead of using directly the \inlinecc{m_changedElectron} index and the local \inlinecc{m_Rsd} value already calculated, \inlinecc{Rsd} and the electron index is given as parameters to \inlinecc{SlaterWithJastrow::updateSlaterGradient}. This is done in order to make it possible to compute the entire gradient matrix\textemdash the gradient w.r.t.\ all the electron coordinates in turn\textemdash by simply iterating over $i$ and providing \inlinecc{Rsd=1}. Computing from scratch the entire gradient matrix is done exactly once in the VMC implementation, at the very start of the Metropolis sampling. Subsequent calculations are done by updating only the row corresponding to the moved electrons.
+
+
+\subsubsection{Efficient evaluation of the Laplacian, $\nabla_i^2D(\R)$}
+Whereas the gradient is needed for the evaluation of the quantum force, the Laplacian is needed in order to calculate the kinetic energy. In the same way we split the total gradient, we may split the total Laplacian into terms corresponding to differentiation of either $D_\downarrow(\R)$, $D_\uparrow(\R)$, $J(\R)$. By, again, repeated application of the product rule, we find that
+\begin{align}
+\frac{\nabla_i^2\Psit}{\Psit} &= \frac{\nabla_i\cdot\nabla_i \Psit}{\Psit} \nn\\
+%
+&= \frac{1}{\Psit}\nabla_i\cdot\Big[ J|D_\downarrow|\nabla_i |D_\uparrow|  +  J|D_\uparrow|\nabla_i|D_\downarrow|   + \nn\\
+& \ \ \ \  \ \ \ \  \ \ \ \  \ \ \ \  \ \ \ \  \ \ \ \  \ \ \ \  \ \ \ \  \ \ \ \  \ \ \ |D_\downarrow||D_\uparrow|\nabla_i J  \Big] \nn\\
+%
+&= \frac{1}{\Psit}\Big[ 
+|D_\downarrow|\nabla_i |D_\uparrow|\cdot \nabla_i J 
++ 
+J\nabla_i|D_\downarrow|\cdot \nabla_i |D_\uparrow|
++ 
+J|D_\downarrow|\nabla_i^2 |D_\uparrow|
++ \nn\\
+& \phantom{\frac{1}{\Psit}\Big[--}|D_\uparrow|\nabla_i|D_\downarrow|\cdot\nabla_i J
++ 
+J\nabla|D_\uparrow|\cdot\nabla_i|D_\downarrow|
++
+J|D_\uparrow|\nabla_i^2|D_\downarrow|
++ \nn\\
+& \phantom{\frac{1}{\Psit}\Big[---}|D_\uparrow|\nabla_i J \cdot\nabla_i|D_\downarrow|
++
+|D_\downarrow|\nabla_i|D_\uparrow\cdot|\nabla_i J
++ 
+|D_\downarrow||D_\uparrow|\nabla^2_i J\Big] \nn\\
+%
+&= \frac{\nabla_i^2|D_\uparrow|}  {|D_\uparrow|} +
+   \frac{\nabla_i^2|D_\downarrow|}{|D_\downarrow|} +
+   \frac{\nabla_i^2 J}{J} +
+   2\left[ \frac{\nabla_i|D_\uparrow|}  {|D_\uparrow|}   +
+   	  	   \frac{\nabla_i|D_\downarrow|}{|D_\downarrow|}  
+   	  	   \right] \cdot \frac{\nabla_i J}{J},
+\end{align}
+where we have supressed the arguments $\R$. As we can see, the computation of the Laplacian involves expressions on the form $\nabla_i^2|D|/|D|$. Analogous to the gradient expression, we can write out the Laplacian in terms of the inverse Slater matrix as \cite{hjorth-jensen}\comment{p524}
+\begin{align}
+\frac{\nabla_i^2|D(\R^\text{new})|}{|D(\R^\text{new})|} &= \sum_{j=1}^N\nabla_i^2D_{ij}(\r^\text{new})D_{ji}^{-1}(\r^\text{new})=\sum_{j=1}^N\nabla_i^2\phi_j(\r_i^\text{new})D_{ji}^{-1}(\r^\text{new}). \label{eq:VMCI8}
+\end{align}
+Since the Laplacian is only ever computed \emph{after} an accepted Metropolis step, we need no corresponding expression for $\nabla_i^2|D(\R_\text{old})|/|D(\R_\text{old})|$.
+
+\eq{VMCI8} is implemented in the VMC framework as
+\begin{lstlisting}[language={[std]c++}]
+void SlaterWithJastrow::computeSlaterLaplacian(int electron) {
+    Electron* kElectron  = m_system->getElectrons().at(electron);
+    int kSpin      = kElectron->getSpin();
+    int nElectrons = (kSpin == 1 ? m_numberOfSpinUpElectrons :
+                                   m_numberOfSpinDownElectrons);
+    const vector<Electron*>& electrons = (kSpin==1 ?
+                                              m_system->getSpinUpElectrons() :
+                                              m_system->getSpinDownElectrons());
+    const mat& slater = (kSpin==1 ? m_slaterUp : m_slaterDown);
+    double& slaterLaplacian = (kSpin==1 ? m_slaterLaplacianUp :
+                                          m_slaterLaplacianDown);
+    double value = 0;
+    for (int i = 0; i < nElectrons; i++) {
+        Electron* iElectron = electrons.at(i);
+        const double xi = iElectron->getPosition().at(0);
+        const double yi = iElectron->getPosition().at(1);
+        const double zi = iElectron->getPosition().at(2);
+
+        for (int j = 0; j < nElectrons; j++) {
+            double jLaplacian = m_orbital->computeLaplacian(xi,yi,zi,j,kSpin);
+            value +=  slater(j,i) * jLaplacian;
+        }
+    }
+    slaterLaplacian = value;
+    m_slaterLaplacian = m_slaterLaplacianUp + m_slaterLaplacianDown;
+}
+\end{lstlisting}
+
+\subsubsection{The Jastrow ratio and derivatives}
+The correlation part of the VMC trial wave function 
 
 
 
