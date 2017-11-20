@@ -79,7 +79,8 @@ As the exact wave function is a variational minimum of the Hamiltonian, the expe
 The virial theorem generalizes to $N$ particles in the same form as \eq{virial}.
 
 \subsubsection*{Cusp conditions}
-First described by Kato \cite{kato}, cusp conditions describe known properties of the quantum system and wave function at the divergent points of the inter-electron and electron-nucleus Coulomb potentials. These two cases will be described in depth in sections \ref{section:eecusp} and \ref{section:encusp}. 
+In general, when charged particles approach each other the Coulombic $1/r$ term of the interaction energy diverges. In order for the energy to remain finite, the wave function needs to obey very specific sets of conditions dictating the behaviour of the discontinous derivatives at the collision points. First described by Kato \cite{kato}, such \emph{cusp conditions} describe known properties of the quantum system and wave function at the divergent points of the inter-electron and electron-nucleus Coulomb potentials. These two cases will be described in depth in sections \ref{section:eecusp} and \ref{section:encusp}. 
+
 
 
 \subsection{Electron-nucleus cusp \label{section:encusp}}
@@ -115,7 +116,7 @@ and the exact wave function obeys \cite{hammond}\comment{p156}
 We see that a wave function of s-type symmetry which does not vanish at $r=0$ must be exponential in $r$ in the limit of $r\rightarrow0$. 
 \newcommand{\Rdo}{\pder{\tilde R}{r}}
 \newcommand{\Rd}[1]{\pder{^#1\tilde R}{r^#1}}
-What happens if $l\not=0$ or $R(0)=0$? It turns out that considering the latter issue automatically resolves the first \cite{hammond}\comment{p157}, so let us take the case of $R(0)=0$. We may factor the leading $r$ dependence out of $R(r)$, and define $\tilde R(r)\equiv r^mR(r)$, so that $\tilde R(0)\not=0$. Three applications of the derivative product rule gives 
+What happens if $l\not=0$ or $R(0)=0$? It turns out that considering the latter issue automatically resolves the first, so let us take the case of $R(0)=0$ \cite{hammond}\comment{p157}. We may factor the leading $r$ dependence out of $R(r)$, and define $\tilde R(r)\equiv r^mR(r)$, so that $\tilde R(0)\not=0$. Three applications of the derivative product rule gives 
 \begin{align}
 \pder{}{r}R(r) &= \pder{}{r}\left[ \tilde R(r) r^m \right] = \Rdo r^m + m\tilde R(r)r^{m-1},
 \end{align}
@@ -145,21 +146,56 @@ If the local energy is to remain finite once again, we need the inverse powers o
 
 
 \subsection{Electron-electron cusp \label{section:eecusp}}
+In the limit of two colliding electrons $r_{12}\rightarrow 0$, another cusp condition is found. It turns out that the corresponding radial equation for the inter-electronic separation carries the same dependence on $r_{12}$ as the in the electron-nucleus case. With the only difference being the $-Z/r$ potential being replaced by a repulsive $1/r_{12}$ and kinetic term being twice as large \cite{thijssen}\comment{p380}. 
 
+We can write down the divergent parts of the local energy as
+\begin{align}
+E_\text{local}(\r_{12}\rightarrow0)&=\lim_{r_{12}\rightarrow0} \left\{\frac{1}{R(r_{12})}\left(\frac{2}{r_{12}}\pder{}{r_{12}} - \frac{2}{r_{12}} -\right.\right.\nn\\
+& \phantom{-----} \left.\left. \frac{l(l+1)}{r_{12}^2} + \text{ finite terms} \right)R(r_{12})\right\},
+\end{align}
+where $l=1$ if the spin-projections of electrons $1$ and $2$ are equal, and $l=0$ otherwise \cite{hjorth-jensen}\comment{p478}. A derivation analogue to the previous one reveals a corresponding cusp condition: 
+\begin{align}
+\lim_{r_{12}\rightarrow0}\left\{\pder{R}{r_{12}}\right\} = -\frac{R(r_{12})}{2(l+1)}.
+\end{align}
+This can be satisfied by a term in the wave function proportional to 
+\begin{align}
+R(r_{12})\propto \left\{ \mat{lcr}{
+  \displaystyle\exp\left(\frac{r_{12}}{2}\right) & \text{ if } & \sigma_i=\sigma_j \\
+  \\
+  \displaystyle\exp\left(\frac{r_{12}}{4}\right) & \text{ if } & \sigma_i\not=\sigma_j
+}\right..
+\end{align}
 
 \subsection{Higher order coalescence conditions}
-Advances in Quantum Chemistry, Vol73 chap2 s59
+In a system of $N+M$ charged particles, $N$ electrons and $M$ nuclei there will in general be a lot of such cusp conditions or \emph{coalescence points}, where two or more electrons or nuclei coalesce with each other. Assuming all nuclei have the same charge $Z$, and disregarding nucleus-nucleus coalescence (recall that the Born-Oppenheimer wave function depends only parametrically on the positions of the nuclei), leaves us with: $r_{ij}\rightarrow0$, $r_{ia}\rightarrow0$, $r_{ij}\rightarrow0$ and simulaneously $r_{ik}\rightarrow$, $r_{ia}\rightarrow0$ and simulaneously $r_{ak}\rightarrow$, etc. The $i,j,k,\dots$ indices here denote electronic coordinates, while $a,b,c,\dots$ denote nucleonic coordinates.
 
-
-
+We will not consider higher order conditions in the present work, but refer the reader to e.g.\ \cite{hammond}\comment{c5.3-5.4}\cite{assaraf}\comment{c2}.
 
 \section{Hydrogen wave functions}
 
 
 
-\section{Jastrow factor}
-An explicit functional form which accounts for the electron-electron cusp condition described in section \ref{section:eecusp} is that of a \emph{Jastrow factor}. Although originally proposed by Bijl in 1940, the form is commonly attributed to American physicist R. Jastrow \cite{anderson,bijl}.  
 
+\section{Jastrow factor}
+Multiple functional forms which account explicitly for the electron-electron cusp condition described in section \ref{section:eecusp} are used in the literature. Some examples include the Boys-Handy function, the double exponential, or the Gaussian geminal form \cite{hammond}\comment{p173}. However, the most commonly used form is the Jastrow factor, sometimes called the Padé-Jastrow factor. Although originally proposed by Bijl in 1940, the form is commonly attributed to American physicist R. Jastrow \cite{anderson,bijl,jastrow}\comment{anderson p46}.
+
+The two-body Jastrow factor used in the current work has the form
+\begin{align}
+J(\R)=\exp\left[\sum_{i=1}^N\sum_{j=i+1}^N \frac{a_{ij}r_{ij}}{1+\beta r_{ij}} \right],
+\end{align}
+where $\beta>0$ is a tunable parameter and $a$ depends on the relative spin-projections of electrons $i$ and $j$ as \cite{hjorth-jensen}
+\begin{align}
+a_{ij}=\left\{\mat{lcr}{
+  \nicefrac{1}{4} & \text{ if } & \sigma_i=\sigma_j \\
+  \nicefrac{1}{2} & \text{ if } & \sigma_i\not=\sigma_j
+} \right..
+\end{align}
+
+In general, it is possible to add higher order polynomials terms to the exponent resulting in \cite{hammond}
+\begin{align}
+J(\R)=\exp\left[\sum_{i=1}^N\sum_{j=i+1}^N \frac{a_1r_{ij}+a_2r_{ij}^2+\dots}{1+\beta_1 r_{ij} + \beta_2 r_{ij}^2 + \dots} \right].
+\end{align}
+For optimized $\beta_k$ values this may yield a more precise approximation to the true wave function, but it comes at the cost of more difficult computation and parameter optimization.
 
 \section{Orbitals}
 \subsection{Slater type orbitals}
