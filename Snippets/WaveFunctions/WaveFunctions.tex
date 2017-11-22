@@ -23,7 +23,7 @@
 %Weissbluth: Atoms and Molecules
 
 \chapter{Wave functions \label{wavefunctions}}
-In ordinary quantum mechanics, the wave function is the primary quantity of interest. It constitutes the \emph{solution} of the Schrödinger equation and encodes within it all information about the state of the isolated quantum system in question. Mathematically speaking, the wave function is the complex valued spatial projection of the abstract state vector which is a unitary vector in some separable Hilbert space \cite{kvaal}\comment{p8}\cite{salasnich}\comment{p8}. Formally, it is the solution to the Schrödinger equation, $\hat H \psi_k=E_k\psi_k$, and it has a probabilistic interpretation originally after german physicist M. Born \cite{Born1926} (translated by \cite{wheeler}), which states that the magnitude squared is a probability density, i.e. \cite{weinberg}\comment{p24}
+In ordinary quantum mechanics, the wave function is the primary quantity of interest. It constitutes the \emph{solution} of the Schrödinger equation and encodes within it all information about the state of the isolated quantum system in question. Mathematically speaking, the wave function is the complex valued spatial projection of the abstract state vector which is a unitary vector in some separable Hilbert space \cite{kvaal,salasnich}\comment{p8}\comment{p8}. Formally, it is the solution to the Schrödinger equation, $\hat H \psi_k=E_k\psi_k$, and it has a probabilistic interpretation originally after German physicist M. Born \cite{Born1926} (translated by \cite{wheeler}), which states that the magnitude squared is a probability density, i.e. \cite{weinberg}\comment{p24}
 \begin{align}
 \mathrm{d}P(\r) = \left|\psi(\r)\right|^2 \mathrm{d}^3\r. 
 \end{align} 
@@ -66,7 +66,7 @@ The exact wave function obeys the \emph{virial theorem}, which states that (for 
 \begin{align}
 \langle \hat T \rangle &= -\frac{1}{2}\langle \hat V\rangle. \label{eq:virial}
 \end{align}
-A simple proof\footnote{More precisely, a heuristic (not entirely rigorous) justification.} by dimensional analysis due to Weinberg \cite{weinberg}\comment{p190} for the one-particle case illustrates the condtion: Since the square of the wave function has to integrate over space to a probability, it must have dimensions of $\text{Length}^{\nicefrac{-3}{2}}$. Letting $a$ denote the chosen length scale, we can express the wave function as $\psi(\r)=a^{\nicefrac{-3}{2}}f(\r/a)$, with $\z\equiv\r/a$ and $f(\z)$ being a dimensionless function of a dimensionless argument. Changing integration variables in the expressions for $\langle \hat V\rangle$ and $\langle \hat T\rangle$,
+A simple proof\footnote{More precisely, a heuristic (not entirely rigorous) justification.} by dimensional analysis due to Weinberg \cite{weinberg}\comment{p190}{ }for the one-particle case illustrates the condtion: Since the square of the wave function has to integrate over space to a probability, it must have dimensions of $\text{Length}^{\nicefrac{-3}{2}}$. Letting $a$ denote the chosen length scale, we can express the wave function as $\psi(\r)=a^{\nicefrac{-3}{2}}f(\r/a)$, with $\z\equiv\r/a$ and $f(\z)$ being a dimensionless function of a dimensionless argument. Changing integration variables in the expressions for $\langle \hat V\rangle$ and $\langle \hat T\rangle$,
 \begin{align}
 \langle \psi|\hat V|\psi\rangle = \langle \hat V\rangle_\psi&= \frac{\int \mathrm{d}^3\r \, V(\r) |\psi(\r)|^2}{\int \mathrm{d}^3\r \,|\psi(\r)|^2}, \ \ \text{ and}\\
 %
@@ -78,7 +78,7 @@ As the exact wave function is a variational minimum of the Hamiltonian, the expe
 
 The virial theorem generalizes to $N$ particles in the same form as \eq{virial}.
 
-\subsubsection*{Cusp conditions}
+\subsection{Cusp conditions}
 In general, when charged particles approach each other the Coulombic $1/r$ term of the interaction energy diverges. In order for the energy to remain finite, the wave function needs to obey very specific sets of conditions dictating the behaviour of the discontinous derivatives at the collision points. First described by Kato \cite{kato}, such \emph{cusp conditions} describe known properties of the quantum system and wave function at the divergent points of the inter-electron and electron-nucleus Coulomb potentials. These two cases will be described in depth in sections \ref{section:eecusp} and \ref{section:encusp}. 
 
 
@@ -169,7 +169,7 @@ R(r_{12})\propto \left\{ \mat{lcr}{
 \subsection{Higher order coalescence conditions}
 In a system of $N+M$ charged particles, $N$ electrons and $M$ nuclei there will in general be a lot of such cusp conditions or \emph{coalescence points}, where two or more electrons or nuclei coalesce with each other. Assuming all nuclei have the same charge $Z$, and disregarding nucleus-nucleus coalescence (recall that the Born-Oppenheimer wave function depends only parametrically on the positions of the nuclei), leaves us with: $r_{ij}\rightarrow0$, $r_{ia}\rightarrow0$, $r_{ij}\rightarrow0$ and simulaneously $r_{ik}\rightarrow$, $r_{ia}\rightarrow0$ and simulaneously $r_{ak}\rightarrow$, etc. The $i,j,k,\dots$ indices here denote electronic coordinates, while $a,b,c,\dots$ denote nucleonic coordinates.
 
-We will not consider higher order conditions in the present work, but refer the reader to e.g.\ \cite{hammond}\comment{c5.3-5.4}\cite{assaraf}\comment{c2}.
+We will not consider higher order conditions in the present work, but refer the reader to e.g.\ \cite{hammond,assaraf}\comment{c5.3-5.4}\comment{c2}.
 
 \section{Hydrogen wave functions}
 
