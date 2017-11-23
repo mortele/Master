@@ -78,7 +78,7 @@ As the exact wave function is a variational minimum of the Hamiltonian, the expe
 
 The virial theorem generalizes to $N$ particles in the same form as \eq{virial}.
 
-\subsection{Cusp conditions}
+\subsubsection{Cusp conditions}
 In general, when charged particles approach each other the Coulombic $1/r$ term of the interaction energy diverges. In order for the energy to remain finite, the wave function needs to obey very specific sets of conditions dictating the behaviour of the discontinous derivatives at the collision points. First described by Kato \cite{kato}, such \emph{cusp conditions} describe known properties of the quantum system and wave function at the divergent points of the inter-electron and electron-nucleus Coulomb potentials. These two cases will be described in depth in sections \ref{section:eecusp} and \ref{section:encusp}. 
 
 
@@ -186,9 +186,9 @@ J(\R)=\exp\left[\sum_{i=1}^N\sum_{j=i+1}^N \frac{a_{ij}r_{ij}}{1+\beta r_{ij}} \
 where $\beta>0$ is a tunable parameter and $a$ depends on the relative spin-projections of electrons $i$ and $j$ as \cite{hjorth-jensen}
 \begin{align}
 a_{ij}=\left\{\mat{lcr}{
-  \nicefrac{1}{4} & \text{ if } & \sigma_i=\sigma_j \\
+  \nicefrac{1}{4} & \text{ if } & \sigma_i=\sigma_j    \\
   \nicefrac{1}{2} & \text{ if } & \sigma_i\not=\sigma_j
-} \right..
+} \right. .
 \end{align}
 
 In general, it is possible to add higher order polynomials terms to the exponent resulting in \cite{hammond}
@@ -198,9 +198,188 @@ J(\R)=\exp\left[\sum_{i=1}^N\sum_{j=i+1}^N \frac{a_1r_{ij}+a_2r_{ij}^2+\dots}{1+
 For optimized $\beta_k$ values this may yield a more precise approximation to the true wave function, but it comes at the cost of more difficult computation and parameter optimization.
 
 \section{Orbitals}
-\subsection{Slater type orbitals}
+As noted in section \ref{section:slater}, the Slater determinant\textemdash populated with eigenfunctions of the one-electron operator $\hat h$\textemdash is an exact solution for a non-interacting $N$-electron problem. But Slater determinants are also used as wave function ansatzes for interacting systems. The question of which functions should occupy the determinants however is a fairly non-trivial one. It turns out\textemdash somewhat surprisingly\textemdash that the chief concern is that of computational efficiency.
+
+Before diving in, we detail briefly the \emph{spherical harmonics}.
+
+\subsection{Spherical and solid harmonics}
+The spherical harmonics are a set of functions defined on the surface of a sphere. They are complete in the sense that they span the space of complex-valued continous functions on the unit sphere, $\text{span}\{Y_l^m(\theta,\phi)\}=C(\mathbb{S})$, and the space of complex-valued square integrable functions on $\mathbb{S}$, $\text{span}\{Y^m_l(\theta,\phi)\}=L^2(\mathbb{S})$ \cite{atkinson}\comment{p8}. The surface of the unit sphere is here denoted by $\mathbb{S}=\{\r=(x,y,z):|\r|^2=1\}$. The spherical harmonics thus naturally arise as an expansion basis for functions defined on the sphere. 
+
+Even more importantly, the spherical harmonics are eigenfunctions of the both the total angular momentum operator, $\hat {\bf L}^2$, and the $z$-projection of the angular momentum, $\hat L_z$ \cite{hassani}\comment{338}. For QM problems involving \emph{central potentials}\textemdash i.e.\ $V_\text{ext}=V_\text{ext}(r)$\textemdash the spherical harmonics are solutions to the angular part of the time independent Schrödinger equation (arising from separation of variables). 
+
+Formally, the spherical harmonics are functions of $\theta$ and $\phi$: $Y^m_l(\theta,\phi)$ proprotional to $P^{|m|}_l(\theta)\mathrm{e}^{\mathrm{i}m\phi}$ (up to a normalization constant), where $P^{|m|}_l$ satisfies 
+\begin{align}
+-\frac{1}{\sin\theta}\der{}{\theta}\left( \sin\theta \der{P_l^{|m|}}{\theta} \right) + \frac{m^2}{\sin^2\theta}P^{|m|}_l = l(l+1)P_l^{|m|}.
+\end{align}
+The parameters $l$ and $m$ are both integers, with $l\ge0$ and $-l\ge m \ge l$. The polynomials $P^m_l$ are known as the associated Legendre functions. The combination $r^l Y_l^m$ is a homogenous polynomial\footnote{A homogenous polynomial is a polynomial in which all terms have the same degree, i.e.\ $x^2+xy+y^2$ or $x^3+y^3+z^3+x^2z$.} of order $l$ in the cartesian unit vector \cite{weinberg,atkinson}\comment{p37,p19}. These combinations are called the \emph{solid harmonics} (up to a normalization), and can be made real by taking linear combinations of $\pm m$ terms. The first few real solid harmonics, $S_l^m(x,y,z)$ are shown in \tab{solidharmonics}. 
+
+\begin{table}[p]
+\centering
+\setlength\extrarowheight{2pt}
+\begin{tabularx}{\textwidth}{l X  r}
+\hline
+\hline
+\\[-0.9em]
+{\bf Real solid}  & {\bf Azimuthal, magnetic}       & \\ 
+{\bf harmonic}    & {\bf quantum numbers}, $(l,m)$  & {\bf Expression} \\
+\\[-0.9em]
+\hline
+\\[-0.9em]
+$S_0^0$    & \ \ \ \ \ \ \ \ \ \ \ \ 0, 0 & $\displaystyle 1$ \\
+\\[-0.5em]
+
+$S_1^{-1}$ & \ \ \ \ \ \ \ \ \ \ \ \ 1, -1 & $\displaystyle y$ \\
+\\[-0.5em]
+$S_1^0$    & \ \ \ \ \ \ \ \ \ \ \ \ 1, 0 & $\displaystyle z$ \\
+\\[-0.5em]
+$S_1^1$    & \ \ \ \ \ \ \ \ \ \ \ \ 1, 1 & $\displaystyle x$ \\
+\\[-0.5em]
+
+$S_2^{-2}$    & \ \ \ \ \ \ \ \ \ \ \ \ 2, -2 & $\displaystyle \sqrt{3}xy$ \\
+\\[-0.5em]
+$S_2^1$       & \ \ \ \ \ \ \ \ \ \ \ \ 2, 1 & $\displaystyle \sqrt{3}yz$ \\
+\\[-0.5em]
+$S_2^0$       & \ \ \ \ \ \ \ \ \ \ \ \ 2, 0 & $\displaystyle -\frac{1}{2}\left(x^2+y^2\right)+z^2$ \\
+\\[-0.5em]
+$S_2^{-1}$    & \ \ \ \ \ \ \ \ \ \ \ \ 2, 1 & $\displaystyle \sqrt{3}xz$ \\
+\\[-0.5em]
+$S_2^{-2}$    & \ \ \ \ \ \ \ \ \ \ \ \ 2, 2 & $\displaystyle \frac{\sqrt{3}}{2}(x-y)(x+y)$ \\
+\\[-0.5em]
+
+$S_3^{-3}$    & \ \ \ \ \ \ \ \ \ \ \ \ 3, -3 & $\displaystyle -\frac{1}{2}\sqrt{\frac{5}{2}}y(-3x^2+y^2)$ \\
+\\[-0.5em]
+$S_3^2$       & \ \ \ \ \ \ \ \ \ \ \ \ 3, -2 & $\displaystyle \sqrt{15}xyz$ \\
+\\[-0.5em]
+$S_3^{1}$     & \ \ \ \ \ \ \ \ \ \ \ \ 3, -1 & $\displaystyle -\frac{1}{2}\sqrt{\frac{3}{2}}y(x^2+y^2-4z^2)$ \\
+\\[-0.5em]
+$S_3^0$       & \ \ \ \ \ \ \ \ \ \ \ \ 3, 0 & $\displaystyle -\frac{3}{2}\left(x^2+y^2\right)z+z^3$ \\
+\\[-0.5em]
+$S_3^{-1}$    & \ \ \ \ \ \ \ \ \ \ \ \ 3, 1 & $\displaystyle -\frac{1}{2}\sqrt{\frac{3}{2}}x(x^2+y^2-4z^2)$ \\
+\\[-0.5em]
+$S_3^{-2}$    & \ \ \ \ \ \ \ \ \ \ \ \ 3, 2 & $\displaystyle \frac{1}{2}\sqrt{15}(x-y)(x+y)z$ \\
+\\[-0.5em]
+$S_3^{-3}$    & \ \ \ \ \ \ \ \ \ \ \ \ 3, 3 & $\displaystyle \frac{1}{2}\frac{\sqrt{5}}{2}x(x^2-3y^2)$ \\
+\\[-0.5em]
+\hline
+\end{tabularx}
+\caption{Examples of the first few \emph{real solid harmonics}, $S^m_l(x,y,z)=r^lY^m_l(\theta,\phi)$. We note that the solid harmonics of order $l$ are simply linearly independent homogenous polynomials in $x$, $y$, and $z$, of order $l$.  \label{tab:solidharmonics}}
+\end{table}
+
+The real solid harmonics are often a more convenient form to work with, simply because they are real and defined in terms of cartesian coordinates. Please note that the solid harmonics span $L^2(\mathbb{S})$ in the same way the spherical harmonics do, so we can do this without any loss of generality or applicability.
+
 \subsection{Hydrogenic orbitals}
-\subsection{Gaussian type orbitals}
+The non-interacting hydrogen-like Hamiltonian 
+\begin{align}
+\hat H = -\frac{\nabla^2}{2} - \frac{Z}{|\r-\r_A|},
+\end{align}
+with $\r_A$ being the position of a single nucleus of charge $+Z$, has normalized \emph{radial} eigenfunctions 
+\begin{align}
+R_{nl}(r)=\sqrt{\left(\frac{2Z}{n}\right)^3 \frac{(n-l-1)!}{2n[(n+l)!]^3}} \exp\left[-\frac{Zr}{n}\right]\left(\frac{2Zr}{n}\right)^l L_{n-l-1}^{2l+1}\left(\frac{2Zr}{n}\right). \label{eq:hydrogenanalytic}
+\end{align}
+The $L$ here denotes the (generalized) Laguerre polynomials\footnote{The (generalized) Laguerre polynomials are the solutions to the differential equation
+\begin{align}
+x\der{^2y(x)}{x^2}+\left(1+\alpha-x\right)\der{y(x)}{x}+ny(x)=0,
+\end{align}
+with $n$ a non-negative integer and $\alpha$ an arbitrary real constant \cite{rottmann}. An explicit expression for the polynomials themselves can be found by the so-called Rodrigues formula:
+\begin{align}
+L_n^\alpha(x) = x^{-\alpha}\frac{1}{n!}\left(\der{}{x}-1\right)^nx^{n+\alpha}.
+\end{align}} In order to produce the full spin-orbitals, we need to append the spherical harmonic $Y_l^m(\theta,\phi)$ for appropriate quantum numbers $l$ (the azimuthal quantum number) and $m$ (the magnetic quantum number) in addition to a spin function, $\chi(\sigma)$. The corresponding eigenvalues depend famously only on the principal quantum number $n$, as \cite{griffiths}\comment{149}
+\begin{align}
+E=-\frac{Z^2}{2n^2}. 
+\end{align} 
+The first six radial orbitals are shown in \fig{hydrogenorbital}, with explicit expressions for the first ten being shown in \tab{hydrogenorbitals}.
+\fig{hydrogenorbital3d} shows a few examples of the full orbitals, i.e.\ the radial functions multiplied by spherical harmonics.
+
+\begin{table}
+\centering
+\setlength\extrarowheight{2pt}
+\begin{tabularx}{\textwidth}{l X  r}
+\hline
+\hline
+\\[-0.9em]
+{\bf Radial}  & {\bf Principal, azimuthal}     & \\ 
+{\bf orbital} & {\bf quantum numbers}, $(n,l)$ & {\bf Expression} \\
+\\[-0.9em]
+\hline
+\\[-0.9em]
+$R_{10}$ & \ \ \ \ \ \ \ \ \ \ \ \ 1, 0 & $\displaystyle 2\sqrt{Z^3}\mathrm{e}^{-Zr}$ \\
+\\[-0.5em]
+$R_{20}$ & \ \ \ \ \ \ \ \ \ \ \ \ 2, 0 & $\displaystyle \sqrt{\frac{Z^3}{2}}\left(1-\frac{Zr}{2}\right)\mathrm{e}^{-Zr/2}$ \\
+\\[-0.5em]
+$R_{21}$ & \ \ \ \ \ \ \ \ \ \ \ \ 2, 1 & $\displaystyle \sqrt{\frac{Z^5}{24}} r \mathrm{e}^{-Zr/2}$ \\
+\\[-0.5em]
+$R_{30}$ & \ \ \ \ \ \ \ \ \ \ \ \ 3, 0 & $\displaystyle \frac{2\sqrt{Z^3}}{\sqrt{27}} \left( 1-\frac{2Zr}{3}+\frac{2Z^2r^2}{27}\right) \mathrm{e}^{-Zr/3}$ \\
+\\[-0.5em]
+$R_{31}$ & \ \ \ \ \ \ \ \ \ \ \ \ 3, 1 & $\displaystyle \frac{8\sqrt{Z^5}}{27\sqrt{6}} \left( 1-\frac{Zr}{6}\right)r \mathrm{e}^{-Zr/3}$ \\
+\\[-0.5em]
+$R_{32}$ & \ \ \ \ \ \ \ \ \ \ \ \ 3, 2 & $\displaystyle \frac{4\sqrt{Z^7}}{81\sqrt{30}} r^2 \mathrm{e}^{-Zr/3}$ \\
+\\[-0.5em]
+$R_{40}$ & \ \ \ \ \ \ \ \ \ \ \ \ 4, 0 & $\displaystyle \frac{\sqrt{Z^3}}{4} \left(1-\frac{3Zr}{4} + \frac{Z^2r^2}{8}-\frac{Z^3r^3}{192}\right)  \mathrm{e}^{-Zr/4}$ \\
+\\[-0.5em]
+$R_{41}$ & \ \ \ \ \ \ \ \ \ \ \ \ 4, 1 & $\displaystyle \frac{\sqrt{5Z^5}}{16\sqrt{3}} \left(1-\frac{Zr}{4} + \frac{Z^2r^2}{80}\right)r  \mathrm{e}^{-Zr/4}$ \\
+\\[-0.5em]
+$R_{42}$ & \ \ \ \ \ \ \ \ \ \ \ \ 4, 2 & $\displaystyle \frac{\sqrt{Z^7}}{64\sqrt{5}} \left(1-\frac{Zr}{12}\right)r^2  \mathrm{e}^{-Zr/4}$ \\
+\\[-0.5em]
+$R_{43}$ & \ \ \ \ \ \ \ \ \ \ \ \ 4, 3 & $\displaystyle \frac{\sqrt{Z^9}}{768\sqrt{35}} r^3  \mathrm{e}^{-Zr/4}$ \\
+\\[-0.5em]
+\hline
+\end{tabularx}
+\caption{Explicit analytical expressions for the first few hydrogenic radial wave functions, $R_{nl}(r)$ \cite{griffiths}\comment{p154}. The first six\textemdash $R_{10}$ to $R_{32}$\textemdash are shown for $Z=1$ in \fig{hydrogenorbital}. \label{tab:hydrogenorbitals}}
+\end{table}
+
+\begin{figure}[p!]
+\centering
+\includegraphics[width=0.49\textwidth]{hydrogenOrbitals1.pdf}
+\includegraphics[width=0.49\textwidth]{hydrogenOrbitals2.pdf}
+\vspace{-60pt}
+\caption{The first six hydrogenic orbitals for $Z=1$, $R_{nl}(r)$. The general expression for $R_{nl}(r)$ is given in \eq{hydrogenanalytic}. Explicit expressions for these orbitals are given in \tab{hydrogenorbitals}. \label{fig:hydrogenorbital}}
+\end{figure}
+
+\begin{figure}[p!]
+\centering
+\includegraphics[width=0.49\textwidth,trim=250 250 250 250, clip]{H100.png}
+\includegraphics[width=0.49\textwidth,trim=250 250 250 250, clip]{H210.png}
+\includegraphics[width=0.49\textwidth,trim=150 150 150 150, clip]{H311.png}
+\includegraphics[width=0.49\textwidth,trim=250 250 250 250, clip]{H420.png}
+\caption{Examples of full hydrogenic orbitals, $\psi_{nlm}(r,\theta,\phi)=R_{nl}(r)Y^m_l(\theta,\phi)$: $\psi_{100}$ (top left), $\psi_{210}$ (top right), $\psi_{311}$ (bottom left), and $\psi_{420}$ (bottom right). The relative scaling is not accurate. Each plot is sliced in the $x$-$y$-plane and a colormap showing the density is inset. The outer contour shows the isosurface of each orbital at $|\psi_{nlm}|^2=10^{-5}$. \label{fig:hydrogenorbitals3d}}
+\end{figure}
+
+In many ways, the hydrogenic orbitals are \emph{natural} orbitals to work with. They obey\textemdash crucially\textemdash the electron-nucleus cusp condition of section \ref{section:encusp}. They also fall of exponentially as per the correct long range limit. However, integral evaluation with the hydrogenic orbitals turns out to be unfeasibly slow compared to more efficient basis sets. Ultimately, we will end up working with a basis set intrinsicly \emph{less suited} to the task because the neccessary integrals are possible to evaluate quickly. We expand on this further in section \ref{section:gaussianorbitals} 
+
+\subsection{Slater type orbitals}
+A relative of the hydrogenic orbitals are the Slater type orbitals (STO). They have the same exponential structure, 
+
+The general expression for the $(n,l,m)$ STO with exponent $\zeta$ is given by \cite{cramer}\comment{p134}
+\begin{align}
+\psi_{nlm}(r,\theta,\phi;\zeta)=\frac{(2\zeta)^{n+\nicefrac{1}{2}}}{[(2n)!]^{\nicefrac{1}{2}}} r^{n-1}\mathrm{e}^{-\zeta r} Y^m_l(\theta,\phi).
+\end{align}
+
+\subsection{Gaussian type orbitals \label{section:gaussianorbitals}}
+
+
+\begin{figure}
+\centering
+\includegraphics[width=0.49\textwidth,trim=250 250 250 250, clip]{G000.png}
+\includegraphics[width=0.49\textwidth,trim=250 250 250 250, clip]{G100.png}
+\includegraphics[width=0.49\textwidth,trim=250 250 250 250, clip]{G201.png}
+\includegraphics[width=0.49\textwidth,trim=250 250 250 250, clip]{G002m020m200.png}
+\caption{Examples of Gaussian orbitals with $\alpha=1.0$, $G_{ijk}(x,y,z)=x^iy^jz^k\mathrm{e}^{-\alpha r^2}$: $G_{000}$ (top left), $G_{100}$ (top right), $G_{201}$ (bottom left), and $G_{002}-G_{020}-G_{200}$ (bottom right). The latter combination is one of the five linearly independent set of d-type Gaussian orbitals (there are a total of six Gaussian primitives with $l=2$\textemdash $G_{200}$, $G_{020}$, $G_{002}$, $G_{110}$, $G_{101}$, and $G_{011}$\textemdash but the set is linearly dependent: a linearly independent set may be formed by taking $G_{110}$, $G_{101}$, $G_{011}$, $G_{200}-G_{020}$, and $G_{002}-G_{020}-G_{200}$). Each plot is sliced in the $x$-$y$-plane and a colormap showing the density is inset. The outer contour shows the isosurface of each orbital at $|G_{ijk}|^2=10^{-5}$. \label{fig:gaussianorbitals3d}}
+\end{figure}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
