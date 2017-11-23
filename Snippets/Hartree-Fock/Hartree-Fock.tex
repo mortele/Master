@@ -6,7 +6,7 @@
 \newcommand{\psiz}{|\Psi_0\rangle}
 
 
-\chapter{Hartree-Fock}
+\chapter{Hartree-Fock \label{HF}}
 The Hartree-Fock (HF) method is one of the most important models in all of quantum chemistry, not only because it may yield acceptable approximations in certain scenarios, but because it is also an important stepping stone on the way to more accurate methods. Only a few of the more sophisticated quantum chemistry methods bypass HF entirely, while \emph{most} of them use it as a first step and then build on the HF orbitals to obtain more accurate descriptions\cite{szabo}\comment{p108}. In particular, for larger systems, the Hartree-Fock approach may be the only feasible one and it is the only approximate method that is \emph{routinely} being applied to \emph{large} systems of several hundred atoms and molecules\cite{helgaker}\comment{p433}.
 
 The Hartree-Fock method is a \emph{mean field} method in that it treats the inter electron interaction only in an averaged way\cite{kvaal}\comment{p44}. Any single electron does not feel the effect of every other localized electron, but rather just an averaged potential from all other remaining ones. This is sometimes also called an \emph{independent-particle} model. The Hartree-Fock approximation usually \emph{defines} the dynamical coulomb correlation between electrons by saying the difference between the Hartree-Fock energy and the exact quantum mechanical energy is the correlation energy. Hartree-Fock nevertheless deals exactly with the electron correlations arising from the anti-symmetry condition of Pauli, namely the exchange correlations. 
@@ -63,7 +63,7 @@ which means the second term vanishes for opposite spin electrons. However, for s
 
 
 
-
+\subsection{The \emph{Hartree-Fock limit} \label{HFlimit}}
 
 
 !!!!!!!

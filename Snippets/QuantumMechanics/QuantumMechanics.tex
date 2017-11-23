@@ -52,10 +52,10 @@ An important (to us at least) special case of classical Hamiltonian dymanics is 
 \H(\p,\q) &= \sum_{i=1}^N \frac{|\p_i|^2}{2m} + \sum_{i=1}^N V(\q_i) + \sum_{i=1}^N\sum_{j=i+1}^N w(q_{ij}). \label{eq:QM4}
 \end{align}
 
-\subsection{Canonical (first) quantization}
+\section{Canonical (first) quantization}
 In order to go from a classical description to a quantum mechanical one, the procedure known as canonical quantization is employed. This is sometimes refered to as \emph{first quantization}, to distinguish it from \emph{second quantization}, which we will use later to study many-body quantum systems.
 
-\subsubsection{Short mathematical interlude \label{math}}
+\subsection{Short mathematical interlude \label{math}}
 Under canonical quantization, the state of a system is no longer described by a \emph{point in phase space}, but rather by \emph{a state vector}. The enclosing vector space is a Hilbert space over $\C$, and almost always chosen as the space of square integrable functions\footnote{For any $f\in L^2$, the integral $\int_{-\infty}^{\infty} |f(x)|^2\dx$ must be finite.}, $L^2$. More precisely, the vector space in question is the Sobolev space $H^1$ over $\C$, essentially the subspace of $L^2$ for which the first derivatives are also square integrable. For a mathematically rigorous definition of Sobolev spaces, see e.g. \cite{brezis}\comment{p202}.
 
 Abstract vectors in our Hilbert spaces are denoted using Dirac's bra-ket notation. The state vector $|\psi\rangle$ is a member of $L^2$, while the corresponding Hermitian conjugate, $|\psi\rangle^\dagger= \langle \psi|$ is a member of the $L^2$ dual space. In general, the dual of the Hilbert space $\mathcal{H}$ is a Banach space and the bra corresponding to ket $|\psi\rangle$ is a linear functional, $\langle \cdot|:\mathcal{H}\rightarrow \C$. Luckily, $L^2$ is it's own dual space, and this is usually stated as the combination $\langle \psi|\phi\rangle$ meaning the inner product between the two abstract vectors $|\psi\rangle$ and $|\phi\rangle$. Since the $L^2$ inner product is the familiar integral over space, we have $\langle \psi | \phi \rangle =\int_\mathbb{R} \psi(x)^\dagger \phi(x)\dx$. 
@@ -91,7 +91,7 @@ Taking the expectation value (relative to some quantum state vector) of the Heis
 \end{align}
 As usual, we will denote by $\langle \cdot| \cdot\rangle$ the integral $L^2$ inner product, while $\langle \cdot \rangle=\langle \psi | \cdot | \psi\rangle$ will denote the expectation value. 
 
-\subsection{Schrödinger picture}
+\section{Schrödinger picture}
 The straight forward application of cannonical quantization, starting from Hamiltonian classical mechanics, landed us in the Heisenberg picture of quantum mechanics. This is the formulation of quantum theory in which the operators carry the time dependence, with state vectors being constant in time with the equation governing the evolution being the Heisenberg equation, \eq{QM3}. This is the quantum mechanics formalism that behaves the most like classical mechanics does; classically, the observables themselves, $q$ and $p$ (and derived quantities), evolve in time (the phase space point moves along a trajectory according to the Hamilton equations of motion).
 
 But there is another, more familiar, formulation of quantum mechanics in which the operators are constant in time but the state vectors carry the time dependence. This is called the Schrödinger picture, with the corresponding equation of motion being the \emph{Schrödinger equation}. 
@@ -161,7 +161,7 @@ As illustrated above, the problem of computing the time evolution of a state whe
 \end{align}
 which is called the time independent Schrödinger equation (TISE). This is the spatial result of the separation of variables we used to derive the TDSE \cite{griffiths}\comment{p26}. 
 
-\subsection{Canonical quantization as a semi-classical model of quantum mechanics}
+\subsubsection{Canonical quantization as a semi-classical model of quantum mechanics}
 In short, first (or canonical) quantization describes an attempt to construct a mathematical formulation of a quantum mechanical system emergent from the classical description. It is important to note however that this is essentially a semi-classical formulation in that the surrounding environment is treated classicaly. E.g.\ the first quantized formulation of $N$ electrons confined in a harmonic oscillator treats the external oscillator potential in a classical manner\textemdash despite the fact that this potential inevitbly arises from some \emph{quantum} effect. 
 
 A general assumption is that the surrounding system is \emph{large} enough to be accurately described by a classical treatment. 
@@ -193,7 +193,7 @@ A general assumption is that the surrounding system is \emph{large} enough to be
 %\end{align}
 %for \emph{some} operator $\hat A$. Let us posit that $\hat A$ takes the form 
 
-\subsection{The quantum Hamiltonian}
+\section{The quantum Hamiltonian}
 Since the Hamiltonian is the fundamental quantity which governs the dynamics of any quantum mechanical system, the natural question is now: What does it look like? In the simplest possible case, a free particle of mass $m$ constrained to move in one spatial dimension, it takes the form 
 \begin{align}
 \hat H_\text{free} &= -\frac{\hbar^2}{2m}\pder{}{x},
@@ -397,8 +397,10 @@ However, Born-Oppenheimer works because vibrational energies of atoms arent larg
 
 
 
-\subsection{Second quantization}
-Let us now consider a system of $N$ \emph{indistinguishable} particles, i.e. particles that are fundamentally identical as to make telling them apart from each other is impossible. If our theory is to handle such a system with any logical consistency, we must require our wave function (and thus also the observables we derive from it) to be \emph{permutation invariant} (up to a phase factor, which does not affect the physics [as per the postulates of QM]). Following \cite{kvaal}\comment{p8} we may define this mathematically by defining $\sigma\in S_N$, a permutation of the indices in a set of $N$ such indices. $S_N$ here denotes the symmetric group of degree $N$.\footnote{The symmetric group on a finite set $M$ is a mathematical group, and consists of all possible permutations of the elements of the set $M$. Mathematically, these permutations are bijections from $M$ onto $M$ itself. There are $N!$ unique permutations in the group, including the identity permutation (which just leaves the set un-changed).} We must demand that $|\Psi|^2$ be permutation invariant, that is
+\section{Anti-symmetry and the Pauli principle}
+Let us now consider a system of $N$ \emph{indistinguishable} particles, i.e. particles that are fundamentally identical as to make telling them apart from each other is impossible. If our theory is to handle such a system with any logical consistency, we must require our wave function (and thus also the observables we derive from it) to be \emph{permutation invariant} (up to a phase factor, which does not affect the physics [as per the postulates of QM]). If we cannot tell the particles apart, it does not make sense to say particle one is \emph{here}, while particle two is \emph{over there}\textemdash essentially we need our theory to account for both cases simultaneously. We may do this by constructing a wave function that is non-commital as to which particle is where \cite{griffiths}\comment{p204}.
+
+Following \cite{kvaal}\comment{p8} we may define this mathematically by defining $\sigma\in S_N$, a permutation of the indices in a set of $N$ such indices. $S_N$ here denotes the symmetric group of degree $N$.\footnote{The symmetric group on a finite set $M$ is a mathematical group, and consists of all possible permutations of the elements of the set $M$. Mathematically, these permutations are bijections from $M$ onto $M$ itself. There are $N!$ unique permutations in the group, including the identity permutation (which just leaves the set un-changed).} We must demand that $|\Psi|^2$ be permutation invariant, that is
 \begin{align}
 \left|\Psi(\r_1,\r_2,\r_3,\dots,\r_N)\right|^2 &= \left|\Psi(\r_{\sigma(1)},\r_{\sigma(2)},\r_{\sigma(3)},\dots,\r_{\sigma(N)})\right|^2 \nn\\
 \Rightarrow \ \ \Psi(\r_1,\r_2,\r_3,\dots,\r_N) &= \alpha \Psi(\r_{\sigma(1)},\r_{\sigma(2)},\r_{\sigma(3)},\dots,\r_{\sigma(N)}),
@@ -409,25 +411,123 @@ For each permutation in $S_N$, we define a linear operator $\hat P_\sigma$ that 
 \begin{align}
 \hat P_\sigma \left[ \Psi(\r_1,\r_2,\r_3,\dots,\r_N) \right] &= \Psi(\r_{\sigma(1)},\r_{\sigma(2)},\r_{\sigma(3)},\dots,\r_{\sigma(N)}.
 \end{align}
-Thus we can formulate particle indistinguishability in terms of $\hat P_\sigma$ by demanding that $\Psi(\r_1,\r_2,\r_3,\dots,\r_N)$ be an eigenfunction of $\hat P_\sigma$. According to the \emph{postulates} of quantum mechanics, a fermionic wave function is totally anti-symmetric w.r.t. exchange of particles, meaning this eigenvalue is $(-1)^{|\sigma|}$, with $|\sigma|$ being the minimal number of \emph{transpositions}\footnote{A transposition is defined as a permutation of \emph{only two indices}.} needed to perform the full permutation $\sigma$. 
+Thus we can formulate particle indistinguishability in terms of $\hat P_\sigma$ by demanding that $\Psi(\r_1,\r_2,\r_3,\dots,\r_N)$ be an eigenfunction of $\hat P_\sigma$. According to the \emph{postulates} of quantum mechanics, a fermionic wave function is totally anti-symmetric w.r.t. exchange of particles, meaning this eigenvalue is $(-1)^{|\sigma|}$, with $|\sigma|$ being the minimal number of \emph{transpositions}\footnote{A transposition is defined as a permutation of \emph{only two indices}.} needed to perform the full permutation $\sigma$. This is known as the {\bf Pauli exclusion principle}. 
 
 
 \subsection{Slater determinants}
-So far we know that the wave function of a multi-electron system must be square intergrable and totally antisymmetric w.r.t. interchange of electrons. 
+A one-electron system is described by a one-body Hamiltonian operator, $\hat h$. This one-body Hamiltonian is a differential operator w.r.t. the coordinates of this one electron (kinetic energy operator), and possibly contains an external potential. It's spectrum forms a set of single-particle wave functions, $\phi_i(\r)$. According to the postulates of QM, this set is complete in the sense that it spans the enclosing Hilbert space. We will denote the $\phi_i$s by spatial \emph{orbitals}. 
+
+In order to completely specify the quantum state of an electron, it is neccessary to also specify it's spin state. The electron being a spin-$1/2$ particle, it admits only two distrinct spin projections: Spin up, $\chi(\uparrow)$, and spin down, $\chi(\downarrow)$ \cite{griffiths}\comment{p173}. The wave function of the electron, completely specifying all of it's properties is the product of a spatial orbital and a spin function\textemdash a {\bf spin-orbital}\textemdash$\psi_i(\r,\sigma)=\phi(\r)\chi(\sigma)$, with $\sigma$ labelling the spin-projection. Mathematically, we may consider the original Hilbert space of the spatial orbitals to be extended (in the cartesian product sense) with a simple two-dimensional Hilbert space of spin-states. Thus strictly speaking we should be writing the spin-orbitals as direct products, $\phi_i(\r)\otimes \chi(\sigma)$, but we will ommit this notation for the entirety of the present work and let simple juxtapositioning represent this product.
+
+Assume now that a many-electron quantum system is described by a Hamiltonian of the form
+\begin{align}
+\hat H=\sum_{i=1}^N \hat h_i = \sum_{i=1}^N \left[-\frac{\nabla_i^2}{2}+V_\text{ext}(\r)\right],
+\end{align}
+where the operators $\hat h_i$ act only on the coordinates of particle $i$. It is natural to take the one-electron states as a starting point when looking for the spectrum of the full Hamiltonian, $\hat H$. And in fact, it turns out that a simple product
+\begin{align}
+\Psi(\R,\bm{\sigma}) = \psi_a(\r_1,\sigma_1)\psi_b(\r_2,\sigma_2)\cdots \psi_c(\r_N,\sigma_N)
+\end{align}
+\emph{is} an eigenfunction of $\hat H$: it is known as a \emph{Hatree product} \cite{szabo}\comment{p48}. The vector of spin labels, $\bm{\sigma}=\{\sigma_1,\sigma_2,\dots,\sigma_N\}$, here denotes the collection of all spin projections in the same way $\R$ denotes the collection of all electronic coordinates. However, the Hartree product does not have the correct (anti-)symmetry. In particular, the product assigns to specific electrons (labelled $1,2,3,\dots,N$) specific quantum states (labelled $\psi_a,\psi_b,\dots$). In accordance with Pauli, we may anti-symmetrize the Hartree product by considering every possible permutation of the electron labels, \cite{kvaal}
+\begin{align}
+\Psi(\R,\bm{\sigma}) = \frac{1}{\sqrt{N!}}\sum_{\gamma \in S_N}(-1)^{|\gamma|} \hat P_\gamma \psi_a(\r_1,\sigma_1)\psi_b(\r_2,\sigma_2)\cdots \psi_c(\r_N,\sigma_N). \label{eq:slater}
+\end{align}
+The $|\gamma|$ factor denotes the total number of transpositions in $\hat P_\gamma$, and $(-1)^{|\gamma|}$ is the sign of the permutation. The normalization is neccessary in order to ensure $\langle \Psi|\Psi\rangle =1$, as there are $N!$ total possible permutations we must consider. \eq{slater} is known as a {\bf Slater determinant}, and is more commonly written as \cite{slater}
+\begin{align}
+\Psi(\R,\bm{\sigma}) = \frac{1}{\sqrt{N!}}\vmat{ccccc}{
+  \psi_1(\r_1) & \psi_2(\r_1) & \psi_3(\r_1) & \dots  & \psi_N(\r_1) \\
+  \psi_1(\r_2) & \psi_2(\r_2) & \psi_3(\r_2) & \dots  & \psi_N(\r_2) \\
+  \psi_1(\r_3) & \psi_2(\r_3) & \psi_3(\r_3) & \dots  & \psi_N(\r_3) \\
+  \vdots     & \vdots     & \vdots     & \ddots & \vdots     \\ 
+  \psi_1(\r_N) & \psi_2(\r_N) & \psi_3(\r_N) & \dots  & \psi_N(\r_N)
+}.
+\end{align}
+
+We could of course have allowed the permutations to operate on the spin-orbital labels instead of the electron labels, leading to analogous expressions. It is important however that it act on only electron labels \emph{or} orbital labels, since acting on both simultaneously leaves the product entirely unchanged \cite{thijssen}\comment{p53}.
+
+Before moving on, let us note some key properties of the Slater determinant. Interchanging two electrons give rise to an overall minus sign, since this corresponds to interchanging two rows of the determinant \cite{lay}\comment{p169}. Some authors choose to represent the Slater determinant with rows corresponding to orbitals, and columns representing electron labels. The two representations are equal, since the determinant is invariant under tranposition \cite{hassani}\comment{p94}. The Hatree products form a basis for the full $L^2$ Hilbert space of the $N$-electron system, and the Slater determinants span the sub-space of anti-symmetric functions in the same space \cite{kvaal}\comment{p13}. This means we can represent \emph{any} square integrable, normalized, anti-symmetric function of $N$ electronic coordinates as a sum over Slaters,
+\begin{align}
+f(\R,\bm{\sigma}) = \sum_{i=1}^\infty c_i \Psi_i(\R,\bm{\sigma}).
+\end{align}
+Some numbering $\{\Psi_i\}_{i=1}^\infty$ has here been chosen. We note that this is valid only when the entire spectrum of $\hat h$ is considered for the single-particle orbitals occupying the determinant. 
+
+\newcommand{\x}{{\bf x}}
+The Slater determinant is normalized whenever the spin-orbitals are normalized. Consider one of the integral terms in the total $\langle \Psi(\R,\bm\sigma)|\Psi(\R,\bm\sigma)\rangle$, i.e.\
+\begin{align}
+\langle \psi_{i_1}\psi_{i_2}\dots\psi_{i_N}|\psi_{j_1}\psi_{j_1}\dots\psi_{j_1}\rangle &= \int\mathrm{d}\x_1\dots\mathrm{d}\x_N \,\psi_{i_1}^*(\r_1,\sigma_1)\psi_{j_1}(\r_1,\sigma_1)  \nn\\
+& \ \ \  \ \ \  \ \ \ \cdots \psi_{i_N}^*(\r_N,\sigma_N)\psi_{j_N}(\r_N,\sigma_N) \\
+& = \int\mathrm{d}\x_1 \psi_{i_1}^*(\r_1,\sigma_1)\psi_{j_1}(\r_1,\sigma_1) \nn\\
+& \ \ \  \ \ \  \ \ \ \int\mathrm{d}\x_2 \psi_{i_2}^*(\r_2,\sigma_2)\psi_{j_2}(\r_2,\sigma_2) \cdots \nn\\
+& \ \ \  \ \ \ \ \ \  \ \ \  \ \ \ \int\mathrm{d}\x_N \psi_{i_N}^*(\r_N,\sigma_N)\psi_{j_N}(\r_N,\sigma_N) \nn\\
+& = \delta_{i_1j_1}\delta_{i_2j_2}\cdots \delta_{i_Nj_N}. \label{eq:slater2}
+\end{align}
+The $\x$ coordinate here denotes the collection of spatial and spin coordinates for each electron, $\x=\{\r,\sigma\}$, and position in the string of orbitals\textemdash $|\psi_1\psi_2\dots\psi_N\rangle$\textemdash determines which electron occupies which state. E.g.\ in the state $|\psi_i\psi_j\psi_k\rangle$, spin-orbital $i$ is evaluated at the coordinates of electron one, the $j$ orbital at electron two, and the $k$ orbital at the coordinates of electron three. The last equality follows from the spin-orbitals being orthonormal. In terms of the total Slater, this means\footnote{Using for the moment a permutation operator acting on the orbital indices as opposed to the prior permutations which acted on the electron indices.}
+\begin{align}
+\langle \Psi(\R,\bm\sigma)|\Psi(\R,\bm\sigma)\rangle &= \left\langle \frac{1}{\sqrt{N!}}\sum_{\gamma_1 \in S_N}(-1)^{|\gamma_1|} \hat P_{\gamma_1} \psi_{a_1}\psi_{a_2}\cdots \psi_{a_N} \right| \nn\\
+& \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \  \left.\frac{1}{\sqrt{N!}}\sum_{\gamma_2 \in S_N}(-1)^{|\gamma_2|} \hat P_{\gamma_2} \psi_{b_1}\psi_{b_2}\cdots \psi_{b_N}\right\rangle \nn\\
+%
+&= \left(\frac{1}{\sqrt{N!}}\right)^2 \left\langle \sum_{\gamma_1 \in S_N}(-1)^{|\gamma_1|} \psi_{\gamma_1(a_1)}\psi_{\gamma_1(a_2)}\cdots \psi_{\gamma_1(a_N)} \right| \nn\\
+& \phantom{\left(\frac{1}{\sqrt{N!}}\right)^2} \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \  \left. \sum_{\gamma_2 \in S_N}(-1)^{|\gamma_2|} \psi_{\gamma_2(b_1)}\psi_{\gamma_2(b_2)}\cdots \psi_{\gamma_2(b_N)} \right\rangle \nn\\
+%
+&= \frac{1}{N!} N!=1,
+\end{align}
+where we used that the only non-zero terms are the ones in which the delta functions of \eq{slater2} all survive, meaning $\gamma_1=\gamma_2$. There are exactly $N!$ possible such terms in which the two permutations coincide, and they all carry an overall $+1$ sign since $(-1)^{|\gamma_1|}(-1)^{|\gamma_2|}=1$ for any $\gamma_1=\gamma_2$.
+
+%So far we know that the wave function of a multi-electron system must be square intergrable and totally antisymmetric w.r.t. interchange of electrons. A natural starting point for looking for wave function solutions for the many-body problem is the one-body problem. Let us denote by $\psi_k(\r_i)$ a single-particle function: A spin-orbital. 
+
+%In a system of \emph{non-interacting} electrons, the Hamiltonian can be written on the form 
+%\begin{align}
+%\hat H = \sum_{i=1}^N \hat h_i,
+%\end{align}
+%where the operators $\hat h_i$ act only on the coordinates of particle $i$. 
 
 
 
 
 
+\section{Postulates of Quantum Mechanics \label{postulates}}
+The axiomatic formulation of QM was set up by British physicist P. Dirac and Hungarian-American mathematician-physicist-computer scientist J. von Neumann in the 1930s \cite{salasnich}\comment{p8}. The fundamental postulates can be expressed as follows \cite{fys4110}\comment{p9}:
+\begin{itemize}
+  \item[(i)] A \emph{quantum state} of an isolated system is described fully by a state vector of unit norm in some separable Hilbert space $\mathcal{H}$.
+  \begin{itemize}
+    \item[] In the notation due to Dirac, these vectors are represented as "kets," $|\psi\rangle$. The kets can be expanded in any basis $\{|i\rangle\}_i$ $|\psi\rangle = \sum_i c_i |i\rangle$, with $c_i\in\mathbb{C}$. For any ket, a corresponding "bra" vector, $\langle \psi|$ can be assigned in the \emph{dual space} of $\mathcal{H}$ by an anti-linear mapping 
+    \begin{align}
+    |\psi\rangle \rightarrow \langle \psi | = \sum_i c_i^*\langle i|.
+    \end{align}
+    The (complex valued) inner product is a composition of a bra and a ket, $\langle\psi_1|\psi_2\rangle$.
+  \end{itemize}
+  \item[(ii)] Each \emph{physical observable} of the system is associated with a hermitian operator on $\mathcal{H}$. The spectrum of each such operator spans the Hilbert space.
+  \begin{itemize}
+    \item[] If the spectrum is discrete, the eigenfunctions of such an operator are orthogonal and can always be made orthonormal e.g.\ by a Gram-Schmidt process \cite{rynne}\comment{p62}. The eigenfunctions form a complete set, in the sense that the unit operator can be represented by
+    \begin{align}
+    \sum_i |i\rangle\langle i|=\mathds{1}.
+    \end{align}
+  \end{itemize}
+  \item[(iii)] The time evolution of a state vector $|\psi\rangle=|\psi(t)\rangle$ is governed by the time dependent Schrödinger equation,
+  \begin{align}
+  \mathrm{i}\hbar \der{}{t}|\psi(t)\rangle=\hat H |\psi(t)\rangle.
+  \end{align}
+  The Hamiltonian, $\hat H$, is a \emph{linear, hermitian} operator on $\mathcal{H}$.
+  \item[(iv)] The \emph{measurable} (physical) values associated with observables are defined by the eigenvalues. 
+  \begin{itemize}
+    \item[] With a quantum system in a state $|\psi\rangle$ before measurement, the probability of measuring the value $a_n$ corresponding to the $|n\rangle$ eigenvector of the hermitian operator $\hat A$ is given by 
+    \begin{align}
+    \text{probability of }a_n = |\langle n|\psi\rangle|^2.
+    \end{align}
+    If the geometric multiplicity of $a_n$ is $>1$, the probability is the sum over all corresponding eigenvectors, $|n\rangle,|m\rangle,\dots,|k\rangle$, with the same eigenvalue \cite{lay}\comment{p267}.
+  \end{itemize}
+  \item[(v)] An \emph{ideal} measurement of $\hat A$ resulting in the value $a_n$ projects the state vector onto the sub-space of $\mathcal{H}$ spanned by all eigenvectors of $\hat A$ with eigenvalue $a_n$. 
+  \begin{itemize}
+    \item[] If $a_n$ has geometric multiplicity unity, the resulting state \emph{is} the corresponding eigenfunction,
+    \begin{align}
+    |\psi\rangle \xrightarrow{\text{measurement}} |\psi'\rangle = \hat P_n |\psi\rangle = |n\rangle,
+    \end{align}
+    where $\hat P_n$ is the projection on the eigenstate $|n\rangle$. This is often referred to as "collapse of the wave function."
+  \end{itemize}
+\end{itemize}
 
 
 
-
-
-\subsection{Postulates of Quantum Mechanics \label{postulates}}
-
-
-\subsection{The variational principle}
+\section{The variational principle}
 For a given Hamiltonian, calculating the expectation value of $\langle \Psi | \hat H | \Psi\rangle$ (for \emph{any} $\Psi\in\mathcal{L}_2$) gives an upper bound on the ground state energy. Following \cite{griffiths}\comment{p293}, a simple proof goes as follows: Since the spectrum of $\hat H$ spans\footnote{Asumming \emph{crucially} that the Hamiltonian is hermitian. This is not the case for e.g. the similarity transformed $\bar H$ used in coupled cluster theory, predictably leading to all kinds of difficulties.} all of $\mathcal{L}_2$. We assume also that the eigenstates are orthonormalized. This means that \emph{any} normalized $\Psi$ we choose can be expressed in terms of the eigenstates of $\hat H$,
 \begin{align}
 \Psi = \sum_{n=0}^\infty c_n \Phi_n, \ \ \text{ where } \ \ \hat H \Phi_n = E_n \Phi_n.
@@ -485,77 +585,40 @@ Explicitly calculating the variation gives simply the time independent Schrödin
 
 
 
-\section{Appendix}
-\subsection{Non-dimensionalizing the Hamiltonian: Hartree atomic units}
-In SI-units, the electronic wave function for the Hydrogen atom system (under first quantization) reads \cite{szabo}\comment{p41}
-\begin{align}
-\left[-\frac{\hbar^2}{2m_e}\nabla^2 - \frac{e^2}{4\pi\varepsilon_0 r}\right] \psi &= E\psi.
-\end{align}
-We may write this in terms of a new length scale, $r' = r / \lambda$. Since $\nabla$ is a differentiation w.r.t. a lenght, it carries units of $1/\text{length}$ so $\nabla'=\lambda \nabla$. In terms of units, this gives 
-\begin{align}
--\frac{\hbar^2}{2m_e\lambda^2} - \frac{e^2}{4\pi\varepsilon_0 \lambda} = E. \label{eq:QM6}
-\end{align}
-Since we are adding the first two terms they must both carry the same total dimensionality as the right hand side, namely energy. We will denote this quantity $E_h$, the Hartree energy. Solving 
-\begin{align}
-E_h=\frac{\hbar^2}{m_e\lambda^2} &= \frac{e^2}{4\pi\varepsilon_0 \lambda} \label{eq:QM7}
-\end{align}
-for $\lambda$ gives 
-\begin{align}
-\lambda &= \frac{4\pi \varepsilon_0 \hbar^2}{m_e e^2}
-\end{align}
-revealing the familiar \emph{Bohr radius}, $\lambda=a_0$. Using the relation in \eq{QM5}, we may rewrite the Hamiltonian in terms of the Hartree energy as
-\begin{align}
-E_h\left[-\frac{1}{2}\nabla'^2 - \frac{1}{r'}\right] \psi &= E\psi,
-\end{align}
-and introducing $E'=E/E_h$ as a new energy scale we can finally write the Hamiltonian as
-\begin{align}
-E_h\left[-\frac{1}{2}\nabla'^2 - \frac{1}{r'}\right] \psi &= E_hE'\psi \nn\\
-\left[-\frac{1}{2}\nabla'^2 - \frac{1}{r'}\right] \psi &= E'\psi.
-\end{align}
+%\section{Appendix}
+%\subsection{Non-dimensionalizing the Hamiltonian: Hartree atomic units}
+%In SI-units, the electronic wave function for the Hydrogen atom system (%under first quantization) reads \cite{szabo}\comment{p41}
+%\begin{align}
+%\left[-\frac{\hbar^2}{2m_e}\nabla^2 - \frac{e^2}{4\pi\varepsilon_0 r}\right] %\psi &= E\psi.
+%\end{align}
+%We may write this in terms of a new length scale, $r' = r / \lambda$. Since $%\nabla$ is a differentiation w.r.t. a lenght, it carries units of $1/\text{%length}$ so $\nabla'=\lambda \nabla$. In terms of units, this gives 
+%\begin{align}
+%-\frac{\hbar^2}{2m_e\lambda^2} - \frac{e^2}{4\pi\varepsilon_0 \lambda} = E. \%label{eq:QM6}
+%\end{align}
+%Since we are adding the first two terms they must both carry the same total %dimensionality as the right hand side, namely energy. We will denote this %quantity $E_h$, the Hartree energy. Solving 
+%\begin{align}
+%E_h=\frac{\hbar^2}{m_e\lambda^2} &= \frac{e^2}{4\pi\varepsilon_0 \lambda} \%label{eq:QM7}
+%\end{align}
+%for $\lambda$ gives 
+%\begin{align}
+%\lambda &= \frac{4\pi \varepsilon_0 \hbar^2}{m_e e^2}
+%\end{align}
+%revealing the familiar \emph{Bohr radius}, $\lambda=a_0$. Using the relation %in \eq{QM5}, we may rewrite the Hamiltonian in terms of the Hartree energy as
+%\begin{align}
+%E_h\left[-\frac{1}{2}\nabla'^2 - \frac{1}{r'}\right] \psi &= E\psi,
+%\end{align}
+%and introducing $E'=E/E_h$ as a new energy scale we can finally write the %Hamiltonian as
+%\begin{align}
+%E_h\left[-\frac{1}{2}\nabla'^2 - \frac{1}{r'}\right] \psi &= E_hE'\psi \nn\\
+%\left[-\frac{1}{2}\nabla'^2 - \frac{1}{r'}\right] \psi &= E'\psi.
+%\end{align}
+%
+%From \eq{QM7} we can find the value for $\hbar$ in our new units as
+%\begin{align}
+%\hbar^2 &= \frac{E_h}{m_e\lambda^2} = \frac{e^2}{4\pi \varepsilon_0 \lambda^3% m_e} = \frac{e^2}{4\pi \varepsilon_0 m_e }
+%\end{align}
 
-From \eq{QM7} we can find the value for $\hbar$ in our new units as
-\begin{align}
-\hbar^2 &= \frac{E_h}{m_e\lambda^2} = \frac{e^2}{4\pi \varepsilon_0 \lambda^3 m_e} = \frac{e^2}{4\pi \varepsilon_0 m_e }
-\end{align}
 
-\newcommand{\M}{\mathrm{M}}
-\renewcommand{\L}{\mathrm{L}}
-\newcommand{\T}{\mathrm{T}}
-\renewcommand{\C}{\mathrm{C}}
-\subsection{Natural units: Hartree atomic units}
-When working within a specific branch of physics, it is often useful to deviate from the every-day SI units of measurements and instead use units which are \emph{natural} to the systems under study. Since we are working with "small" systems, the SI \emph{meter}, \emph{second}, \emph{kilogram}, and \emph{coulomb} are of little use to us. Instead we will work in a system of units in which we define the mass of the electron, $m_e$, to be the scale by which we measure all other masses. This obviously means the numerical value of the electron mass becomes unity, $m_e=1$. In the same way, we will use Planck's constant, $\hbar$, as the scale by which we measure angular momentum and action, the electron charge, $e$, will be our scale for electrical charge, and finally Coulomb's constant, $k_e$, will be our scale of electric permittivity. 
-
-The usual way to state this is to set $\hbar=e=m_e=k_e=1$, and the system of units derived from these four definitions is called Hartree atomic units. We can think of this as the \emph{natural} system of units for the Hydrogen atom system. To better see why this is the case, let us combine these four quantities in such a way as to produce a length. 
-
-In terms of the four fundamental dimenions of physics: Length(L), time(T), mass(M), and charge(C), the units of $\hbar$, $m_e$, $e$, and $k_e$ are $\left[\hbar\right]=\mathrm{M}\mathrm{L}^2\mathrm{T}^{-1}$, $\left[m_e\right]=\mathrm{M}$, $\left[e\right]=\mathrm{C}$, and $\left[k_e\right]=\mathrm{M}\mathrm{L}^3\mathrm{C}^{-2}\mathrm{T}^{-2}$, respectively. Combining arbitrary powers of these four constants gives 
-\begin{align}
-\left[\lambda(a,b,c,d)\right] &= \left[k_e^a \hbar^b m_e^c e^d\right] =  \left(\M^a \L^{3a} \C^{-2a} \T^{-2a} \right) \left(\M^b \L^{2b} \T^{-b} \right) \left( \M^c \right) \left( \C^d \right) \nn\\
-%%
-&= \L^{2a+3b} \T^{-a-2b} \M^{a+b+c} \C^{-2b+d}.
-\end{align}
-There is exactly one way to realize a length from these exponents, i.e. solving the four equations $2a+3b=1$, $-a-2b=0$, $a+b+c=0$, and $-2b+d=0$: $a=-1$, $b=2$, $c=-1$, and $d=-2$. This means that the natural length scale of our problem is simply (up to a numerical constant)
-\begin{align}
-\L_\text{scale} &= a_0 = k_e^{-1} \hbar^{2} m_e^{-1} e^{-2} = \frac{\hbar^2}{k_e m_e e^2} = \frac{ 4\pi \varepsilon_0 \hbar^2 }{m_e e^2},
-\end{align}
-which re recognize as simply the \emph{Bohr radius}. 
-
-We can go through this same exercise to find a natural \emph{time} scale for our system. There is a unique way to combine the exponents $a$, $b$, $c$, and $d$ in order to realize a time, namely $a=-2$, $b=3$, $c=-1$, $d=-4$, or
-\begin{align}
-\T_\text{scale} &= k_e^{-2} \hbar^3 m_e^{-1} e^{-4} = \frac{\hbar^3 }{k_e^2 m_e e^4} = \frac{\hbar a_0}{k_e e^2}.
-\end{align}
-This is the revolution time of an electron in the lowest lying hydrogen state in the Bohr model (apart from a factor of $2\pi$).
-
-From $a_0$ and $\T_\text{scale}$ we can find the natural energy scale,
-\begin{align}
-\mathrm{E}_\text{scale} &= m_e \frac{a_0^2}{a_0^2 \left(\frac{\hbar}{k_e e^2}\right)^2} = \frac{m_e k_e^2 e^4}{\hbar^2} \equiv E_h,
-\end{align}
-which we will call a Hartree. 
-
-Finally, before we go on we may use the expression for the \emph{fine structure constant} to find the numerical value of $c$ in this system. From 
-\begin{align}
-\alpha &= \frac{k_e e^2}{\hbar c} \Rightarrow c = \frac{k_e e^2}{\hbar \alpha} = \frac{1}{\alpha} \simeq 137,
-\end{align}
-after substituting $\hbar=e=k_e=1$.
 
 
 

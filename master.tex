@@ -52,6 +52,7 @@
 \usepackage{tikz}
 \usepackage{framed}
 \usepackage{relsize}
+\usepackage[titletoc]{appendix}
 \usetikzlibrary{matrix}
 
 \captionsetup{labelfont=bf}
@@ -278,7 +279,7 @@ The advent of computer simulations during the last several decades have in parti
 
 Any approximative scheme which aims to solve the many-body Schrödinger equation subject to some (more or less) well-defined simplifications is called an \emph{ab initio} method. Working from first principles the aim of such algorithms extract information from a theoretical QM system in a reasonable amount of time. In order to accomplish this, a number of complicating intricacies need to be disregarded. The magnitude of the simplifications\textemdash essentially the number and importance of complicating factors dropped\textemdash determine both the efficacy and the efficiency of the method: More simplifications made allow solutions to be found for larger systems (albeit less precise solutions), whereas extremely precise solutions can be found for small systems if very few simplifications are employed.
 
-Despite tremendous increases in available numerical computational power in the latter half of the previous-, and the early parts of the current century, any such approximate scheme used is still heavily limited w.r.t.\ the system size. In practice, most methods are limited to systems of containing on the order of $10^4$ electrons [citation needed]. Extracting information from larger systems neccessitate the use of classical or semi-classical algorithms, such as molecular dynamics (MD). Using MD, the time evolution of up to around $10^7$ particles can feasibly be simulated over the order of nano seconds \cite{Zhao2013,Reddy2015584}. As macroscopic objects contain on the order of $10^{23}$ atoms, we are ostensibly a long way away from even classically modelling the constituent particles directly. In this region, continuum models are used.
+Despite tremendous increases in available numerical computational power in the latter half of the previous-, and the early parts of the current century, any such approximate scheme used is still heavily limited w.r.t.\ the system size. In practice, most methods are limited to systems of containing on the order of $10^3$ electrons [citation needed]. Extracting information from larger systems neccessitate the use of classical or semi-classical algorithms, such as molecular dynamics (MD). Using MD, the time evolution of up to around $10^7$ particles can feasibly be simulated over the order of nano seconds \cite{Zhao2013,Reddy}. As macroscopic objects contain on the order of $10^{23}$ atoms, we are ostensibly a long way away from even classically modelling the constituent particles directly. In this region, continuum models are used.
 
 
 \section{Quantum and classical dynamics}
@@ -288,6 +289,7 @@ by hand is impossible in the overwhelming majority of interesting cases. However
 The Hartree-Fock (HF) framework\textemdash which provides an efficient but not enormously accurate result\textemdash has seen extensive use since its inception in 1930 \cite{hartree,fock,szabo}. However, by far the most popular approximation is Density Functional Theory (DFT), developed by W. Kohn and L. J. Sham in 1965 \cite{kohnsham,martin}. Between 1980 and 2010, DFT was the most active field in physics with eight out of the top ten most cited papers being on the subject \cite{dftperspective}.
 
 
+"This is where multiscale modeling comes in. By considering simultaneously models at different scales, we hope to arrive at an approach that shares the efficiency of the macro- scopic models as well as the accuracy of the microscopic models." Weinan: Prinicples of Multiscale modelling side viii
 
 \section{Neural networks in molecular dynamics}
 Neural networks can parameterize the data from millions of electronic structure calculations and in theory provide accuracy close to the direct quantum mechanical calculations at a fraction of the calculational cost.
@@ -315,11 +317,21 @@ The thesis ends with part four, containing conclusions and prospect for future w
 \subfile{Snippets/VMC/VMC}
 
 \part{Implementation and results}
+\subfile{Snippets/HFImplementation/HFImplementation}
 \subfile{Snippets/VMCImplementation/VMCImplementation}
 \subfile{Snippets/Hartree-FockValidation/Hartree-FockValidation}
 \subfile{Snippets/VMCValidation/VMCValidation}
 
 \part{Conclusions and future work}
+
+
+\begin{appendices}
+\appendixpage
+\noappendicestocpagenum
+\addappheadtotoc
+\subfile{Snippets/Appendix/Appendix}
+\end{appendices}
+
 
 \printbibliography
 %\printbibliography[heading=bibintoc]
