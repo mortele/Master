@@ -211,7 +211,13 @@ Formally, the spherical harmonics are functions of $\theta$ and $\phi$: $Y^m_l(\
 \begin{align}
 -\frac{1}{\sin\theta}\der{}{\theta}\left( \sin\theta \der{P_l^{|m|}}{\theta} \right) + \frac{m^2}{\sin^2\theta}P^{|m|}_l = l(l+1)P_l^{|m|}.
 \end{align}
-The parameters $l$ and $m$ are both integers, with $l\ge0$ and $-l\ge m \ge l$. The polynomials $P^m_l$ are known as the associated Legendre functions. The combination $r^l Y_l^m$ is a homogenous polynomial\footnote{A homogenous polynomial is a polynomial in which all terms have the same degree, i.e.\ $x^2+xy+y^2$ or $x^3+y^3+z^3+x^2z$.} of order $l$ in the cartesian unit vector \cite{weinberg,atkinson}\comment{p37,p19}. These combinations are called the \emph{solid harmonics} (up to a normalization), and can be made real by taking linear combinations of $\pm m$ terms. The first few real solid harmonics, $S_l^m(x,y,z)$ are shown in \tab{solidharmonics}. 
+The parameters $l$ and $m$ are both integers, with $l\ge0$ and $-l\ge m \ge l$. The polynomials $P^m_l$ are known as the associated Legendre functions. Explicit expressions for the normalized spherical harmonics can be written out as
+\begin{align}
+Y^m_l(\theta,\phi) = \sqrt{\frac{(2l+1)}{4\pi}\frac{(l-m)!}{(l+m)!}}\mathrm{e}^{\mathrm{i}m\phi}P_l^m(\cos\theta).
+\end{align}
+
+
+The combination $r^l Y_l^m$ is a homogenous polynomial\footnote{A homogenous polynomial is a polynomial in which all terms have the same degree, i.e.\ $x^2+xy+y^2$ or $x^3+y^3+z^3+x^2z$.} of order $l$ in the cartesian unit vector \cite{weinberg,atkinson}\comment{p37,p19}. The combinations $r^lY^m_l$ which are also \emph{harmonic} (i.e.\ solve the Laplace equation, $\nabla^2r^lY^m_l=0$) are called the \emph{solid harmonics} (up to a normalization), and can be made real by taking linear combinations of $\pm m$ terms. The first few real solid harmonics, $S_l^m(x,y,z)$ are shown in \tab{solidharmonics}. 
 
 \begin{table}[p]
 \centering
@@ -239,35 +245,42 @@ $S_2^{-2}$    & \ \ \ \ \ \ \ \ \ \ \ \ 2, -2 & $\displaystyle \sqrt{3}xy$ \\
 \\[-0.5em]
 $S_2^1$       & \ \ \ \ \ \ \ \ \ \ \ \ 2, 1 & $\displaystyle \sqrt{3}yz$ \\
 \\[-0.5em]
-$S_2^0$       & \ \ \ \ \ \ \ \ \ \ \ \ 2, 0 & $\displaystyle -\frac{1}{2}\left(x^2+y^2\right)+z^2$ \\
+$S_2^0$       & \ \ \ \ \ \ \ \ \ \ \ \ 2, 0 & $\displaystyle -\frac{1}{2}(x^2+y^2)+z^2$ \\
 \\[-0.5em]
 $S_2^{-1}$    & \ \ \ \ \ \ \ \ \ \ \ \ 2, 1 & $\displaystyle \sqrt{3}xz$ \\
 \\[-0.5em]
 $S_2^{-2}$    & \ \ \ \ \ \ \ \ \ \ \ \ 2, 2 & $\displaystyle \frac{\sqrt{3}}{2}(x-y)(x+y)$ \\
 \\[-0.5em]
 
-$S_3^{-3}$    & \ \ \ \ \ \ \ \ \ \ \ \ 3, -3 & $\displaystyle -\frac{1}{2}\sqrt{\frac{5}{2}}y(-3x^2+y^2)$ \\
+$S_3^{-3}$    & \ \ \ \ \ \ \ \ \ \ \ \ 3, -3 & $\displaystyle -\frac{1}{2}\sqrt{\frac{5}{2}}(-3x^2+y^2)y$ \\
 \\[-0.5em]
 $S_3^2$       & \ \ \ \ \ \ \ \ \ \ \ \ 3, -2 & $\displaystyle \sqrt{15}xyz$ \\
 \\[-0.5em]
-$S_3^{1}$     & \ \ \ \ \ \ \ \ \ \ \ \ 3, -1 & $\displaystyle -\frac{1}{2}\sqrt{\frac{3}{2}}y(x^2+y^2-4z^2)$ \\
+$S_3^{1}$     & \ \ \ \ \ \ \ \ \ \ \ \ 3, -1 & $\displaystyle -\frac{1}{2}\sqrt{\frac{3}{2}}(x^2+y^2-4z^2)y$ \\
 \\[-0.5em]
-$S_3^0$       & \ \ \ \ \ \ \ \ \ \ \ \ 3, 0 & $\displaystyle -\frac{3}{2}\left(x^2+y^2\right)z+z^3$ \\
+$S_3^0$       & \ \ \ \ \ \ \ \ \ \ \ \ 3, 0 & $\displaystyle -\frac{3}{2}(x^2+y^2)z+z^3$ \\
 \\[-0.5em]
-$S_3^{-1}$    & \ \ \ \ \ \ \ \ \ \ \ \ 3, 1 & $\displaystyle -\frac{1}{2}\sqrt{\frac{3}{2}}x(x^2+y^2-4z^2)$ \\
+$S_3^{-1}$    & \ \ \ \ \ \ \ \ \ \ \ \ 3, 1 & $\displaystyle -\frac{1}{2}\sqrt{\frac{3}{2}}x(x^2+y^2-4z^2)x$ \\
 \\[-0.5em]
 $S_3^{-2}$    & \ \ \ \ \ \ \ \ \ \ \ \ 3, 2 & $\displaystyle \frac{1}{2}\sqrt{15}(x-y)(x+y)z$ \\
 \\[-0.5em]
-$S_3^{-3}$    & \ \ \ \ \ \ \ \ \ \ \ \ 3, 3 & $\displaystyle \frac{1}{2}\frac{\sqrt{5}}{2}x(x^2-3y^2)$ \\
+$S_3^{-3}$    & \ \ \ \ \ \ \ \ \ \ \ \ 3, 3 & $\displaystyle \frac{1}{2}\frac{\sqrt{5}}{2}x(x^2-3y^2)x$ \\
 \\[-0.5em]
 \hline
 \end{tabularx}
-\caption{Examples of the first few \emph{real solid harmonics}, $S^m_l(x,y,z)=r^lY^m_l(\theta,\phi)$. We note that the solid harmonics of order $l$ are simply linearly independent homogenous polynomials in $x$, $y$, and $z$, of order $l$.  \label{tab:solidharmonics}}
+\caption{Examples of the first few \emph{normalized real solid harmonics}, $S^m_l(x,y,z)=r^lY^m_l(\theta,\phi)$. We note that the solid harmonics of order $l$ are simply linearly independent homogenous polynomials in $x$, $y$, and $z$, of order $l$.  \label{tab:solidharmonics}}
 \end{table}
 
 The real solid harmonics are often a more convenient form to work with, simply because they are real and defined in terms of cartesian coordinates. Please note that the solid harmonics span $L^2(\mathbb{S})$ in the same way the spherical harmonics do, so we can do this without any loss of generality or applicability.
 
 \subsection{Hydrogenic orbitals}
+\begin{figure}
+\centering
+\includegraphics[width=0.49\textwidth]{hydrogenOrbitals1.pdf}
+\includegraphics[width=0.49\textwidth]{hydrogenOrbitals2.pdf}
+\vspace{-60pt}
+\caption{The first six hydrogenic orbitals for $Z=1$, $R_{nl}(r)$. The general expression for $R_{nl}(r)$ is given in \eq{hydrogenanalytic}. Explicit expressions for these orbitals are given in \tab{hydrogenorbitals}. \label{fig:hydrogenorbital}}
+\end{figure}
 The non-interacting hydrogen-like Hamiltonian 
 \begin{align}
 \hat H = -\frac{\nabla^2}{2} - \frac{Z}{|\r-\r_A|},
@@ -327,35 +340,120 @@ $R_{43}$ & \ \ \ \ \ \ \ \ \ \ \ \ 4, 3 & $\displaystyle \frac{\sqrt{Z^9}}{768\s
 \caption{Explicit analytical expressions for the first few hydrogenic radial wave functions, $R_{nl}(r)$ \cite{griffiths}\comment{p154}. The first six\textemdash $R_{10}$ to $R_{32}$\textemdash are shown for $Z=1$ in \fig{hydrogenorbital}. \label{tab:hydrogenorbitals}}
 \end{table}
 
-\begin{figure}[p!]
-\centering
-\includegraphics[width=0.49\textwidth]{hydrogenOrbitals1.pdf}
-\includegraphics[width=0.49\textwidth]{hydrogenOrbitals2.pdf}
-\vspace{-60pt}
-\caption{The first six hydrogenic orbitals for $Z=1$, $R_{nl}(r)$. The general expression for $R_{nl}(r)$ is given in \eq{hydrogenanalytic}. Explicit expressions for these orbitals are given in \tab{hydrogenorbitals}. \label{fig:hydrogenorbital}}
-\end{figure}
-
-\begin{figure}[p!]
+\begin{figure}
 \centering
 \includegraphics[width=0.49\textwidth,trim=250 250 250 250, clip]{H100.png}
 \includegraphics[width=0.49\textwidth,trim=250 250 250 250, clip]{H210.png}
 \includegraphics[width=0.49\textwidth,trim=150 150 150 150, clip]{H311.png}
-\includegraphics[width=0.49\textwidth,trim=250 250 250 250, clip]{H420.png}
+\includegraphics[width=0.49\textwidth,trim=300 300 300 300, clip]{H420.png}
 \caption{Examples of full hydrogenic orbitals, $\psi_{nlm}(r,\theta,\phi)=R_{nl}(r)Y^m_l(\theta,\phi)$: $\psi_{100}$ (top left), $\psi_{210}$ (top right), $\psi_{311}$ (bottom left), and $\psi_{420}$ (bottom right). The relative scaling is not accurate. Each plot is sliced in the $x$-$y$-plane and a colormap showing the density is inset. The outer contour shows the isosurface of each orbital at $|\psi_{nlm}|^2=10^{-5}$. \label{fig:hydrogenorbitals3d}}
 \end{figure}
 
-In many ways, the hydrogenic orbitals are \emph{natural} orbitals to work with. They obey\textemdash crucially\textemdash the electron-nucleus cusp condition of section \ref{section:encusp}. They also fall of exponentially as per the correct long range limit. However, integral evaluation with the hydrogenic orbitals turns out to be unfeasibly slow compared to more efficient basis sets. Ultimately, we will end up working with a basis set intrinsicly \emph{less suited} to the task because the neccessary integrals are possible to evaluate quickly. We expand on this further in section \ref{section:gaussianorbitals} 
+In many ways, the hydrogenic orbitals appear to be \emph{natural} orbitals to work with. They obey\textemdash crucially\textemdash the electron-nucleus cusp condition of section \ref{section:encusp}. They also fall off exponentially as per the correct long range limit. However\textemdash as noted by Helgaker and co-workers\textemdash because of some key deficiencies, they are turn out to not be very useful as basis functions \cite{helgaker}\comment{221}. Firstly, they do not span the entire one-electron Hilbert space. In order for \emph{completeness} to be achieved, the unbounded positive energy continuum states need to be appended to the set. Secondly, they spread out and become very \emph{diffuse} very qucikly for increasing $n$ because of the inverse term in the exponential. This means a (very) large number of terms need to be considered in order to obtain a flexible description of the core regions of the many-body wave function. 
+
+In addition to this, integral evaluation with the hydrogenic orbitals turns out to be unfeasibly slow compared to more efficient basis sets. 
 
 \subsection{Slater type orbitals}
-A relative of the hydrogenic orbitals are the Slater type orbitals (STO). They have the same exponential structure, 
+It is possible to create a complete set of hydrogen-like orbitals by considering instead of the $2Z/n$ factor, a constant exponential term $\mathrm{e}^{-\zeta r}$, with $\zeta\in\mathbb{R}$. These orbitals are sometimes known as the Laguerre fuctions. However, the single constant exponent means it becomes exceedingly difficult to approximate orbitals of widely different nature. With a chosen large exponent, the compact core orbitals may be well approximated. But convergence for the more wide-spread diffuse valence orbitals will be horribly slow, and vice versa.
 
-The general expression for the $(n,l,m)$ STO with exponent $\zeta$ is given by \cite{cramer}\comment{p134}
+A relative of the hydrogenic orbitals which use \emph{variable} exponents are the Slater type orbitals (STO). Introduced by American physicist J. C. Slater in 1930, they have the same exponential decay but forego the nodal structure of the hydrogenic orbitals \cite{slater2}. Building on the previous work of American physicist C. M. Zener\textemdash who had noted that the radial nodes of the generalized hydrogenic orbitals in general had little impact on the Hatree-Fock-like integrals used to construct variational wave functions\textemdash Slater proposed a much simpler polynomial radial structure \cite{zener}. In addition to this, once variable exponents are introduced, the orthogonality of the Laguerre polynomials are lost. Since the orthononality alone is the reason for the complicated nodal structure, it does not make much sense to keep the Laguerre polynomials in the wave function once this is lost \cite{helgaker}\comment{p225}. 
+
+Slater instead proposed a much simpler polynomial structure: $r^{n-1}$. The general expression for the normalized STO with exponent $\zeta$ is given by \cite{cramer}\comment{p134}
 \begin{align}
-\psi_{nlm}(r,\theta,\phi;\zeta)=\frac{(2\zeta)^{n+\nicefrac{1}{2}}}{[(2n)!]^{\nicefrac{1}{2}}} r^{n-1}\mathrm{e}^{-\zeta r} Y^m_l(\theta,\phi).
+R_n(r;\zeta)=\frac{(2\zeta)^{n+\nicefrac{1}{2}}}{[(2n)!]^{\nicefrac{1}{2}}} (2\zeta r)^{n-1}\mathrm{e}^{-\zeta r}.
 \end{align}
+These $R_n(r)$s are obviously radial functions only, and need to be paired with e.g.\ the spherical or solid harmonics in order to produce a full one-electron wave function.  
+
+The variable exponent STOs are complete under certain conditions on the $\zeta$ and the sequence of $n$-s used, see \cite{klahn}. In short, the STOs remedy some of the weaknesses of the hydrogenic orbitals. However, it turns out that the most important property of a basis set is the ability to perform efficient integrations on them. Ultimately thus, we will end up working with a basis set intrinsicly \emph{less suited} to the task (arguing from a physical interpretation point of view) because the neccessary integrals are possible to evaluate very quickly.
+
+Please note that this picture may be set to change in the not so distant future, as a lot of work is being put into making integral evaluation of STOs more feasible, see e.g.\ \cite{rico,ema}.
 
 \subsection{Gaussian type orbitals \label{section:gaussianorbitals}}
+The basis sets used in most modern electronic structure calculations are comprised of Gaussian distributions, $\exp(-\alpha r^2)$. This is also the basis sets we will chiefly employ in the present work. Although the radial decay is proportional to $\mathrm{e}^{-r^2}$ (qualitatively wrong, the correct [long range] behaviour is $\sim \mathrm{e}^{-r}$) the Gaussians nevertheless have the upper hand due to the ease with which many-center integrals in terms of them can be performed. The Gaussian basis functions were first introduced in the context of electronic structure calculations by Boys in 1950 as an alternative to STO-like functions \cite{boys}.
 
+A general (normalized) Cartesian Gaussian type orbital (GTO) is given as 
+\begin{align}
+g^\alpha_{i j k}(x,y,z) \equiv \left(\frac{2\alpha}{\pi}\right)^{\nicefrac{3}{4}}
+\left[ \frac{(8\alpha)^{i+j+k}(i!j!k!)}{(2i)!(2j)!(2k)!} \right]^{\nicefrac{1}{2}} x^iy^jz^k \mathrm{e}^{-\alpha(x^2+y^2+z^2)},
+\end{align}
+where $i$, $j$, and $k$ are non-negative integers and $\alpha$ determines the width according to the variance $\sigma^2=1/(2\alpha)$ \cite{cramer}\comment{p167}. We will denote these functions by {\bf Gaussian primitives}. The coordinates $x$, $y$, and $z$ are in general given w.r.t.\ a nucleus, i.e.\ $x=\tilde x-x_A$ for some nucleus index $A$. The global coordinate $\tilde x$ denotes a coordinate w.r.t.\ the global origin. We will largely ignore this, except when we explicitly need to include it in our calculations, in which case we will write out the Gaussian primitives as 
+\begin{align}
+g^\alpha_{ijk}(x,y,z;\r_A)= (x-x_A)^i(y-y_A)^j(z-z_A)^k\mathrm{e}^{-\alpha[(x-x_A)^2+(y-y_A)^2+(z-z_A)^2]}, 
+\end{align}
+where we omitted the normalization for brevity. 
+
+With $i=j=k=0$, the primitive has spherical symmetry and is a so-called s-type GTO. If $i$ ($j$) [$k$] is one, while the other two indices vanish, the Gaussian has axial symmetry along the $x$ ($y$) [$z$] direction. This is known as a p-type GTO. More generally, the sum $i+j+k\equiv l$ denotes the angular momentum of any GTO, and as usual we denote $l=0$ as s, $l=1$ as p, $l=2$ as d, $l=3$ as f, and so on. 
+
+\subsubsection{Contracted Gaussian functions}
+In practical calculations, a number of these functions will be used for each atomic center. The Gaussians in general dont look much like the \emph{true} molecular orbitals (which resemble hydrogenic wave functions), but this is remedied by taking linear combinations of GTOs for each orbital \cite{helgaker}\comment{p237}. We will call the linear combinations {\bf contracted Gaussians},
+\begin{align}
+G(\r) = \sum_{a=1}^{L} d_{a} g^{\alpha_{a}}_{i_aj_ak_a}(x,y,z).
+\end{align}
+A key fault of the Gaussians is that any Gaussian of s-type symmetry fails to satisfy the electron-nucleus cusp condition described in section \ref{section:encusp}. As the derivative at $r=0$ of any s-type primitive vanishes, even linear combinations will not remedy this fault. However, we can get \emph{close} in a sense by taking combinations of more and more primitives of varying exponents $\alpha$. Even if at the limit of infinite primitives, the origin derivative still vanishes\footnote{For any $\phi(r)\propto \mathrm{e}^{-ar}$, we can construct a sequence of $\{(g^{\alpha_k}_{000})_k\}_k$ such that $g_k\rightarrow \phi$ point-wise with $g_k$ strictly increasing in $k$ [citation needed, but this is probably true right?], and so we can interchange the order of $\lim_{k\rightarrow\infty}$ and $\mathrm{d}/\mathrm{d}r$ by Fubini's derivative theorem, and differentiate term-wise in the sum \cite{mcdonald}. And so \begin{align}
+\der{}{r}\left(\lim_{k\rightarrow\infty}\sum_{k}g_k\right)=\lim_{k\rightarrow\infty}\left(\der{}{r}\sum_k g_k\right) = \lim_{k\rightarrow\infty} \left(\sum_k \der{}{r}g_k\right) = 0.
+\end{align}}, we can still construct a combination such that the integrals involved in the self-consistent field (SCF) methods become arbitrarily close to their STO counterparts.
+
+Since SCF theories are in practice solved via the weak integral formulation and application of the Galerkin method, the overall form of the orbitals are more important than their failure at very small $r$ \cite{matinf5620}. One approach to constructing viable contracted orbital basis sets is thus to approximate Slater type orbitals. This may be done by applying a least-squares fit of $L$ primitives to a given STO. 
+
+
+\subsubsection{Number of Cartesian Gaussian primitives of angular momentum $l$}
+\newcolumntype{Y}{>{\raggedleft\arraybackslash}X}
+\begin{table}
+\centering
+\setlength\extrarowheight{2pt}
+\begin{tabularx}{1.0\textwidth}{l l Y Y}
+\hline
+\hline
+\\[-0.9em] 
+{\bf Angular}                      &            & {\bf }                 & {\bf Linearly independent }\\
+{\bf momentum,} $l$ & {\bf Type} & {\bf Total primitives} & {\bf combinations} \\
+\\[-0.9em]
+\hline
+\\[-0.9em]
+$0$ & s & $1$    & $1$ \\
+$1$ & p & $3$    & $3$ \\
+$2$ & d & $6$    & $5$ \\
+$3$ & f & $10$   & $7$ \\
+$4$ & g & $15$   & $9$ \\
+$5$ & h & $21$   & $11$ \\
+$6$ & i & $28$   & $13$ \\
+$7$ & k & $36$   & $15$ \\
+$8$ & l & $45$   & $17$ \\
+\\[-0.9em]
+\hline
+\end{tabularx}
+\caption{The number of Gaussian primitives of total angular momentum $l$, $(l+1)(l+2)/2$, and the number of linearly independent combinations of them, $2l+1$.\label{tab:harmonic}}
+\end{table}
+For p-type orbitals, the hydrogenic or Slater type orbitals\textemdash when paired with the appropriate $l=1$ spherical or solid harmonics\textemdash are three-fold degenerate. The same is true of the Gaussian primitives. This means that any p-type orbital produces three distinct (contracted) Gaussian functions: one for (linear combinations of) $g^\alpha_{100}(\r)=x\mathrm{e}^{-\alpha r^2}$, one for (linear combinations of) $g^\alpha_{010}=y\mathrm{e}^{-\alpha r^2}$, and finally one for (linear combinations of) $g^\alpha_{001}=z\mathrm{e}^{-\alpha r^2}$. In terms of the \emph{real solid harmonics}, this corresponds naturally to the Slater type orbitals 
+\begin{align}
+S_{1}^m(x,y,z)\psi(r)=\left\{\mat{lrl}{
+	\displaystyle y\mathrm{e}^{-\zeta r} & \text{ for } & m=-1 \\
+	\displaystyle z\mathrm{e}^{-\zeta r} & \text{ for } & m=\phantom{+}0 \\
+	\displaystyle x\mathrm{e}^{-\zeta r} & \text{ for } & m=+1 
+} \right..
+\end{align}
+
+For higher angular momentum values, there are in general $(l+1)(l+2)/2$ possible combination\footnote{The problem is identical to the combinatorial problem: "Given $N$ indistinguishable objects, how many possible ways can we distribute them into $M$ distinguishable bins?" For three "bins" and $l$ "ojects," this is \begin{align}
+{N+M-1\choose M-1}={l+3-1\choose3-1}={l+2\choose l}=\frac{(l+1)(l+2)}{2}.
+\end{align} } of $i$, $j$, and $k$ which gives $i+j+k=l$. However, there are only $2l+1$ linearly independent spherical (or real solid) harmonics of degree $l$. Essentially, this is just stating the fact that there exist $D_\text{H}(d,v)$ linearly independent homogenous polynomials of degree $d$ in $v$ variables, but only $D_\text{HH}(d,v)$ linearly independent \emph{harmonic} homogenous polynomials, where \cite{hochstadt}\comment{p343}
+\begin{align}
+D_\text{H}(d,v) = {v+d-1 \choose v-1}, \ \ \text{ while } \ \  D_\text{HH}(d,v) = \frac{2d+v-2}{d}{d+v-3 \choose d-1}.
+\end{align}
+Examples of the dimensions of the spaces of homogenous ($D_\text{H}$) and homogenous harmonic ($D_\text{HH}$) polynomials are shown in \tab{harmonic}, for degree $l$ in $3$ variables. Since the spherical (real solid) harmonics span the space of complex-valued (real-valued) spherical functions, using a basis that is larger than that of the harmonic homogenous polynomials is essentially a waste of computational effort \cite{atkinson}\comment{p60}. In this sense the Cartesian Gaussians are \emph{over-complete}, and it is possible to construct from the $(l+1)(l+2)/2$ Gaussians of degree $l$ a more compact set of $2l+1$ linearly independent Gaussian combinations which are sufficient for the expansion of any function on $\mathbb{S}$ \cite{helgaker}\comment{p237}. 
+
+As an example, consider the $l=2$, d-type, Gaussian primitives. The three functions $g^\alpha_{110}(\r)=xy\mathrm{e}^{-\alpha r^2}$, $g^\alpha_{101}(\r)=xz\mathrm{e}^{-\alpha r^2}$, and $g^\alpha_{011}(\r)=yz\mathrm{e}^{-\alpha r^2}$ coincide with the corresponding \emph{harmonic} set (as can be seen from the solid harmonics of \tab{solidharmonics}). However, there are three more d-type Cartesian primitives, but only two additional spherical harmonics. Instead of the primitives $g^\alpha_{200}(\r)=x^2\mathrm{e}^{-\alpha r^2}$, $g^\alpha_{020}(\r)=y^2\mathrm{e}^{-\alpha r^2}$, and $g^\alpha_{002}(\r)=z^2\mathrm{e}^{-\alpha r^2}$, we can form the linear combinations 
+\begin{align}
+\bar g^\alpha_1(\r) &= g^\alpha_{200}-g^\alpha_{020} \nn\\
+%
+&= \left(x^2-y^2\right)\mathrm{e}^{-\alpha r^2} \label{eq:barg1}\\
+%
+\bar g^\alpha_2(\r) &= 2g^\alpha_{002}-g^\alpha_{200}-g^\alpha_{020}\nn\\
+%
+&= \left[3z^2-\left(x^2+y^2+z^2\right)\right]\mathrm{e}^{-\alpha r^2}. \label{eq:barg2}
+\end{align}
+We note that these are exactly the same combinations as the solid harmonics of degree $l=2$ (up to a normalization, which we have omitted from the expressions of \eq{barg1}-(\ref{eq:barg2})). A last linear combination may be formed by taking $g^\alpha_{200}(\r)+g^\alpha_{020}(\r)+g^\alpha_{002}(\r)=(x^2+y^2+z^2)\mathrm{e}^{-\alpha r^2}$, but we note that this has spherical symmetry and thus is really an s-type orbital \cite{cramer}\comment{p167}.
+
+As can be seen by \tab{harmonic}, this is especially important for higher angular momentum numbers $l>3$. As we primarily use f-type or lower angular momentum primitives in the present work, we choose to keep the larger sets of $D_\text{H}(l,3)$ Gaussians. 
 
 \begin{figure}
 \centering
@@ -366,7 +464,10 @@ The general expression for the $(n,l,m)$ STO with exponent $\zeta$ is given by \
 \caption{Examples of Gaussian orbitals with $\alpha=1.0$, $G_{ijk}(x,y,z)=x^iy^jz^k\mathrm{e}^{-\alpha r^2}$: $G_{000}$ (top left), $G_{100}$ (top right), $G_{201}$ (bottom left), and $G_{002}-G_{020}-G_{200}$ (bottom right). The latter combination is one of the five linearly independent set of d-type Gaussian orbitals (there are a total of six Gaussian primitives with $l=2$\textemdash $G_{200}$, $G_{020}$, $G_{002}$, $G_{110}$, $G_{101}$, and $G_{011}$\textemdash but the set is linearly dependent: a linearly independent set may be formed by taking $G_{110}$, $G_{101}$, $G_{011}$, $G_{200}-G_{020}$, and $G_{002}-G_{020}-G_{200}$). Each plot is sliced in the $x$-$y$-plane and a colormap showing the density is inset. The outer contour shows the isosurface of each orbital at $|G_{ijk}|^2=10^{-5}$. \label{fig:gaussianorbitals3d}}
 \end{figure}
 
+\subsection{Some properties of primitive Cartesian Gaussians}
 
+
+\section{Gaussian basis sets}
 
 
 
