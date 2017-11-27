@@ -390,8 +390,9 @@ A key fault of the Gaussians is that any Gaussian of s-type symmetry fails to sa
 \der{}{r}\left(\lim_{k\rightarrow\infty}\sum_{k}g_k\right)=\lim_{k\rightarrow\infty}\left(\der{}{r}\sum_k g_k\right) = \lim_{k\rightarrow\infty} \left(\sum_k \der{}{r}g_k\right) = 0.
 \end{align}}, we can still construct a combination such that the integrals involved in the self-consistent field (SCF) methods become arbitrarily close to their STO counterparts.
 
-Since SCF theories are in practice solved via the weak integral formulation and application of the Galerkin method, the overall form of the orbitals are more important than their failure at very small $r$ \cite{matinf5620}. One approach to constructing viable contracted orbital basis sets is thus to approximate Slater type orbitals. This may be done by applying a least-squares fit of $L$ primitives to a given STO. 
+Since SCF theories are in practice solved via the weak integral formulation and application of the Galerkin method, the overall form of the orbitals are more important than their failure to accurately capture the physics at very small $r$ \cite{matinf5620}. 
 
+We note before going on that a contracted Gaussian is uniquely determined by an array of coefficients, ${\bf d}=\{d_a\}_a$, an array of exponents, $\bm{\alpha}=\{\alpha_a\}_a$, and the coefficients $i$, $j$, and $k$. 
 
 \subsubsection{Number of Cartesian Gaussian primitives of angular momentum $l$}
 \newcolumntype{Y}{>{\raggedleft\arraybackslash}X}
@@ -462,15 +463,53 @@ As can be seen by \tab{harmonic}, this is especially important for higher angula
 \end{figure}
 
 \subsection{Some properties of primitive Cartesian Gaussians}
+Before we go on, we will state some properties of the Gaussians which will be crucial for us in the implementation of the Hartree-Fock machinery in section \ref{HFI}. First of all, each Cartesian primitive factorizes in the Cartesian coordinates, 
+\begin{align}
+g^\alpha_{ijk}(\r)=g^\alpha_i(x)g^\alpha_j(y)g^\alpha_k(z),
+\end{align}
+where $g_i^\alpha(x)\equiv x^i\mathrm{e}^{-\alpha x^2}$ and similarly for $y$ and $z$ \cite{taylor}\comment{p792}. Please note that this is \emph{not} true for either of the hydrogenic, Slater type, or spherical harmonic Gaussians\footnote{The spherical harmonic Gaussian primitives account for the angular dependency in the wave function by appending to the Gaussian function spherical harmonics $Y^m_l(\theta,\phi)$.}. The \emph{Gaussian components} adhere to the the simple recurrence relation 
+\begin{align}
+xG_i^\alpha(x)=G_{i+1}^\alpha(x),
+\end{align}
+and from this it is immideately clear that differentiation w.r.t.\ $x$ yields \cite{integrals}\comment{p4}
+\begin{align}
+\pder{G_i^\alpha(x;\r_A)}{x_A}&=\pder{}{x_A}\left((x-x_A)^i\mathrm{e}^{-\alpha (x-x_A)^2}\right) = -\pder{G_i^\alpha(x;\r_A)}{x} \nn\\
+&= 2\alpha G_{i+1}^\alpha(x;\r_A)-iG_{i-1}^\alpha(x;\r_A).
+\end{align}
+Note that we have briefly re-inserted the $\r_A$ back into the primitive at this point because of the explicit dependence on the nucleonic position. 
+
+The Cartesian Gaussians can be written in terms of {\bf Hermite Gaussians}\textemdash products of exponentials and Hermite polynomials\footnote{The Hermite polynomials are a family of orthogonal real-valued polynomials defined by \cite{rottmann}
+\begin{align}
+H_n(x)=(-1)^n\mathrm{e}^{x^2}\der{^n}{x^n}\mathrm{e}^{x^2}.
+\end{align}}\textemdash which are defined as follows: \cite{mcmurchie}
+\begin{align}
+\Lambda_t^\alpha(x;\r_A)=\left(\pder{}{x_A}\right)^t\mathrm{e}^{-\alpha (x-x_A)^2}
+\end{align}
+
 
 
 \section{Gaussian basis sets}
+One approach to constructing viable contracted orbital basis sets is thus to approximate Slater type orbitals. This may be done by applying a least-squares fit of $L$ primitives to a given STO. Such contracted Gaussians are normally denoted {\bf STO-nG}, with n being the number of primitives used. The STO-3G basis sets of Hehre and co-workers has long been considered an efficient comprimise between efficiency and accuracy\textemdash useful for running preliminary simulations before bringing out the proverbial big guns \cite{hehre,cramer,taylor}.
 
 
+\begin{figure}
+\centering
+\includegraphics[width=0.90\textwidth,trim=10 200 0 200, clip]{sto2g.pdf}
+%\includegraphics[width=0.49\textwidth,trim=0 200 0 0, clip]{stongerror.pdf}
+\includegraphics[width=0.49\textwidth,trim=0 0 0 200, clip]{sto4g.pdf}
+\includegraphics[width=0.49\textwidth,trim=0 0 0 200, clip]{sto7g.pdf}
+\caption{Example showing a STO-nG fit with different number of primitives and the average absolute error relative to the 1s STO which we were trying to approximate (top right). The s-type STO has exponent $\zeta=\sqrt[3]{\pi}\approx1.4646$, arbitrarily chosen simply to ensure $\text{STO}(r)\rightarrow1$ as $r\rightarrow0$. \label{fig:sto24g}}
+\end{figure}
 
 
-
-
+\begin{SCfigure}
+\centering
+%\includegraphics[width=0.98\textwidth,trim=0 200 0 0, clip]{sto2g.pdf}
+\includegraphics[width=0.45\textwidth,trim=10 210 10 210, clip]{stongerror.pdf}
+%\includegraphics[width=0.49\textwidth,trim=0 0 0 200, clip]{sto4g.pdf}
+%\includegraphics[width=0.49\textwidth,trim=0 0 0 200, clip]{sto7g.pdf}
+\caption{Example showing the average absolute error relative to the 1s STO  for each of the STO-nG approximations with different number of primitives $n$. The s-type STO has exponent $\zeta=\sqrt[3]{\pi}\approx1.4646$, arbitrarily chosen simply to ensure $\text{STO}(r)\rightarrow1$ as $r\rightarrow0$. \label{fig:stoerror}}
+\end{SCfigure}
 
 
 
