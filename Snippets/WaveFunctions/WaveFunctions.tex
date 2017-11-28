@@ -462,34 +462,84 @@ As can be seen by \tab{harmonic}, this is especially important for higher angula
 \caption{Examples of Gaussian orbitals with $\alpha=1.0$, $G_{ijk}(x,y,z)=x^iy^jz^k\mathrm{e}^{-\alpha r^2}$: $G_{000}$ (top left), $G_{100}$ (top right), $G_{201}$ (bottom left), and $G_{002}-G_{020}-G_{200}$ (bottom right). The latter combination is one of the five linearly independent set of d-type Gaussian orbitals (there are a total of six Gaussian primitives with $l=2$\textemdash $G_{200}$, $G_{020}$, $G_{002}$, $G_{110}$, $G_{101}$, and $G_{011}$\textemdash but the set is linearly dependent: a linearly independent set may be formed by taking $G_{110}$, $G_{101}$, $G_{011}$, $G_{200}-G_{020}$, and $G_{002}-G_{020}-G_{200}$). Each plot is sliced in the $x$-$y$-plane and a colormap showing the density is inset. The outer contour shows the isosurface of each orbital at $|G_{ijk}|^2=10^{-5}$. \label{fig:gaussianorbitals3d}}
 \end{figure}
 
-\subsection{Some properties of primitive Cartesian Gaussians}
+\subsection{Some properties of Gaussians}
+\subsubsection{Cartesian Gaussians}
 Before we go on, we will state some properties of the Gaussians which will be crucial for us in the implementation of the Hartree-Fock machinery in section \ref{HFI}. First of all, each Cartesian primitive factorizes in the Cartesian coordinates, 
 \begin{align}
 g^\alpha_{ijk}(\r)=g^\alpha_i(x)g^\alpha_j(y)g^\alpha_k(z),
 \end{align}
 where $g_i^\alpha(x)\equiv x^i\mathrm{e}^{-\alpha x^2}$ and similarly for $y$ and $z$ \cite{taylor}\comment{p792}. Please note that this is \emph{not} true for either of the hydrogenic, Slater type, or spherical harmonic Gaussians\footnote{The spherical harmonic Gaussian primitives account for the angular dependency in the wave function by appending to the Gaussian function spherical harmonics $Y^m_l(\theta,\phi)$.}. The \emph{Gaussian components} adhere to the the simple recurrence relation 
 \begin{align}
-xG_i^\alpha(x)=G_{i+1}^\alpha(x),
+xg_i^\alpha(x)=g_{i+1}^\alpha(x), \label{eq:recurrence1}
 \end{align}
 and from this it is immideately clear that differentiation w.r.t.\ $x$ yields \cite{integrals}\comment{p4}
 \begin{align}
-\pder{G_i^\alpha(x;\r_A)}{x_A}&=\pder{}{x_A}\left((x-x_A)^i\mathrm{e}^{-\alpha (x-x_A)^2}\right) = -\pder{G_i^\alpha(x;\r_A)}{x} \nn\\
-&= 2\alpha G_{i+1}^\alpha(x;\r_A)-iG_{i-1}^\alpha(x;\r_A).
+\pder{g_i^\alpha(x;\r_A)}{x_A}&=\pder{}{x_A}\left((x-x_A)^i\mathrm{e}^{-\alpha (x-x_A)^2}\right) = -\pder{g_i^\alpha(x;\r_A)}{x} \nn\\
+&= 2\alpha g_{i+1}^\alpha(x;\r_A)-ig_{i-1}^\alpha(x;\r_A).
 \end{align}
 Note that we have briefly re-inserted the $\r_A$ back into the primitive at this point because of the explicit dependence on the nucleonic position. 
 
+\renewcommand{\P}{{\bf P}}
+\subsubsection{Hermite Gaussians}
 The Cartesian Gaussians can be written in terms of {\bf Hermite Gaussians}\textemdash products of exponentials and Hermite polynomials\footnote{The Hermite polynomials are a family of orthogonal real-valued polynomials defined by \cite{rottmann}
 \begin{align}
 H_n(x)=(-1)^n\mathrm{e}^{x^2}\der{^n}{x^n}\mathrm{e}^{x^2}.
 \end{align}}\textemdash which are defined as follows: \cite{mcmurchie}
 \begin{align}
-\Lambda_t^\alpha(x;\r_A)=\left(\pder{}{x_A}\right)^t\mathrm{e}^{-\alpha (x-x_A)^2}
+\Lambda_{tuv}^\alpha(\r;\P)=\left(\pder{}{P_x}\right)^t\left(\pder{}{P_y}\right)^u\left(\pder{}{P_z}\right)^v \mathrm{e}^{-\alpha |\r-\P|^2}.
+\end{align}
+The $\P=(P_x,P_y,P_z)$ simply denotes \emph{some} real-valued vector representing a point in space. It is clear that the Hermite Gaussians also factorize in Cartesian coordinates, with
+\begin{align}
+\Lambda_t^\alpha(x;P_x)=\left(\pder{}{P_x}\right)^t\mathrm{e}^{-\alpha (x-P_x)^2},
+\end{align}
+and similar for $y$ and $z$ coordinates, such that $\Lambda^\alpha_{tuv}(\r;\P)=\Lambda_t^\alpha(x;P_x)\Lambda_u^\alpha(y;P_y)\Lambda_v^\alpha(z;P_z)$. It is possible to use the Hermite Gaussians themselves as basis functions, but for our purposes we consider them only as intermediates involved in the neccessary integrals. Since they are defined in terms of derivatives they will\textemdash not surprisingly\textemdash lead to tremendous simplifications in that regard. Differentiation of the Hermite Gaussians naturally leads to a recurrence relation similar to \eq{recurrence1}, 
+\begin{align}
+\pder{\Lambda_t^\alpha(x;P_x)}{P_x}=-\pder{\Lambda^\alpha_t(x;P_x)}{x}=\Lambda_{t+1}^\alpha(x;P_x),
+\end{align}
+and it can be shown that left-multiplying by $x_p$ yields \cite{taylor}\comment{p794}
+\begin{align}
+x_p\Lambda_t^\alpha(x;P_x) = \frac{1}{2\alpha}\Lambda_{t+1}^\alpha(x;P_x) + t\Lambda_{t-1}^{\alpha}(x;P_x).
+\end{align}
+
+Let now $\r_p=\r-\P$ denote the vectorial difference w.r.t.\ $\P$, such that $\Lambda_t^\alpha(x_p;P_x)=(\partial/\partial P_x)^t\mathrm{e}^{-\alpha x_p^2}$ with $\r_p=(x_p,y_p,z_p)$. Now, we may consider $\Lambda_t^\alpha(x_p;P_x)$ as a product of two Hermite polynomials, $H_t(x_p)$ and $H_0(x_p)=1$, multiplied by an exponential factor. From this consideration it follows trivially that the integral 
+\begin{align}
+\int_{-\infty}^\infty\mathrm{d}x\,\Lambda_t^\alpha(x_p;P_x) &= \int_{-\infty}^\infty\mathrm{d}x\, H_t(x_p)H_0(x_p)\mathrm{e}^{-\alpha x_p^2} \nn\\
+%
+&\stackrel{t\not=0}{=} 0, \label{eq:hermite1}
+\end{align}
+since the Hermite polynomials are orthogonal w.r.t.\ the weight function $w(x)=\mathrm{e}^{-x^2/2}$ \cite{rottmann}\comment{p98}. The coordinate transformation $x_p\mapsto x_p/\sqrt{2\alpha}$ gives the correct scaling such that the integrand becomes $H_t(x_p)H_0(x_p)w(x_p)$ only changed by a constant pre-factor which does not change the conclusion of \eq{hermite1}. In the case of $t=0$, the integral is simply 
+\begin{align}
+\int_{-\infty}^\infty\mathrm{d}x\,\Lambda_0^\alpha(x_p;P_x)&=\int_{-\infty}^\infty\mathrm{d}x\,\mathrm{e}^{-\alpha x_p^2} = \sqrt{\frac{\pi}{\alpha}},
+\end{align}
+and in general
+\begin{align}
+\int_{-\infty}^\infty\mathrm{d}x\,\Lambda_t^\alpha(x_p;P_x) =\delta_{t0} \sqrt{\frac{\pi}{\alpha}}.
 \end{align}
 
 
+\subsubsection{Gaussian product rule}
+The property which turns out to be most crucial for our use is the fact that a product of Gaussians centered at different points yield again a Gaussian. This is known as the \emph{Gaussian product rule} and can be stated as \cite{thijssen}\comment{p66}
+\begin{align}
+g_{i}
+\end{align} 
+
 
 \section{Gaussian basis sets}
-One approach to constructing viable contracted orbital basis sets is thus to approximate Slater type orbitals. This may be done by applying a least-squares fit of $L$ primitives to a given STO. Such contracted Gaussians are normally denoted {\bf STO-nG}, with n being the number of primitives used. The STO-3G basis sets of Hehre and co-workers has long been considered an efficient comprimise between efficiency and accuracy\textemdash useful for running preliminary simulations before bringing out the proverbial big guns \cite{hehre,cramer,taylor}.
+One approach to constructing viable contracted orbital basis sets is to approximate Slater type orbitals. This may be done by applying a least-squares fit of $L$ primitives to a given STO. Such contracted Gaussians are normally denoted {\bf STO-nG}, with n being the number of primitives used. The STO-3G basis sets of Hehre and co-workers have long been considered an efficient comprimise between efficiency and accuracy\textemdash useful for running preliminary simulations before bringing out the proverbial big guns \cite{hehre,cramer,taylor}. Examples such fittings\footnote{All curve fitting in the present work is done in {\sc Matlab} using the LAD (\emph{least absolute deviations}, as opposed to the more familiar \emph{least squared deviations}) approach and the trust-region algorithm proposed by Moré and co-workers \cite{charnes1955optimal,koenker1978regression,more1983computing}.} can be seen in \fig{sto24g}, where all of STO-1G through STO-7G are shown. Normally, the highest number of primitives used is six. From \fig{stoerror} we see that the mean absolute error compared to the Slater orbital, $\varepsilon$, scales approximately as 
+\begin{align}
+\varepsilon(\text{n})\sim \sqrt{\frac{1}{10^\text{n}}}.
+\end{align}
+We note that the overall function shape of STO-3G already closely resembles the actual STO. At higher values of n, they become indistinguishable without looking very closely. From the insets of \fig{sto24g} we note that the sum of Gaussians always satisfy $\mathrm{d}/\mathrm{d}r \sum_k g_k^\alpha(r)\big|_{r=0}\not=0$, so in the limit of very small $r$ the STO-nG and the STO digress. 
+
+\begin{SCfigure}
+\centering
+%\includegraphics[width=0.98\textwidth,trim=0 200 0 0, clip]{sto2g.pdf}
+\includegraphics[width=0.45\textwidth,trim=10 210 10 210, clip]{stongerror.pdf}
+%\includegraphics[width=0.49\textwidth,trim=0 0 0 200, clip]{sto4g.pdf}
+%\includegraphics[width=0.49\textwidth,trim=0 0 0 200, clip]{sto7g.pdf}
+\caption{Example showing the average absolute error relative to the 1s STO  for each of the STO-nG approximations with different number of primitives $n$ shown in \fig{sto24g}. The s-type STO has exponent $\zeta=\sqrt[3]{\pi}\approx1.4646$, arbitrarily chosen simply to ensure $\text{STO}(r)\rightarrow1$ as $r\rightarrow0$. \label{fig:stoerror}}
+\end{SCfigure}
+
 
 
 \begin{figure}
@@ -498,18 +548,8 @@ One approach to constructing viable contracted orbital basis sets is thus to app
 %\includegraphics[width=0.49\textwidth,trim=0 200 0 0, clip]{stongerror.pdf}
 \includegraphics[width=0.49\textwidth,trim=0 0 0 200, clip]{sto4g.pdf}
 \includegraphics[width=0.49\textwidth,trim=0 0 0 200, clip]{sto7g.pdf}
-\caption{Example showing a STO-nG fit with different number of primitives and the average absolute error relative to the 1s STO which we were trying to approximate (top right). The s-type STO has exponent $\zeta=\sqrt[3]{\pi}\approx1.4646$, arbitrarily chosen simply to ensure $\text{STO}(r)\rightarrow1$ as $r\rightarrow0$. \label{fig:sto24g}}
+\caption{Example showing a STO-nG fit with different number of primitives to the 1s STO which we were trying to approximate. The s-type STO has exponent $\zeta=\sqrt[3]{\pi}\approx1.4646$, arbitrarily chosen simply to ensure $\text{STO}(r)\rightarrow1$ as $r\rightarrow0$. \label{fig:sto24g}}
 \end{figure}
-
-
-\begin{SCfigure}
-\centering
-%\includegraphics[width=0.98\textwidth,trim=0 200 0 0, clip]{sto2g.pdf}
-\includegraphics[width=0.45\textwidth,trim=10 210 10 210, clip]{stongerror.pdf}
-%\includegraphics[width=0.49\textwidth,trim=0 0 0 200, clip]{sto4g.pdf}
-%\includegraphics[width=0.49\textwidth,trim=0 0 0 200, clip]{sto7g.pdf}
-\caption{Example showing the average absolute error relative to the 1s STO  for each of the STO-nG approximations with different number of primitives $n$. The s-type STO has exponent $\zeta=\sqrt[3]{\pi}\approx1.4646$, arbitrarily chosen simply to ensure $\text{STO}(r)\rightarrow1$ as $r\rightarrow0$. \label{fig:stoerror}}
-\end{SCfigure}
 
 
 
