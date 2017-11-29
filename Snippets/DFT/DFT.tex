@@ -178,7 +178,7 @@ E[\{\psi_i\}] = \sum_{i=1}^N %\langle \phi_i | -\frac{\nabla^2_i}{2} | \phi_i\ra
 \section{Numerical integration grids}
 Since the integral of the exchange-correlation potential over the density is rarely (if ever) calculable analytically, we are forced to resort to numerical integration schemes in order to evaluate it. In the one dimensional case, strong and robust integration schemes based on gaussian quadrature integrate any sufficiently \emph{smooth} function to high accuracy using a modest number of integration points \cite{hjorthjensen}\comment{p116}. However, in multiple dimensions, the problem of numerically integrating a multi-variable function is considerably more challenging. Although the philosophy behind is unchanged, the actual application required a lot more thought. This is in large part because all the nuclei represent singularities which hinder the sucessful application of products of gaussian quadrature rules \cite{voronoi1}. Before we begin discussing integrals in density functional theory, we refer the reader to a short introduction to numerical integration in section \ref{numericalintegration} of the appendix. 
 
-The integrals of interest within the framework of density functional theory are integrals over the electronic density. Since we know a priori that the density falls off exponentially in the long range limit (c.f. section \ref{wavefunction}), this reduces to a locally contained integral in some finite and \emph{small} region in space close to the nuclei. Since the potentials are in general functions of the density and its derivatives (which of course also falls off exponentially) we are guaranteed that the exchange-correlation potentials also vanishes exponentially as we move far away from the nuclei. 
+The integrals of interest within the framework of density functional theory are integrals over the electronic density. Since we know a priori that the density falls off exponentially in the long range limit (c.f. section \ref{wfproperties}), this reduces to a locally contained integral in some finite and \emph{small} region in space close to the nuclei. Since the potentials are in general functions of the density and its derivatives (which of course also falls off exponentially) we are guaranteed that the exchange-correlation potentials also vanishes exponentially as we move far away from the nuclei. 
 
 \subsection{Simple spherical grid}
 \begin{SCfigure}
@@ -244,7 +244,8 @@ E &= \frac{\text{Number of spherical harmonics up to and including order }L}{\te
 \end{align}
 The total number of independent variables is 3 for each point: two angles and a weight. The total number of spherical harmonics up to and including order $L$ is 
 \begin{align}
-\sum_{l=0}^L\sum_{m=-l}^l1 = \sum_{l=0}^L(2l+1) = \sum_{l=0}^L2l +\sum_{l=0}^L1 = L(L+1)+(L+1)=(L+1)(L+1)=(L+1)^2.
+\sum_{l=0}^L\sum_{m=-l}^l1 &= \sum_{l=0}^L(2l+1) = \sum_{l=0}^L2l +\sum_{l=0}^L1 \nn\\
+&= L(L+1)+(L+1)=(L+1)(L+1)=(L+1)^2.
 \end{align} 
 In general we expect $E\le1$, although in rare cases $E>1$ \cite{atkinson}\comment{p188}.
 
