@@ -54,7 +54,7 @@ after substituting $\hbar=e=k_e=1$.
 
 
 \chapter{Basics of numerical integration\label{numericalintegration}}
-\subsubsection{Riemann integral and Riemann integrable functions}
+\subsection*{Riemann integral and Riemann integrable functions}
 Given a function $f(x)$ and a closed finite subset of $\mathbb{R}$, $[a,b]$ with $a<b$, a \emph{Riemann sum} of $f$ is defined as the sum of values attained on $n$ sub-intervals of $[a,b]$, i.e.
 \begin{align}
 S_n = \sum_{i=1}^n (x_i-x_{i-1}) \, f_i.
@@ -90,7 +90,7 @@ f(x) = \left\{\mat{lcr}{1 & \text{if} & x>1/2 \\ 0 & \text{else} }\right..
 \end{align}
 Even though the upper and lower Riemann sums both attain the value $1/2$ in the limit $n\rightarrow \infty$ and the function is Riemann integrable, it demonstrably is not continous. A more careful analysis shows that a less strict but sufficient condition on $f$ is that it be continous \emph{almost everywhere} on $[a,b]$ (i.e. continous on all of the interval, except possibly on a subset $C\subset[a,b]$ with measure zero) \cite{mcdonald}\comment{p72}. With this condition, the converse also holds.
 
-\subsubsection{Newton-Cotes quadrature}
+\subsection*{Newton-Cotes quadrature}
 Since the Riemann integral is defined in terms of the limit of a sum, numerical approximations to it arise naturally from any scheme for choosing $\xi_i$ and the partitioning. One of the simplest possible approximations is to take the midpoint value of each sub-interval to be $\xi_i$ with a uniform mesh of equispaced $x_i$s. This constitutes the {\bf midpoint rule} \cite{davis}\comment{p52}, 
 \begin{align}
 I\approx \sum_{i=1}^n f(x_{i-1}+\Delta x/2)(x_{i}-x_{i-1})=\Delta x\sum_{i=1}^n f(x_{i-1}+\Delta x/2),
@@ -110,7 +110,7 @@ I&\approx \sum_{i=1}^n (x_i-x_{i-1})\left(\frac{f(x_{i-1}}{6}+\frac{4f(x_{i-1}+\
 
 All three approximations are examples of Newton-Cotes quadrature rules, which approximate the intergral by replacing the integrand by interpolating polynomials of order $k$ on each of the $n$ sub-intervals. We can build arbitrarily high order methods by constructing higher order interpolating polynomials within each interval. The interpolation procedure is described for example in \cite{morken}. We have just seen Newton-Cotes method for orders zero (midpoint rule, zero order polynomial [constant]), one (trapezoidal rule, linear polynomial), and two (Simpson's rule, quadratic polynomial). The next few commonly used methods are the third order \emph{Simpson's 3/8 rule} and the fourth order \emph{Boole's rule}.
 
-\subsubsection{Gaussian quadrature}
+\subsection*{Gaussian quadrature}
 Note that so far we have assumed the sub-intervals to all be the same size. If we drop this requirement, we can construct more advanced rules which exploit some convenient properties of orthogonal polynomials. Gaussian quadrature rules are a set of schema for numerical intergration in which we extract a \emph{weight function} from the integrand
 \begin{align}
 \int_a^bf(x)\dx = \int_a^b W(x)g(x)\dx \approx \sum_{i=1}^n w_ig(x_i).
@@ -133,7 +133,7 @@ I\equiv \int_{-1}^1 \underbrace{\frac{x^{10}+x+2}{\sqrt{1-x^2}}}_{\equiv f(x)}\d
 
 In general, if $g(x)$ is a polynomial of degree $2n-1$ for a weight function associated with some class of orthogonal polynomials, then the gaussian quadrature rule associated with the same class of polynomials will integrate the original $f(x)$ (recall that $g(x)=f(x)/W(x)$) \emph{exactly} with only $n$ integration points \cite{hjorthjensen}\comment{p119}. 
 
-\subsubsection{Multiple integrals}
+\subsection*{Multiple integrals}
 Both of the aforementioned  rules are straight forward to extend to higher dimensional integrals. For the Newton-Cotes rules, we can simply apply the rule again to the sum resulting from the application of the rule, i.e.
 \begin{align}
 I_{\text{2D}} &= \int_a^b \int_a^b f(x,y)\,\mathrm{d}x\,\mathrm{d}y \approx \int_a^b\sum_{i=1}^n \Delta x f(\xi_i,y) \,\mathrm{d}y \nn\\
@@ -200,7 +200,7 @@ When working in a separable Hilbert space as we always do in quantum mechanics, 
 \end{align}
 meaning we can think of a functional $F[f]$ as a \emph{function} of the vector of coefficients relative to the basis set, ${\bf c}=(c_1,c_2,\dots)$ \cite{kvaal}\comment{p151}.
 
-\subsection{Short mathematical interlude \label{HFmath}}
+\subsection*{Short mathematical interlude \label{HFmath}}
 Let $B(X,Y)$ denote the set of all continous linear transformations from normed vector spaces $X$ and $Y$ (over the algebraic scalar field $\mathbb{F}$\footnote{Meaning $X$ and $Y$ are closed under scalar multiplication with elements $c\in\mathbb{F}$.}). For example we may consider $X=\mathbb{R}^n$ and $Y=\mathbb{R}^m$, i.e. the set of real vectors of length $n$ and $m$, respectively. The set of continous linear transformations from $X$ to $Y$, $B(X,Y)$, thus consists of real valued matrices of dimensions $m\times n$, so we may write $B(\mathbb{R}^n,\mathbb{R}^m)=\mathbb{R}^{m\times n}$. 
 
 A \emph{Banach space} is a normed vector space which is complete under the metric associated with the norm. Since any norm, $\Vert \cdot \Vert$ induces as metric by $d({\bf x},{\bf y})=\Vert {\bf x}-{\bf y} \Vert$, and the inner product $\langle \cdot|\cdot\rangle$ induces a norm by $\Vert \cdot \Vert = \sqrt{\langle \cdot|\cdot\rangle}$ we can define a \emph{Hilbert space} as a Banach space which is complete w.r.t. this specific metric \cite{lindstrom,mcdonald}\comment{p153,p461}.
@@ -209,7 +209,7 @@ The space of linear transformations from $X$ to $\mathbb{F}$, with $X$ being som
 
 In the following, we take $f\in\mathcal{H}^*$ to be a linear functional on $\mathcal{H}$ and $x\in\mathcal{H}$ to be a function in the Hilbert space itself. It can be shown that for any such $x$ there exists a \emph{unique} $y\in\mathcal{H}$ such that $f[x]=f_y[x]=\langle x|y\rangle$, where the functional $f_y[\cdot]\equiv\langle \cdot|y\rangle$ \cite{rynne,mcdonald}\comment{p123,p472}. This is known as the Riesz representation theorem or sometimes the Riesz-Fréchet theorem. Essentially, this means that we can associate the dual space of $\mathcal{H}$ with the space itself since there is a correspondance between the functionals and the elements of the space itself. This is more succintly stated as Hilbert spaces are \emph{self-dual}, and it is this property that justifies the use of Dirac bra-ket notation since we are guaranteed that any ket has a unique corresponding bra which is its Hermitian conjugate.
 
-\subsection{Functional differentials and derivatives}
+\subsection*{Functional differentials and derivatives}
 The differential of a functional $F[f]$ is the part of the difference $F[f+\delta f]-F[f]$ that depends linearly on $\delta f$, where $\delta f$ is an infinitesimal variation of the argument function $f$ \cite{yangparr}\comment{246}. Since we need to account for the continous variation of $F$ over the infinitesimal range $[f,f+\delta f]$ we take the integral
 \begin{align}
 \delta F[f] = \int \frac{\delta F[f]}{\delta f(x)}\delta f(x)\dx,
