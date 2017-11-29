@@ -343,11 +343,11 @@ s(\mu_{ij})=\left\{\mat{lcrcccr}{
 \end{align}
 with $P_i(\r)=\prod_{j\not=i}s(\mu_{ij})$ being the \emph{cell function} for nuclei $i$ which takes the value $1$ whenever $\r$ is inside the Voronoi cell for nuclei $i$, and $0$ otherwise \cite{beckegrid}. Becke now suggests replacing the sharp step function by a less sharp "cutoff function," yielding the aforementioned "fuzzy" Voronoi partitioning. 
 
-The cutoff function is not unique (the only neccessary properties being $f(-1)=-1$, $f(+1)=+1$, and vanishing derivatives at both these points), so Becke simply chooses the simplest one: $s_n(\mu)=[1-p^n(\mu)]/2$ with $p(\mu)=3\mu/2-\mu^3/2$ and $p^n(\mu)$ being the $n$ times iterated $p$. The iterations $p^n(\mu)$ yield progressively sharper cutoff profiles $p^n\equiv p\circ p\circ p \circ \dots \circ p$ ($n$-times functional composition), $p^n(\r)=p \left\{ p \left( \dots p \left [\r\right] \dots \right) \right\}$, with $\lim_{n\rightarrow \infty}s_n$ recovering \eq{dft10} \cite{kuczma}. Examples of the iteration for various values of $n$ is shown in \fig{dft4}.
+The cutoff function is not unique (the only neccessary properties being $f(-1)=-1$, $f(+1)=+1$, and vanishing derivatives at both these points), so Becke simply chooses a simple one: $s_n(\mu)=[1-p^n(\mu)]/2$ with $p(\mu)=3\mu/2-\mu^3/2$ and $p^n(\mu)$ being the $n$ times iterated $p$. The iterations $p^n(\mu)$ yield progressively sharper cutoff profiles $p^n\equiv p\circ p\circ p \circ \dots \circ p$ ($n$-times), $p^n(\r)=p \left\{ p \left( \dots p \left [\r\right] \dots \right) \right\}$, with $\lim_{n\rightarrow \infty}s_n$ recovering \eq{dft10} \cite{kuczma}. Examples of the iteration for various values of $n$ is shown in \fig{dft4}.
 
 \begin{SCfigure}
 \centering
-\includegraphics[width=0.5\textwidth]{beckeIteration.pdf}
+\includegraphics[width=0.5\textwidth, trim=0 200 0 200, clip]{beckeIteration.pdf}
 \caption{\protect\rule{0ex}{5ex}The Becke cutoff profile as a function of the confocally elliptical inter-nuclear separation coordinate, $\mu$, for various values of iteration, $k$. We note that in the limit of very high $k$, the step function of \eq{dft10} is reproduced. Adapted from a similar figure in \cite{beckegrid}. \label{fig:dft5}}
 \end{SCfigure}
 

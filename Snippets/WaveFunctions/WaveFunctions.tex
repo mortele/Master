@@ -23,7 +23,7 @@
 %Weissbluth: Atoms and Molecules
 
 \chapter{Wave functions \label{wavefunctions}}
-In ordinary quantum mechanics, the wave function is the primary quantity of interest. It constitutes the \emph{solution} of the Schrödinger equation and encodes within it all information about the state of the isolated quantum system in question. Mathematically speaking, the wave function is the complex valued spatial projection of the abstract state vector which is a unitary vector in some separable Hilbert space \cite{kvaal,salasnich}\comment{p8}\comment{p8}. Formally, it is the solution to the Schrödinger equation, $\hat H \psi_k=E_k\psi_k$, and it has a probabilistic interpretation originally after German physicist M. Born \cite{Born1926,wheeler}, which states that the magnitude squared is a probability density, i.e. \cite{weinberg}\comment{p24}
+In ordinary quantum mechanics, the wave function is the primary quantity of interest. It constitutes the \emph{solution} of the Schrödinger equation and encodes within it all information about the state of the isolated quantum system in question. Mathematically speaking, the wave function is the complex valued spatial projection of the abstract state vector which is a unitary vector in some separable Hilbert space \cite{kvaal,salasnich}\comment{p8}\comment{p8}. Formally, it is the solution to the Schrödinger equation, $\hat H \psi_k=E_k\psi_k$, and it has a probabilistic interpretation originally after German physicist M. Born, which states that the magnitude squared is a probability density, i.e. \cite{Born1926,wheeler,weinberg}\comment{p24}
 \begin{align}
 \mathrm{d}P(\r) = \left|\psi(\r)\right|^2 \mathrm{d}^3\r. 
 \end{align} 
@@ -68,7 +68,7 @@ The exact wave function obeys the \emph{virial theorem}, which states that (for 
 \begin{align}
 \langle \hat T \rangle &= -\frac{1}{2}\langle \hat V\rangle. \label{eq:virial}
 \end{align}
-A simple proof\footnote{More precisely, a heuristic (not entirely rigorous) justification.} by dimensional analysis due to Weinberg \cite{weinberg}\comment{p190}{ }for the one-particle case illustrates the condtion: Since the square of the wave function has to integrate over space to a probability, it must have dimensions of $\text{Length}^{\nicefrac{-3}{2}}$. Letting $a$ denote the chosen length scale, we can express the wave function as $\psi(\r)=a^{\nicefrac{-3}{2}}f(\r/a)$, with $\z\equiv\r/a$ and $f(\z)$ being a dimensionless function of a dimensionless argument. Changing integration variables in the expressions for $\langle \hat V\rangle$ and $\langle \hat T\rangle$,
+A simple proof\footnote{More precisely, a heuristic (not entirely rigorous) justification.} by dimensional analysis due to Weinberg for the one-particle case illustrates the condition: Since the square of the wave function has to integrate over space to a probability, it must have dimensions of $\text{Length}^{\nicefrac{-3}{2}}$ \cite{weinberg}\comment{p190}. Letting $a$ denote the chosen length scale, we can express the wave function as $\psi(\r)=a^{\nicefrac{-3}{2}}f(\r/a)$, with $\z\equiv\r/a$ and $f(\z)$ being a dimensionless function of a dimensionless argument. Changing integration variables in the expressions for $\langle \hat V\rangle$ and $\langle \hat T\rangle$,
 \begin{align}
 \langle \psi|\hat V|\psi\rangle = \langle \hat V\rangle_\psi&= \frac{\int \mathrm{d}^3\r \, V(\r) |\psi(\r)|^2}{\int \mathrm{d}^3\r \,|\psi(\r)|^2}, \ \ \text{ and}\\
 %
@@ -81,7 +81,7 @@ As the exact wave function is a variational minimum of the Hamiltonian, the expe
 The virial theorem generalizes to $N$ particles in the same form as \eq{virial}.
 
 \subsubsection{Cusp conditions}
-In general, when charged particles approach each other the Coulombic $1/r$ term of the interaction energy diverges. In order for the energy to remain finite, the wave function needs to obey very specific sets of conditions dictating the behaviour of the discontinous derivatives at the collision points. First described by Kato \cite{kato}, such \emph{cusp conditions} describe known properties of the quantum system and wave function at the divergent points of the inter-electron and electron-nucleus Coulomb potentials. These two cases will be described in depth in sections \ref{section:eecusp} and \ref{section:encusp}. 
+In general, when charged particles approach each other the Coulombic $1/r$ term of the interaction energy diverges. In order for the energy to remain finite, the wave function needs to obey very specific sets of conditions dictating the behaviour of the discontinous derivatives at the collision points. First described by Kato, such \emph{cusp conditions} describe known properties of the quantum system and wave function at the divergent points of the inter-electron and electron-nucleus Coulomb potentials \cite{kato}. These two cases will be described in depth in sections \ref{section:eecusp} and \ref{section:encusp}. 
 
 
 
@@ -386,7 +386,7 @@ In practical calculations, a number of these functions will be used for each ato
 \begin{align}
 G(\r) = \sum_{a=1}^{L} d_{a} g^{\alpha_{a}}_{i_aj_ak_a}(x,y,z).
 \end{align}
-A key fault of the Gaussians is that any Gaussian of s-type symmetry fails to satisfy the electron-nucleus cusp condition described in section \ref{section:encusp}. As the derivative at $r=0$ of any s-type primitive vanishes, even linear combinations will not remedy this fault. However, we can get \emph{close} in a sense by taking combinations of more and more primitives of varying exponents $\alpha$. Even if at the limit of infinite primitives, the origin derivative still vanishes\footnote{For any $\phi(r)\propto \mathrm{e}^{-ar}$, we can construct a sequence of $\{(g^{\alpha_k}_{000})_k\}_k$ such that $g_k\rightarrow \phi$ point-wise with $g_k$ strictly increasing in $k$ [citation needed, but this is probably true right?], and so we can interchange the order of $\lim_{k\rightarrow\infty}$ and $\mathrm{d}/\mathrm{d}r$ by Fubini's derivative theorem, and differentiate term-wise in the sum \cite{mcdonald}. And so \begin{align}
+A key fault of the Gaussians is that any Gaussian of s-type symmetry fails to satisfy the electron-nucleus cusp condition described in section \ref{section:encusp}. As the derivative at $r=0$ of any s-type primitive vanishes, even linear combinations will not remedy this fault. However, we can get \emph{close} in a sense by taking combinations of more and more primitives of varying exponents $\alpha$. Even if at the limit of infinite primitives, the origin derivative still vanishes\footnote{For any $\phi(r)\propto \mathrm{e}^{-ar}$, we can construct a sequence of $\{(g^{\alpha_k}_{000})_k\}_k$ such that $g_k\rightarrow \phi$ point-wise with $g_k$ strictly increasing in $k$ [citation needed, but this is probably true right? This might be too pedantic to include \emph{even for me}], and so we can interchange the order of $\lim_{k\rightarrow\infty}$ and $\mathrm{d}/\mathrm{d}r$ by Fubini's derivative theorem, and differentiate term-wise in the sum \cite{mcdonald}. And so \begin{align}
 \der{}{r}\left(\lim_{k\rightarrow\infty}\sum_{k}g_k\right)=\lim_{k\rightarrow\infty}\left(\der{}{r}\sum_k g_k\right) = \lim_{k\rightarrow\infty} \left(\sum_k \der{}{r}g_k\right) = 0.
 \end{align}}, we can still construct a combination such that the integrals involved in the self-consistent field (SCF) methods become arbitrarily close to their STO counterparts.
 
@@ -534,7 +534,7 @@ We note that the overall function shape of STO-3G already closely resembles the 
 \begin{SCfigure}
 \centering
 %\includegraphics[width=0.98\textwidth,trim=0 200 0 0, clip]{sto2g.pdf}
-\includegraphics[width=0.45\textwidth,trim=10 210 10 210, clip]{stongerror.pdf}
+\includegraphics[width=0.45\textwidth,trim=0 200 0 200, clip]{stongerror.pdf}
 %\includegraphics[width=0.49\textwidth,trim=0 0 0 200, clip]{sto4g.pdf}
 %\includegraphics[width=0.49\textwidth,trim=0 0 0 200, clip]{sto7g.pdf}
 \caption{Example showing the average absolute error relative to the 1s STO  for each of the STO-nG approximations with different number of primitives $n$ shown in \fig{sto24g}. The s-type STO has exponent $\zeta=\sqrt[3]{\pi}\approx1.4646$, arbitrarily chosen simply to ensure $\text{STO}(r)\rightarrow1$ as $r\rightarrow0$. \label{fig:stoerror}}

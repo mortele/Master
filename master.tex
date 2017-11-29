@@ -237,6 +237,9 @@
 \title{Something something computational quantum chemistry something something neural networks}
 \date{December 2017}
 
+\makeatletter
+\newcommand{\@colophon}{\small This thesis was typeset with the \LaTeX{ }typesetting system.\\ Effort has been made to adhere to the ISO 80000-2 standard on mathematics typesetting {\csname @fileswfalse\endcsname\cite{ISO80000}}.}
+\makeatother
 
 \begin{document}
 \newcommand{\mainfile}{}
@@ -308,19 +311,19 @@ The thesis ends with part four, containing conclusions and prospect for future w
 
 \part{Foundational theory}
 
-\subfile{Snippets/QuantumMechanics/QuantumMechanics}
-\subfile{Snippets/WaveFunctions/WaveFunctions}
-
-\part{Advanced theory}
-\subfile{Snippets/Hartree-Fock/Hartree-Fock}
-\subfile{Snippets/DFT/DFT}
-\subfile{Snippets/VMC/VMC}
-
-\part{Implementation and results}
-\subfile{Snippets/HFImplementation/HFImplementation}
-\subfile{Snippets/VMCImplementation/VMCImplementation}
-\subfile{Snippets/Hartree-FockValidation/Hartree-FockValidation}
-\subfile{Snippets/VMCValidation/VMCValidation}
+%\subfile{Snippets/QuantumMechanics/QuantumMechanics}
+%\subfile{Snippets/WaveFunctions/WaveFunctions}
+%
+%\part{Advanced theory}
+%\subfile{Snippets/Hartree-Fock/Hartree-Fock}
+%\subfile{Snippets/DFT/DFT}
+%\subfile{Snippets/VMC/VMC}
+%
+%\part{Implementation and results}
+%\subfile{Snippets/HFImplementation/HFImplementation}
+%\subfile{Snippets/VMCImplementation/VMCImplementation}
+%\subfile{Snippets/Hartree-FockValidation/Hartree-FockValidation}
+%\subfile{Snippets/VMCValidation/VMCValidation}
 
 \part{Conclusions and future work}
 
@@ -332,6 +335,7 @@ The thesis ends with part four, containing conclusions and prospect for future w
 \subfile{Snippets/Appendix/Appendix}
 \end{appendices}
 
+\nocite{ISO80000}
 
 \printbibliography
 %\printbibliography[heading=bibintoc]
