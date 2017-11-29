@@ -463,7 +463,7 @@ As can be seen by \tab{harmonic}, this is especially important for higher angula
 \caption{Examples of Gaussian orbitals with $\alpha=1.0$, $G_{ijk}(x,y,z)=x^iy^jz^k\mathrm{e}^{-\alpha r^2}$: $G_{000}$ (top left), $G_{100}$ (top right), $G_{201}$ (bottom left), and $G_{002}-G_{020}-G_{200}$ (bottom right). The latter combination is one of the five linearly independent set of d-type Gaussian orbitals (there are a total of six Gaussian primitives with $l=2$\textemdash $G_{200}$, $G_{020}$, $G_{002}$, $G_{110}$, $G_{101}$, and $G_{011}$\textemdash but the set is linearly dependent: a linearly independent set may be formed by taking $G_{110}$, $G_{101}$, $G_{011}$, $G_{200}-G_{020}$, and $G_{002}-G_{020}-G_{200}$). Each plot is sliced in the $x$-$y$-plane and a colormap showing the density is inset. The outer contour shows the isosurface of each orbital at $|G_{ijk}|^2=10^{-5}$. \label{fig:gaussianorbitals3d}}
 \end{figure}
 
-\subsection{Some properties of Gaussians}
+\subsection{Some properties of Gaussians \label{section:gaussproperties}}
 \subsubsection{Cartesian Gaussians}
 Before we go on, we will state some properties of the Gaussians which will be crucial for us in the implementation of the Hartree-Fock machinery in section \ref{HFI}. First of all, each Cartesian primitive factorizes in the Cartesian coordinates, 
 \begin{align}
@@ -482,7 +482,11 @@ Note that we have briefly re-inserted the $\r_A$ back into the primitive at this
 
 \renewcommand{\P}{{\bf P}}
 \subsubsection{Hermite Gaussians}
-The Cartesian Gaussians can be written in terms of {\bf Hermite Gaussians}\textemdash products of exponentials and Hermite polynomials\footnote{The Hermite polynomials are a family of orthogonal real-valued polynomials defined by \cite{rottmann}
+The Cartesian Gaussians can be written in terms of {\bf Hermite Gaussians}\textemdash products of exponentials and Hermite polynomials\footnote{The Hermite polynomials are a family of orthogonal real-valued polynomials, solutions of the Hermite differential equation \cite{hochstadt}
+\begin{align}
+\pder{^2H_n(x)}{x^2}-\der{H_n(x)}{x}+nH_n(x)=0.
+\end{align} 
+An explicit formula for the $n$-th Hermite polynomial can be written down as \cite{rottmann}
 \begin{align}
 H_n(x)=(-1)^n\mathrm{e}^{x^2}\der{^n}{x^n}\mathrm{e}^{x^2}.
 \end{align}}\textemdash which are defined as follows: \cite{mcmurchie}
@@ -499,7 +503,7 @@ and similar for $y$ and $z$ coordinates, such that $\Lambda^\alpha_{tuv}(\r;\P)=
 \end{align}
 and it can be shown that left-multiplying by $x_p$ yields \cite{taylor}\comment{p794}
 \begin{align}
-x_p\Lambda_t^\alpha(x;P_x) = \frac{1}{2\alpha}\Lambda_{t+1}^\alpha(x;P_x) + t\Lambda_{t-1}^{\alpha}(x;P_x).
+x_p\Lambda_t^\alpha(x;P_x) = \frac{1}{2\alpha}\Lambda_{t+1}^\alpha(x;P_x) + t\Lambda_{t-1}^{\alpha}(x;P_x). \label{eq:lefthermite}
 \end{align}
 
 Let now $\r_p=\r-\P$ denote the vectorial difference w.r.t.\ $\P$, such that $\Lambda_t^\alpha(x_p;P_x)=(\partial/\partial P_x)^t\mathrm{e}^{-\alpha x_p^2}$ with $\r_p=(x_p,y_p,z_p)$. Now, we may consider $\Lambda_t^\alpha(x_p;P_x)$ as a product of two Hermite polynomials, $H_t(x_p)$ and $H_0(x_p)=1$, multiplied by an exponential factor. From this consideration it follows trivially that the integral 
@@ -518,7 +522,7 @@ and in general
 \end{align}
 
 
-\subsubsection{Gaussian product rule}
+\subsubsection{Gaussian product rule \label{section:gaussprod}}
 The property which turns out to be most crucial for our use is the fact that a product of Gaussians centered at different points yield again a Gaussian. This is known as the \emph{Gaussian product rule} and can be stated as 
 \begin{align}
 \mathrm{e}^{-\alpha (x-A_x)^2}\mathrm{e}^{-\beta (x-A_x)^2} = \mathrm{e}^{-\mu x_{AB}^2}\mathrm{e}^{-p x_p^2},

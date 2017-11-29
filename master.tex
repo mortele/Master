@@ -45,7 +45,7 @@
 \usepackage{siunitx}
 \usepackage[version=4]{mhchem}
 \usepackage{relsize}  % Resize parts of equations
-\usepackage[backend=biber,sorting=none]{biblatex}
+\usepackage[backend=biber,sorting=none,style=numeric-comp]{biblatex}
 \usepackage[version=4]{mhchem}
 \usepackage{ifxetex,ifluatex}
 \usepackage{etoolbox}
@@ -246,7 +246,9 @@
 \maketitle
 
 \begin{abstract}
-I havent done much worthwhile but hopefully I can bullshit my way into not failing.
+We implement three different \emph{ab initio} electronic structure methods: Hartree-Fock (HF), Kohn-Sham density functional theory (DFT), and quantum variational Monte Carlo (VMC). Gaussian type orbitals are used for the former two, while the VMC framework allows more general orbital bases (including the possibility of using the optmized HF orbitals). For the DFT implementation, the local density approximation and the correlation energy functional parametrization of Vosko, Wilk, and Nusair is used. A thorough introduction to the underlying theory of all three methods is presented, and the codes are tested on the ten-electron series \ce{CH4}, \ce{NH3}, \ce{H2O}, \ce{HF}, as well as on \ce{N2}, \ce{H2}, and \ce{H2+}. Ground state energies are found to be in good agreement with the litterature. 
+
+Secondly, a method for parameterizing the Born-Oppenheimer energy hypersurfaces\textemdash obtained by \emph{ab initio} calculations\textemdash with artificial neural networks (ANN) is presented. The ANN calcuations are done using TensorFlow, and the resulting analytical inter-atomic potentials may be used directly in molecular dynamics simulations.
 \end{abstract}
 
 
@@ -266,6 +268,10 @@ I havent done much worthwhile but hopefully I can bullshit my way into not faili
   I also wish to thank the unlikely Johan, the (true[ly]) interesting Icelandic bat-camel for all the stimulating distractions throughout the time working on this thesis.
 
   Lastly, to Vilde: Thank you for the endless encouragement (and all the sushi!). Thank you for putting up with the largely absent and massively stressed out version of myself for long months.
+
+  \subsubsection*{Collaboration Details}
+  All code developed for this thesis have been written from scratch by the author. The ANN code has been developed in partial collaboration with Stende {\csname @fileswfalse\endcsname\cite{stende}} and Treider {\csname @fileswfalse\endcsname\cite{treider}}, and the HF program was written with a lot of inspiration taken from Dragly {\csname @fileswfalse\endcsname\cite{dragly}}.
+
   \begin{flushright}
   Morten Ledum \\ Oslo, December 2017
   \end{flushright}
@@ -280,10 +286,13 @@ After being deveolped and pioneered in conjunction with nuclear physics during W
 %In particular, the advent of computers simulations have had a profound impact on researchers ability to 
 The advent of computer simulations during the last several decades have in particular made it possible to study moderately sized quantum mechanical systems from first principles. As our ability to solve\textemdash in closed form\textemdash the governing equations of quantum mechanics (QM) vanishes extremely quickly as the number of constituent particles exceed just a few, numerics are used to augment the proverbial \emph{pen and paper}. It is striking that the underlying theory for all of chemistry and most of physics have been known for almost a century but the problem preventing us from essentially \emph{solving} chemistry is almost purely computational: the equations resulting from the exact application of this theoretical framework are way too difficult to solve.
 
-Any approximative scheme which aims to solve the many-body Schrödinger equation from scratch subject to some (more or less) well-defined simplifications is called an \emph{ab initio} method. Working from first principles the aim of such algorithms extract information from a theoretical QM system in a reasonable amount of time. In order to accomplish this, a number of complicating intricacies need to be disregarded. The magnitude of the simplifications\textemdash essentially the number and importance of complicating factors dropped\textemdash determine both the efficacy and the efficiency of the method: More simplifications made allow solutions to be found for larger systems (albeit less precise solutions), whereas extremely precise solutions can be found for small systems if very few simplifications are employed.
+Any approximative scheme which aims to solve the many-body Schrödinger equation from scratch subject to some (more or less) well-defined simplifications is called an \emph{ab initio} method. Working from first principles the aim of such algorithms is to extract information from a theoretical QM system in a reasonable amount of time. In order to accomplish this, a number of complicating intricacies need to be disregarded. The magnitude of the simplifications\textemdash essentially the number and importance of complicating factors dropped\textemdash determine both the efficacy and the efficiency of the method: More simplifications made allow solutions to be found for larger systems (albeit less precise solutions), whereas extremely precise solutions can be found for small systems if very few simplifications are employed.
 
-Despite tremendous increases in available numerical computational power in the latter half of the previous-, and the early parts of the current century, any such approximate scheme used is still heavily limited w.r.t.\ the system size. In practice, most methods are limited to systems of containing on the order of between $10^2$ (for high-precision methods such as CI, CC, DMC, etc.) and $10^5$ electrons (for faster HF and DFT methods) \cite{hu,bowler,vandevondele}. Extracting information from larger systems neccessitate the use of classical or semi-classical algorithms, such as molecular dynamics (MD). Using MD, the time evolution of up to around $10^7$ particles can feasibly be simulated over the order of nano seconds \cite{Zhao2013,Reddy}. Corresponding large-scale cosmological $N$-body simulations have been run for as many as $10^{11}$ particles \cite{angulo,kim}. As macroscopic objects contain on the order of $10^{23}$ atoms, we are ostensibly a long way away from even classically modelling the constituent particles directly. In this region, continuum models are used.
+Despite tremendous increases in available numerical computational power in the latter half of the previous-, and the early parts of the current century, any such approximate scheme used is still heavily limited w.r.t.\ the system size. In practice, most methods are limited to systems of containing on the order of between $10^2$ (for high-precision methods such as CI, CC, DMC, etc.) and $10^5$ electrons (for faster HF and DFT methods) \cite{hu,bowler,vandevondele}. Extracting information from larger systems neccessitate the use of classical or semi-classical algorithms, such as molecular dynamics (MD). Using MD, the time evolution of up to around $10^7$ particles can feasibly be simulated over the order of nano seconds \cite{Zhao2013,Reddy}. Using computationally inexpensive two-body inter-atomic potentials and simulating for only a very short time, around $10^{12}$ particles can be modelled \cite{trillion}. Corresponding large-scale cosmological $N$-body simulations have been run for as many as $10^{11}$ particles \cite{angulo,kim}. For ensembles of particles larger than around $10^{12}$, simulating the individual constituents directly becomes too computationally expensive and we have to use continuum models.
 
+At the boundary between each domain, we are essentially forced into fundamentally differing simulations. As our models move from fine to more coarse-grained with increasing system size, the internal degrees of freedom of the constituent parts are \emph{frozen out}. MD freezes the electronic motion, treating the atomic structure as rigid and solid. Continuum models do away with the atomic motion all together\textemdash e.g.\ treating only a density field defined on some lattice\textemdash thereby freezing all direct inter-atomic interactions.
+
+Being able to preserve\textemdash in some way\textemdash some of the properties of the fine-grained model in the larger domain is of tremendous scientific value. Lessons learnt from the \emph{ab initio} QM simulations should ideally provide the fundamental basis for developing MD schemes. In the same way, the field equations of the continuum model should incorporate as much of the physics of the molecular simulations as possible. This is the heart of {\bf multiscale modelling}. By simultanously considering a system at different scales (modelling domains) we may hope to arrive at a scheme which preserves \emph{most} of the crucial QM properties, while still retaining \emph{most} of the efficiency of the coarse-grained models \cite{weinan}.
 
 \section{Quantum and classical dynamics}
 As previously noted, solving the Schrödinger equation (SE) exactly 
@@ -291,8 +300,10 @@ by hand is impossible in the overwhelming majority of interesting cases. However
 
 The Hartree-Fock (HF) framework\textemdash which provides an efficient but not enormously accurate result\textemdash has seen extensive use since its inception in 1930 \cite{hartree,fock,szabo}. However, by far the most popular approximation is Density Functional Theory (DFT), developed by W. Kohn and L. J. Sham in 1965 \cite{kohnsham,martin}. Between 1980 and 2010, DFT was the most active field in physics with eight out of the top ten most cited papers being on the subject \cite{dftperspective}.
 
+Computational scaling of \emph{ab initio} QM models range from $\mathcal{O}(N!)$ in the extreme (FCI), via $\mathcal{O}(N^6)$ (CC with singles, doubles, and estimated connected triples) and $\mathcal{O}(N^4)$ (formal HF), to $\mathcal{O}(N^3)$ for Hartree-Fock with integral pre-screening and density fitting. 
 
-"This is where multiscale modeling comes in. By considering simultaneously models at different scales, we hope to arrive at an approach that shares the efficiency of the macro- scopic models as well as the accuracy of the microscopic models." Weinan: Prinicples of Multiscale modelling side viii
+In the intermediate region between these methods and molecular dynamics, we find a range of hybrid models. Examples include Car-Parrinello MD\textemdash in which the valence electrons are included in the dynamics and treated in a semi-classical way\textemdash and Born-Oppenheimer MD, where the time independent Schrödinger equation is solved approximately at each time step \cite{carparrinello,bomd1,bomd2}. The computational complexity of such hybrids fall somewhere in the middle of the true \emph{ab initio} methods and plain MD. The latter has a naive scaling of $\mathcal{O}(N^2)$, but can be made linear by ingenious partitioning schemes. 
+
 
 \section{Neural networks in molecular dynamics}
 Neural networks can parameterize the data from millions of electronic structure calculations and in theory provide accuracy close to the direct quantum mechanical calculations at a fraction of the calculational cost.
@@ -308,6 +319,10 @@ The penultimate part contains information w.r.t.\ the concrete implementation of
 
 The thesis ends with part four, containing conclusions and prospect for future work.
 
+\nocite{ISO80000}
+\nocite{stende}
+\nocite{treider}
+\nocite{dragly}
 
 \part{Foundational theory}
 
@@ -335,7 +350,7 @@ The thesis ends with part four, containing conclusions and prospect for future w
 \subfile{Snippets/Appendix/Appendix}
 \end{appendices}
 
-\nocite{ISO80000}
+
 
 \printbibliography
 %\printbibliography[heading=bibintoc]
