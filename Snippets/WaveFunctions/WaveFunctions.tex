@@ -518,13 +518,23 @@ and in general
 
 
 \subsubsection{Gaussian product rule}
-The property which turns out to be most crucial for our use is the fact that a product of Gaussians centered at different points yield again a Gaussian. This is known as the \emph{Gaussian product rule} and can be stated as \cite{thijssen}\comment{p66}
+The property which turns out to be most crucial for our use is the fact that a product of Gaussians centered at different points yield again a Gaussian. This is known as the \emph{Gaussian product rule} and can be stated as 
 \begin{align}
-g_{i}
+\mathrm{e}^{-\alpha (x-A_x)^2}\mathrm{e}^{-\beta (x-A_x)^2} = \mathrm{e}^{-\mu x_{AB}^2}\mathrm{e}^{-p x_p^2},
 \end{align} 
+where $p\equiv\alpha + \beta$, $x_{AB}\equiv A_x-B_x$, $\mu\equiv \alpha \beta /p$, and $\P$ denotes the "center of mass," \cite{thijssen}\comment{p66}
+\begin{align}
+\P\equiv\frac{\alpha {\bf A} + \beta {\bf B}}{\alpha + \beta}=\frac{\alpha {\bf A} + \beta {\bf B}}{p}.
+\end{align}	
 
+The product of Cartesian Gaussian primitives is known as an {\bf overlap distribution}, \cite{integrals}\comment{p10}
+\begin{align}
+\Omega_{ij}(x)\equiv g_i^\alpha(x;A_x)g_j^\beta(x;B_x)= K_{AB}x_A^ix_B^j \mathrm{e}^{-px_P^2}.
+\end{align}
+These overlap distributions can then be expanded in terms of Hermite Gaussians, greatly simplifying the evaluation of so called \emph{two-center integrals}. We will expand on this when the Hartree-Fock implementation is discussed in section \ref{HFI}.
 
 \section{Gaussian basis sets}
+\subsubsection{STO-nG basis sets}
 One approach to constructing viable contracted orbital basis sets is to approximate Slater type orbitals. This may be done by applying a least-squares fit of $L$ primitives to a given STO. Such contracted Gaussians are normally denoted {\bf STO-nG}, with n being the number of primitives used. The STO-3G basis sets of Hehre and co-workers have long been considered an efficient comprimise between efficiency and accuracy\textemdash useful for running preliminary simulations before bringing out the proverbial big guns \cite{hehre,cramer,taylor}. Examples such fittings\footnote{All curve fitting in the present work is done in {\sc Matlab} using the LAD (\emph{least absolute deviations}, as opposed to the more familiar \emph{least squared deviations}) approach and the trust-region algorithm proposed by Moré and co-workers \cite{charnes1955optimal,koenker1978regression,more1983computing}.} can be seen in \fig{sto24g}, where all of STO-1G through STO-7G are shown. Normally, the highest number of primitives used is six. From \fig{stoerror} we see that the mean absolute error compared to the Slater orbital, $\varepsilon$, scales approximately as 
 \begin{align}
 \varepsilon(\text{n})\sim \sqrt{\frac{1}{10^\text{n}}}.
@@ -551,9 +561,25 @@ We note that the overall function shape of STO-3G already closely resembles the 
 \caption{Example showing a STO-nG fit with different number of primitives to the 1s STO which we were trying to approximate. The s-type STO has exponent $\zeta=\sqrt[3]{\pi}\approx1.4646$, arbitrarily chosen simply to ensure $\text{STO}(r)\rightarrow1$ as $r\rightarrow0$. \label{fig:sto24g}}
 \end{figure}
 
+\subsubsection{Split-valence basis sets}
+The electrons mostly involved in chemical bonding in any given atom are the ones occupying the highest principal quantum number ($n$) states. These are known as {\bf valence electrons}, as opposed to the remaining {\bf core electrons} \cite{zumdahl}\comment{p563}. Because the former are much more important to the chemical properties of atoms, it is common to provide multiple basis functions to represent the valence orbitals. Orbitals sets for which this is done are called split-valence.
 
 
+\subsubsection{Single and multiple-$\zeta$ basis sets}
+The STO-nG basis sets are known as \emph{minimal} or \emph{single-}$\zeta$, in that for each electron there is only a single basis function. E.g.\ a minimal \ce{H} basis only has a single orbital of s-type symmetry. It does not require much imagination to realize that this offers little in the way of flexibility w.r.t.\ representing atomic and molecular orbitals. In order to add such flexibiliy it is common to add more contracted Gaussians for each electron present. 
 
+One way to achieve this is to \emph{de-contract} the \mbox{STO-nG} basis sets. For example, take the \mbox{STO-2G} basis and use each primitive of the contracted Gaussians as a contracted orbital in its own right \cite{cramer}\comment{p171}. This makes the single-$\zeta$ \mbox{STO-2G} basis set into a double-$\zeta$ basis, in which each atomic orbital is represented by two distinct contracted Gaussian functions.
+
+A fundamentally different approach is taken by e.g.\ Pople and co-workers in their widely used family of basis sets \cite{hehre1972}. Instead of using the Slater type orbitals as a starting point, the primitive exponents and contraction coefficients are instead optimized in variational manner by SCF iteration. The resulting sets are denoted \mbox{C-V${}_1$V${}_2$G}, where C represents the number of primitives used in the single contracted function representing each core electronic orbital. V${}_1$ and V${}_2$ denote the number of primitives used in either of the two valence contracted Gaussians. An example is the \mbox{3-21G} set, where each core orbital is allotted a single contracted function consisting of three primitives. Next, a contracted function of two primitives \emph{and} a contracted function of a single primitive is used to represent each valence orbital. 
+
+As an instructive example, consider the electronic structure of \ce{B}. Of the five electrons in the boron, two occupy the 1s states essentially forming a \ce{He} core. The outermost electrons inhabit the 2s atomic orbitals. This is denoted \mbox{\ce{B}: 1s${}^2$2s${}^2$2p} or more frequently \mbox{[\ce{He}]2s${}^2$2p} \cite{griffiths}. In the \mbox{6-31G} boron basis set of Dill and Pople, the core 1s orbital is represented by one contracted Gaussian of six primitives \cite{dill1975}. The 2s valence orbital is given one contracted of three primitives, and one of a single primitive. The same is done for each of the three different 2p orbitals, yielding two contracted functions for each. In total this gives 22 primitives across 9 total contracted basis functions.
+
+\subsubsection{Polarized, diffuse, and correlation-consistent basis sets}
+Instead of merely adding more Gaussian functions representing the electron orbitals present in any given atom, even more flexibility may be added by considering also orbitals which are not occupied. For example, trying to represent molecular bonding in \ce{H2} with a minimal basis set would be impossible because there is no way to engineer a higher electron density in between the atoms with only s-type orbitals. An orbital of p-type symmetry or higher is needed in order to achive this. Pople and co-workers' notation adds one or more *s to denote the presence of such {\bf polarizing functions}. For example, the 6-31G** basis set adds three single primitive contracted 2p orbitals to \ce{H} (6-31G* only adds polarization to heavier atoms, making 6-31G and 6-31G* identical for \ce{H}). 
+
+The same philosophy is applied for {\bf diffuse functions}, which have significantly smaller exponents than the most wide-spread valence Gaussians. Such basis functions are neccessary to obtain an adequate description of e.g.\ negative ions, highly excited states, or loosely bonded (non-covalent, i.e.\ van der Waals bonds or similar) molecular structures \cite{cramer}\comment{p176}. In the Pople family, addition of diffuse orbitals is denoted by prepending one or more +s to the trailing G, e.g.\ 6-31++G** which adds a single diffuse 1s function of one primitive to \ce{H} (again, 6-31+G** only adds diffuse functions to heavier atoms, making it identical to 6-31G** for \ce{H}).
+
+Lastly, we discuss briefly the correlation-consistent Dunning familiy of basis sets \cite{dunning1989}. Correlation-consistent means the exponents and contraction coefficients are variationally optimized for post-Hartree-Fock methods, involving dynamic electron correlations. The notation used by Dunning and co-workers is cc-pVNZ, where N can be D (double $\zeta$), T (triple $\zeta$), Q (quadruple $\zeta$), and so on. The cc-pV stands for correlation-consistent polarized, valence only: polarizing functions are added (more for higher $\zeta$ sets), and the basis only describes valence orbitals. For a complete description the cc-pVNZ basis needs to be paired with a corresponding basis set for the core orbitals. Some complete sets are used, denoted cc-pCVXZ, with X signifying the $\zeta$ number for core electrons. Whenever diffuse basis functions are added, aug (for augmented) is prepended resulting in aug-cc-pVNZ. 
 
 
 
