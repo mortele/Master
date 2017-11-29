@@ -270,7 +270,7 @@ Secondly, a method for parameterizing the Born-Oppenheimer energy hypersurfaces\
   Lastly, to Vilde: Thank you for the endless encouragement (and all the sushi!). Thank you for putting up with the largely absent and massively stressed out version of myself for long months.
 
   \subsubsection*{Collaboration Details}
-  All code developed for this thesis have been written from scratch by the author. The ANN code has been developed in partial collaboration with Stende {\csname @fileswfalse\endcsname\cite{stende}} and Treider {\csname @fileswfalse\endcsname\cite{treider}}, and the HF program was written with a lot of inspiration taken from Dragly {\csname @fileswfalse\endcsname\cite{dragly}}.
+  All code developed for this thesis have been written from scratch by the author. The ANN code has been developed in partial collaboration with Stende \cite{stende} and Treider \cite{treider}, and the HF program was written with a lot of inspiration taken from Dragly \cite{dragly}.
 
   \begin{flushright}
   Morten Ledum \\ Oslo, December 2017
@@ -300,13 +300,18 @@ by hand is impossible in the overwhelming majority of interesting cases. However
 
 The Hartree-Fock (HF) framework\textemdash which provides an efficient but not enormously accurate result\textemdash has seen extensive use since its inception in 1930 \cite{hartree,fock,szabo}. However, by far the most popular approximation is Density Functional Theory (DFT), developed by W. Kohn and L. J. Sham in 1965 \cite{kohnsham,martin}. Between 1980 and 2010, DFT was the most active field in physics with eight out of the top ten most cited papers being on the subject \cite{dftperspective}.
 
-Computational scaling of \emph{ab initio} QM models range from $\mathcal{O}(N!)$ in the extreme (FCI), via $\mathcal{O}(N^6)$ (CC with singles, doubles, and estimated connected triples) and $\mathcal{O}(N^4)$ (formal HF), to $\mathcal{O}(N^3)$ for Hartree-Fock with integral pre-screening and density fitting. 
+Computational scaling of \emph{ab initio} QM models range from $\mathcal{O}(N!)$ in the extreme (FCI), via $\mathcal{O}(N^6)$ (CC with singles, doubles, and estimated connected triples) and $\mathcal{O}(N^4)$ (formal HF), to $\mathcal{O}(N^3)$ for Hartree-Fock with integral pre-screening and density fitting \cite{ratcliff}. 
 
 In the intermediate region between these methods and molecular dynamics, we find a range of hybrid models. Examples include Car-Parrinello MD\textemdash in which the valence electrons are included in the dynamics and treated in a semi-classical way\textemdash and Born-Oppenheimer MD, where the time independent Schrödinger equation is solved approximately at each time step \cite{carparrinello,bomd1,bomd2}. The computational complexity of such hybrids fall somewhere in the middle of the true \emph{ab initio} methods and plain MD. The latter has a naive scaling of $\mathcal{O}(N^2)$, but can be made linear by ingenious partitioning schemes. 
 
 
 \section{Neural networks in molecular dynamics}
-Neural networks can parameterize the data from millions of electronic structure calculations and in theory provide accuracy close to the direct quantum mechanical calculations at a fraction of the calculational cost.
+Traditionally, MD simulations are performed with classical effective potentials parametrized to hopefully capture some of the underlying quantum mechanical physics. Such empirical model potentials are computationally cheap, and may perform adequately in isolated cases. A lot of hand-tuning of empirical, chemically motivated, parameters is however required in order to reproduce mesoscopic quantities within the MD framework (pair correlation functions, crystalline structure, etc.). As such, constructing effective potentials is a highly non-trivial and time-consuming task\textemdash that ultimately applies only to a small subset of atomic systems at best. Trying to employ a given potential for a 
+system it was not designed for may very well yield qualitatively wrong results. 
+
+In the spirit of multiscale modelling, developing "parameter free" MD schemes is very desirable. Foregoing the complicating, human labour intensive, and intrinsicly difficult step of emipirical potential fitting, the method of Behler and Parrinello use instead machine learning \cite{behlerparrinello}. This and related models recently developed exploit the unbiased predictive power of \emph{ab initio} QM simulations to parameterize the effective potential automatically \cite{shen}. In this way human intervention is  shunned and the accuracy of the MD simulation is no longer fundamentally limited by the imagination and physical intuision of the experimenter. 
+
+\cite{ratcliff,behler}.
 
 \section{Goals}
 The goals of the thesis are as follows:
