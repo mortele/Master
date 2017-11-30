@@ -167,7 +167,6 @@ double OverlapIntegrator::computeIntegral(GaussianPrimitive* primitive1,
 	       m_sqrtPiOverP * m_sqrtPiOverP * m_sqrtPiOverP;
 }
 \end{lstlisting}
-The integral over contracted Gaussians is then simply a sum over such primitive integrals. 
 
 \subsubsection{Evaluating the Hermite Gaussian expansion coefficients}
 The \inlinecc{OverlapIntegrator} class has a member instance of the \inlinecc{HermiteGaussian} class which sets up the Hermite factorization. This class essentially has one job: Computing the $E_q^{ab}$ coefficients for any given $g_{ijk}^\alpha (\r;{\bf A})g_{lmn}^\beta(\r;{\bf B})$ product. The Hermite coefficients are stored in an array of \inlinecc{arma::cube} objects, which themselves are vectors of matrices or rank 3 tensors. In total, this makes the \inlinecc{m_coefficients} object a rank 4 tensor with indices ordered as $(x,i,j,t)$ and size $(3,i+1,j+1,i+j+1)$. 
@@ -373,7 +372,7 @@ double BoysFunction::computeAndApplyDownwardRecurrence(double x, double n) {
     return m_recurrenceValues(0);
 }
 \end{lstlisting}
-The \inlinecc{BoysFunction::compute} method simply evalues the Boys function $F_n(x)$ by application of \eq{boysgamma} and the \inlinecc{Boost::math} library\footnote{\url{http://www.boost.org/doc/libs/1_65_1/libs/math/doc/html/math_toolkit/sf_gamma/igamma.html}},
+The \inlinecc{BoysFunction::compute} method simply evalues the Boys function $F_n(x)$ by application of \eq{boysgamma} and the \inlinecc{boost::math} library\footnote{\url{http://www.boost.org/doc/libs/1_65_1/libs/math/doc/html/math_toolkit/sf_gamma/igamma.html}},
 \begin{lstlisting}[language={[std]c++}]
 double BoysFunction::analyticalIncompleteGammaFunction(double x, double n) {
     const double nPlusOneHalf = n+0.5;
@@ -422,11 +421,6 @@ void HermiteGaussianIntegral::setupCoefficients(int         t,
     arma::field<arma::cube>& R = m_coefficients;
     BoysFunction&            F = m_boysFunction;
 
-    R.set_size(maxIndex);
-    for (int i=0; i<maxIndex; i++) {
-        R(i) = zeros<cube>(maxIndex+1, maxIndex+1, maxIndex+1);
-    }
-
     double x = p * arma::dot(m_PC, m_PC);
     R(0)(0,0,0) = F.computeAndApplyDownwardRecurrence(x, m_tuv+1);
 
@@ -463,6 +457,97 @@ void HermiteGaussianIntegral::setupCoefficients(int         t,
 \end{lstlisting}
 The \inlinecc{m_tuv} variable holds the sum $t+u+v$, and \inlinecc{maxIndex} represents $m_\text{max}\equiv t+u+v+1$. This is the highest order $R_{000}^{m_\text{max}}$ we need to compute directly by $R^n_{000}=(-2p)F_n$ (by downward recurrence on $F_{m_\text{max}}$) before applying the recurrence relations of \eq{rec1}-(\ref{eq:rec3}).
 
+Finally, the full electron-nucleus interaction integrals are computed in the Hartree-Fock code as 
+\begin{lstlisting}[language={[std]c++}]
+double ElectronNucleusIntegrator::computeIntegral(
+                                              GaussianPrimitive* primitive1,
+                                              GaussianPrimitive* primitive2) {
+
+    HermiteGaussianIntegral& R = m_hermiteGaussianIntegral;
+    HermiteGaussian&         E = m_hermiteGaussian;
+    R.setupCoefficients(primitive1, primitive2, m_nucleusPosition);
+    E.setupCoefficients(primitive1, primitive2);
+    //...
+    double integral = 0;
+    for (int t = 0; t < tLimit; t++)
+    for (int u = 0; u < uLimit; u++)
+    for (int v = 0; v < vLimit; v++) {
+        double Eproduct = 1;
+        Eproduct *= E.getCoefficientDimension(x1,x2,t,0);
+        Eproduct *= E.getCoefficientDimension(y1,y2,u,1);
+        Eproduct *= E.getCoefficientDimension(z1,z2,v,2);
+        integral += Eproduct * R.getCoefficient(0,t,u,v);
+    }
+    return integral * 2*M_PI / p;
+}
+\end{lstlisting}
+
+\subsection{Electron-electron exchange integrals}
+The electron-electron exchange integrals are on the form 
+\begin{align}
+V_{ABCD} = \int\mathrm{d}^3\r_1\int\mathrm{d}^3\r_2\,\frac{g_A^\alpha(\r_1;{\bf A})g_B^\beta(\r_1;{\bf B})g_C^\gamma(\r_2;{\bf C})g_D^\delta(\r_2;{\bf D})}{|\r_1-\r_2|}.
+\end{align}
+As with the Coulomb integrals, we recognize a set of overlap distributions in the numerator which we can expand in terms of Hermite Gaussians
+as
+\begin{align}
+V_{ABCD}&=\int\mathrm{d}^3\r_1\int\mathrm{d}^3\r_2\,\frac{\Omega_{AB}^{\alpha +\beta}(\r_1;{\bf P})\Omega_{CD}^{\gamma+\delta}(\r_2;{\bf Q})}{r_{12}} \nn\\
+%
+&= \sum_{tuv}E^{AB}_{tuv}\sum_{\tau\mu\nu}E^{CD}_{\tau\mu\nu}\int\mathrm{d}^3\r_1\int\mathrm{d}^3\r_2\,\frac{\Lambda_{AB}^{\alpha +\beta}(\r_1;{\bf P})\Lambda_{CD}^{\gamma+\delta}(\r_2;{\bf Q})}{r_{12}}.
+\end{align}
+It turns out we can write the integration over $\r_1$ and $\r_2$ in terms of the Hermite integrals, as
+\begin{align}
+V_{ABCD}=\frac{2\pi^{\nicefrac{5}{2}}}{pq\sqrt{p+q}}\sum_{tuv}E_{tuv}^{AB}\sum_{\tau\mu\nu}E_{\tau\mu\nu}^{CD}(-1)^{\tau+\mu+\nu}R_{t+\tau,u+\mu,v+\nu}(\zeta,\R_{PQ}),
+\end{align}
+where with $\zeta=pq/(p+q)$, $p=\alpha+\beta$, $q=\gamma+\delta$, $\R_{PQ}={\bf P}-{\bf Q}$, and ${\bf P}$ (${\bf Q}$) is the "center of mass" between ${\bf A}$ and ${\bf B}$ (${\bf C}$ and ${\bf D}$) (for details, see e.g.\ Helgaker and Taylor, McMurchie and Davidson, or Boys \cite{taylor,mcmurchie,boys}).
+
+In the source code, the \inlinecc{ElectronElectronIntegrator} class sets up two Hermite Gaussian expansions\textemdash one for the ${\bf A}, {\bf B}$ overlap and one for the ${\bf C}, {\bf D}$ overlap\textemdash and a single Hermite integral expansion. The implementation is straightforward, the heavy lifting is done in the \inlinecc{HermiteGaussian} and \inlinecc{HermiteGaussianIntegral} classes:
+\begin{lstlisting}[language={[std]c++}]
+double ElectronElectronIntegrator::computeIntegral(
+                                              GaussianPrimitive* primitive1,
+                                              GaussianPrimitive* primitive2,
+                                              GaussianPrimitive* primitive3,
+                                              GaussianPrimitive* primitive4) {
+    HermiteGaussian&         E12 = m_hermiteGaussian12;
+    HermiteGaussian&         E34 = m_hermiteGaussian34;
+    HermiteGaussianIntegral& R   = m_hermiteGaussianIntegral
+
+    E12.setupCoefficients(primitive1, primitive2);
+    E34.setupCoefficients(primitive3, primitive4);
+    setupHermiteGaussianIntegral(primitive1, primitive2, 
+                                 primitive3, primitive4);
+    // ...
+    double integral = 0;
+    for (int t  = 0; t  < tuvLimits[0]; t ++)
+    for (int u  = 0; u  < tuvLimits[1]; u ++)
+    for (int v  = 0; v  < tuvLimits[2]; v ++)
+    for (int t_ = 0; t_ < tuvLimits[3]; t_++)
+    for (int u_ = 0; u_ < tuvLimits[4]; u_++)
+    for (int v_ = 0; v_ < tuvLimits[5]; v_++) {
+        double Eproduct = 1;
+        Eproduct *= E12.getCoefficientDimension(x1,x2,t,0);
+        Eproduct *= E12.getCoefficientDimension(y1,y2,u,1);
+        Eproduct *= E12.getCoefficientDimension(z1,z2,v,2);
+
+        Eproduct *= E34.getCoefficientDimension(x3,x4,t_,0);
+        Eproduct *= E34.getCoefficientDimension(y3,y4,u_,1);
+        Eproduct *= E34.getCoefficientDimension(z3,z4,v_,2);
+
+        double R = R.getCoefficient(0, t+t_, u+u_, v+v_);
+        double sign = ((t_ + u_ + v_) % 2) == 0 ? 1 : -1;
+        integral += Eproduct * R * sign;
+    }
+    double p1       = primitive1->exponent() + primitive2->exponent();
+    double p2       = primitive3->exponent() + primitive4->exponent();
+    return m_2sqrtPiToThe5 * integral / (p1*p2*sqrt(p1+p2));
+}
+\end{lstlisting}
+The variables \inlinecc{xn},\inlinecc{yn}, and \inlinecc{zn} represent the exponent of the $x$, $y$, and $z$ term in primitive $n$. The limits of the sum \inlinecc{x1+x2+1}, \inlinecc{y1+y2+1}, and so on. 
+
+\subsubsection{The ContractedIntegrator class}
+Having presented the integrators for the Gaussian primitives, the integrals over the contracted Gaussians is trivial: we simply take a linear combination of the primitive integrals. 
+
+\subsection{The RestrictedHartreeFockSolver class}
+For brevity, only the restricted case is presented in the following. 
 
 %3-21G 
 %3-21++G
