@@ -547,7 +547,132 @@ The variables \inlinecc{xn},\inlinecc{yn}, and \inlinecc{zn} represent the expon
 Having presented the integrators for the Gaussian primitives, the integrals over the contracted Gaussians is trivial: we simply take a linear combination of the primitive integrals. 
 
 \subsection{The RestrictedHartreeFockSolver class}
-For brevity, only the restricted case is presented in the following. 
+For brevity, only the restricted case is presented in the following. As we derive in section \ref{hf}, the restricted Hartree-Fock formalism expanded in a basis $\{\phi_i\}_i$ orbitals lead to the Roothan-Hall (RH) equations. The RH equations take the form 
+\begin{align}
+FC=\bm{\varepsilon}SC, \label{eq:RH}
+\end{align}
+where $F$ is the Fock matrix with eigenvalues $\bm{\varepsilon}$, $S$ is the overlap matrix relative to the orbitals, and $C$ the coefficient matrix representing the expansion of the new Hartree-Fock orbitals in the $\{\phi_i\}_i$ basis. The Fock matrix depends crucially on the coefficient matrix, $F=F(C)$, meaning we must solve the non-linear RH equations by employing some linearization scheme. The universally used scheme is the fixed-point iterative scheme referred to as self-consistent field iterations (SCF), wherein an initial guess is chosen for $C$ and the Fock matrix computed. Secondly, the RH equations are solved and a new (hopefully improved) estimate for $C$ is produced. This is then re-inserted into $F(C)$, giving an updated Fock matrix for which the RH equations are solved once again. This is reapeated until convergence is achieved. 
+
+\subsubsection{Diagonalization of the Fock matrix}
+The overlap matrix, $S$, contains the overlap integrals of all combinations of basis functions. If the basis set is orthonormal $S=\mathds{1}$ and we may simply ignore it and solve the Roothan-Hall equations at every iteration like an ordinary eigenvalue equation. However, the contracted Gaussian basis is in general not orthonormal and so we must transform \eq{RH} into an equation we are able to solve using normal linear algebra tools. In theory we could simply compute $S^{-1}$ and apply it to \eq{RH} from the left, leaving us with
+\begin{align}
+S^{-1}F{\bf C}_k=\varepsilon_k S^{-1}S{\bf C}_k =\varepsilon_k C_k,
+\end{align}
+for each eigenvector indexed in $k$. However, $S^{-1}F$ is in general not Hermitian leading to potential difficulties. Instead, we will take a different route.
+
+Instead we will apply a coordinate transformation which renders $S$ an identity matrix, solve the equation, and then transform back to the original basis. Applying a basis change to a matrix constitutes a similarity transform, thus we require a matrix $V$ such that \cite{lay}
+\begin{align}
+V^\dagger S V = \mathds{1}.
+\end{align}
+The dagger superscript denotes here the Hermitian conjugate, $V^\dagger = (V^*)^T$. The same transformation needs to be applied to the Fock matrix, but $F$ does of course not become diagonal as a result. Let us now left multiply the RH equation by $V^\dagger$, considering for the moment the equation for only a single eigenvector-eigenvalue pair:
+\begin{align}
+V^\dagger F{\bf C}_k &=\varepsilon_k V^\dagger S {\bf C}_k \nn\\
+%
+V^\dagger F \underbrace{VV^{-1}}_{\mathds{1}}{\bf C}_k &=\varepsilon_k V^\dagger S\underbrace{VV^{-1}}_{\mathds{1}} {\bf C}_k \nn\\
+%
+\underbrace{V^\dagger F V}_{F'}\underbrace{V^{-1}{\bf C}_k}_{{\bf C}_k'} &= \varepsilon_k \underbrace{V^\dagger S V}_{\mathds{1}} \underbrace{V^{-1}{\bf C}_k}_{{\bf C}_k'}.
+\end{align}
+This is called a whitening transform. Note carefully that $\varepsilon$ is just a number, thus is guaranteed to commute with $V^\dagger$. Defining the transformed eigenvector ${\bf C}_k'\equiv V^{-1}{\bf C}_k$, and the coordinate transformed Fock matrix $F'\equiv V^\dagger F V$, we find the transformed RH equation (which is now a regular eigenvalue problem)
+\begin{align}
+F'{\bf C}_k' = \varepsilon_k {\bf C}_k'.
+\end{align}
+
+This leaves us still the problem of finding a suitable matrix $V$. It turns out that $S$ is guaranteed to be positive definite, meaning the set of matrices for which $V^\dagger S V=\mathds{1}$ holds is infinite. We will choose $V=Us^{-\nicefrac{1}{2}}$, with $U$ being the matrix of eigenvectors of $S$ (the columns) and $s$ holds the inverse square root of the eigenvalues on the diagonal \cite{thijssen}\comment{p37}. We note that 
+\begin{align}
+V^\dagger S V &= (Us^{-\nicefrac{1}{2}})^\dagger S Us^{-\nicefrac{1}{2}} \nn\\
+&= (s^{-\nicefrac{1}{2}})^\dagger \underbrace{U^\dagger S U}_{s} s^{-\nicefrac{1}{2}} \nn\\
+&= s^{-\nicefrac{1}{2}} s s^{-\nicefrac{1}{2}} = \mathds{1},
+\end{align}
+since $U$ diagonalizes $S$ in the sense that $U^\dagger S U=s$. Note also that $s^{-\nicefrac{1}{2}}$ is real and diagonal, so $(s^{-\nicefrac{1}{2}})^\dagger = s^{-\nicefrac{1}{2}}$.
+
+The implementation of the diagonalization of $S$ and the creation of the transformation matrix $V$ is done once, at the start of the SCF iterations. This is handled by the \inlinecc{HartreeFock} super-class, since the method is shared for both the restricted and un-restricted formalisms. 
+\begin{lstlisting}[language={[std]c++}]
+void HartreeFock::diagonalizeOverlapMatrix() {
+    vec s;
+    mat U;
+    arma::eig_sym(s, U, m_overlapMatrix);
+    m_transformationMatrix = U * arma::diagmat(1.0 / sqrt(s));
+}
+\end{lstlisting}
+
+\subsubsection{Diagonalizing the Fock matrix}
+Using the \inlinecc{m_transformationMatrix}, the Fock matrix can now be diagonalized by the \inlinecc{RestrictedHartreeFock} class as
+\begin{lstlisting}[language={[std]c++}]
+void RestrictedHartreeFock::diagonalizeFockMatrix() {
+    const mat& V       = m_transformationMatrix;
+    const mat& F       = m_fockMatrix;
+    mat&       Ftilde  = m_fockMatrixTilde;
+    mat&       C       = m_coefficientMatrix;
+    mat&       Ctilde  = m_coefficientMatrixTilde;
+
+    Ftilde = V.t() * F * V;
+    arma::eig_sym(m_epsilon, Ctilde, Ftilde);
+    C = V * Ctilde.submat(0,
+                          0,
+                          m_numberOfBasisFunctions - 1,
+                          m_numberOfElectrons / 2  - 1);
+}
+\end{lstlisting}
+Since we are not interested in the virtual Hartree-Fock orbitals in the present work, we grab only the slice of the \inlinecc{m_coefficientMatrix} which corresponds to occupied orbitals.
+
+\subsubsection{Setting up the Fock matrix and computing the energy}
+Before we can diagonalize it, we first need to construct the Fock matrix. The elements of the Fock matrix consist of one-body and two-body integrals,
+\begin{align}
+F_{pq} &= \langle p|\hat h|q\rangle + \sum_{r=1}^L\sum_{s=1}^L\sum_{k=1}^{\nicefrac{N}{2}}C_{rk}C_{sk}\big(2\langle pr|\hat w|qs\rangle - \langle pq|\hat w|sq\rangle \big) \nn\\
+%
+&= \langle p|\hat h|q\rangle + \sum_{r=1}^L\sum_{s=1}^L D_{sr}\big(2\langle pr|\hat w|qs\rangle - \langle pq|\hat w|sq\rangle \big),
+\end{align}
+where $L$ denotes the basis size, $N$ the number of electrons, $D$ the density matrix, and the one-body and two-body integrals are defined by (c.f.\ chapter \ref{HF})
+\begin{align}
+\langle p|\hat h|q\rangle = \int\mathrm{d}^3\r\, \phi^*_p(\r)\left[ -\frac{\nabla^2}{2}-\sum_{A=1}^M \frac{Z_A}{|\r-\r_A|}\right]\phi_q(\r),
+\end{align}
+and
+\begin{align}
+\langle pq|\hat w|rs\rangle &= \int\mathrm{d}^3\r_1\int\mathrm{d}^3\r_2\, \phi_q^*(\r_1)\phi_q^*(\r_2)\frac{1}{|\r_1-\r_2|}\phi_q(\r_1)\phi_s(\r_2).
+\end{align}
+This is implemented in the Hartree-Fock framework as
+\begin{lstlisting}[language={[std]c++}]
+void RestrictedHartreeFock::computeFockMatrix() {
+    for(int p = 0; p < m_numberOfBasisFunctions; p++)
+    for(int q = 0; q < m_numberOfBasisFunctions; q++) {
+        m_fockMatrix(p,q) = m_oneBodyMatrixElements(p,q);
+
+        for(int r = 0; r < m_numberOfBasisFunctions; r++)
+        for(int s = 0; s < m_numberOfBasisFunctions; s++) {
+            m_fockMatrix(p,q) += 0.5 * 
+                                 m_densityMatrix(s,r) *
+                                 twoBodyMatrixElementsAntiSymmetric(p,q,r,s);
+        }
+    }
+}
+\end{lstlisting}
+with the anti-symmetric matrix elements being $2\langle pq|\hat w|rs\rangle - \langle pq|\hat w|sr\rangle$.
+
+After setting up and diagonalizing the Fock matrix, we can compute the Hartree-Fock energy, given by
+\begin{align}
+E_\text{HF}=\sum_{p=1}^L\sum_{q=1}^L D_{pq} \langle p|\hat h|q\rangle + \frac{1}{2}\sum_{pqrs}D_{pq}D_{rs}\big[\langle pr|\hat w|qs\rangle - \frac{1}{2}\langle pr|\hat w|sq\rangle \big].
+\end{align}
+This is straight forwardly implemented as
+\begin{lstlisting}[language={[std]c++}]
+void RestrictedHartreeFock::computeHartreeFockEnergy() {
+    m_hartreeFockEnergy = 0;
+
+    for (int p = 0; p < m_numberOfBasisFunctions; p++)
+    for (int q = 0; q < m_numberOfBasisFunctions; q++) {
+        m_hartreeFockEnergy += m_densityMatrix(p,q) * 
+                               m_oneBodyMatrixElements(p,q);
+
+        for (int r = 0; r < m_numberOfBasisFunctions; r++)
+        for (int s = 0; s < m_numberOfBasisFunctions; s++) {
+            m_hartreeFockEnergy += 0.25 * m_densityMatrix(p,q) * 
+                                          m_densityMatrix(s,r) *
+                                   twoBodyMatrixElementAntiSymmetric(p,q,r,s);
+        }
+    }
+    m_hartreeFockEnergy += m_nucleusNucleusInteractionEnergy;
+}
+\end{lstlisting}
+
 
 %3-21G 
 %3-21++G
