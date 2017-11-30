@@ -673,6 +673,28 @@ void RestrictedHartreeFock::computeHartreeFockEnergy() {
 }
 \end{lstlisting}
 
+\subsubsection{Updating the density matrix and possible convergence problems}
+Similar to other iterative schemes, the Hartree-Fock SCF iterations sometimes suffer from convergence problems. Naive, straight forward, SCF iterations in fact has very problematic convergence properties, and one usually attempts to \emph{help} it somehow \cite{kvaal}\comment{p57}. The most commonly used such fix is called \emph{direct inversion in the iterative subspace} (DIIS) or Pulay mixing and essentially uses the errors from the $m$ previous iterations to extrapolate to a coefficient matrix $C$ which hopefully minimizes said error \cite{pulay}. A simpler scheme, which we implement in the present work, is called mixing: instead of updating the density fully at each iteration, a weighted average of the old and the newly computed $D$ is taken to be the new density \cite{thijssen}\comment{p72}. A mixing factor $a$ is introduced and the updated density matrix is taken equal 
+\begin{align}
+D=aD_\text{old}+(1-a)D_\text{new},
+\end{align}
+where $D_\text{new}=2C_\text{new}C_{\text{new}}^\dagger$. In the program, this is implemented as
+\begin{lstlisting}[language={[std]c++}]
+void RestrictedHartreeFock::computeDensityMatrix() {
+    if (m_smoothing) {
+        double a = m_smoothingFactor;
+        mat densityMatrixTmp = 2 * m_coefficientMatrix *
+                                   m_coefficientMatrix.t();
+        m_densityMatrix      =        a  * m_densityMatrix + 
+                               (1.0 - a) * densityMatrixTmp;
+    } else {
+        m_densityMatrix = 2 * m_coefficientMatrix * m_coefficientMatrix.t();
+    }
+}
+\end{lstlisting}
+
+
+
 
 %3-21G 
 %3-21++G
