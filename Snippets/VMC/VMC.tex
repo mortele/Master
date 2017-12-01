@@ -250,10 +250,91 @@ In summary, the Metropolis-Hastings algorithm with importance sampling consists 
 \section{Monte Carlo integration}
 Monte Carlo integration is a numerical scheme for estimating the value of definite integrals. The method differs from the usual grid-based methods in that the evaluation points are chosen at random. Whereas grid-based methods fail spectacularly as the number of dimensions increase past \emph{a few}\footnote{As of November 2017, the fastest super computer in the world is situated at the National Supercomputing Center in Wuxi, China: it has a performance of about $100 \,\text{petaFLOPS}=10^{17}\,\text{FLOPS}$ \cite{top500}. Let us say we wish to perform an integral over some electronic observable for a Neon atom. Under the Born-Oppenheimer approximation, this integral would be $30$-dimensional. Using a conventional grid-based method, a conservative estimate for the number of grid points needed in each dimension to get a somewhat decent approximation may be e.g.\ $30$. This means the grid would be $30$ by $30$ by $\dots$ by $30=30^{30}\sim 10^{44}$ large. Assuming every evaluation of the integrand consists of a single FLOP (again, a [very] conservative estimate), this means the total problem involves on the order of $10^{44}\,\text{FLOPs}$. Running on the aforementioned Chinese super-computer, this would take on the order of $10^{27}\,\text{s}\sim 10^{19}\,\text{yr}$ or about $10^{10}$ times the current age of the universe \cite{hjorth-jensen}. This is clearly not feasible.}, the Monte Carlo scheme can somewhat overcome this "curse of dimensionality." 
 
+In the most basic form, Monte Carlo integration provides an estimate of the the integral value $I$ by an average of $N$ samplings of the integrand, uniformely within the integration range $[a,b]$, i.e.\
+\begin{align}
+I\equiv \int_a^b\mathrm{d}x\, f(x) \approx \frac{b-a}{N}\sum_{i=1}^N
+ f(X_i). \label{eq:mci2}
+\end{align}
+The set of values $\{X_i\}_{i=1}^N$ are independent, identically distributed random samples. In general, the distribution need not be uniform. For \emph{any} probability distribution function $P(x)$, we can obtain an estimate of $I$ by
+\begin{align}
+I=\int_a^b\mathrm{d}x\, f(x) \approx \frac{1}{N}\sum_{i=1}^N \frac{f(X_i)}{P(X_i)}. \label{eq:mci1}
+\end{align}
+Essentially, we are weighing the sum by how likely the value $X_i$ is to be picked, according to the probability distribution $P(x)$. If $P(x_1)=2P(x_2)$, then we weigh any sampling of $x_1$ only half as much as a corresponding sampling of the value $x_2$. 
+
+The advantage of the latter approach is immediately obvious: Imagine attempting to compute an approximation to the integral
+\begin{align}
+I=\int_0^{100}\mathrm{d}x\, \mathrm{e}^{-x^2}x^2
+\end{align}
+using the uniform sampling technique. Heuristically, at least 95\% of sampled points will give an absolutely negligible contribution to the overall value of $I$. We may however, pick $P(x)=\mathrm{e}^{-x^2}$ and use \eq{mci1}. Using this scheme, every sampled point would have a meaningful impact on the average since any $x$ for which the integrand is negligible also now has a \emph{negligible} chance to be sampled. This approach is called {\bf importance sampling} and has two\textemdash already obvious\textemdash distinct advantages over the uniform or \emph{brute force} method of \eq{mci2}. First, no time is wasted computing integrand values for which the integral is essentially independent because $f(x)\sim0$. And secondly, for clever choices of $P(x)$, the computational load may be decreased because $g(x)\equiv f(x)/P(x)$ is a less computationally expensive quantity to sample. Furthermore, ideally fluctuations in $g(x)$ are considerably reduced. If we are e.g.\ able to sample our random points according to $f(x)$ itself, then $g(x)=1$ and a single sample is sufficient. In general, a distribution $P(x)$ \emph{close} to $f(x)$ will give reduced statistical fluctuations in the integral estimate \cite{hammond}\comment{p40}. The importance sampling scheme also opens up the possibility of extending to an infinite range of integration.
+
+\subsection{Convergence properties of the Monte Carlo estimators}
+Taking a short step backwards, let now 
+\begin{align}
+\langle I^N\rangle = \frac{b-a}{N}\sum_{i=1}^Nf(X_i) \approx \int_a^b\mathrm{d}x\,f(x)=I
+\end{align}
+denote the brute force Monte Carlo estimator of $I$ using $N$ samples. Computing the expectation value of $\langle I^N\rangle$ yields
+\begin{align}
+E\big[\langle I^N\rangle\big]&=E\left[\frac{b-a}{N}\sum_{i=1}^Nf(X_i) \right] = \frac{b-a}{N}\sum_{i=1}^NE\big[f(X_i)\big] \nn\\
+%
+&= \frac{b-a}{N}\sum_{i=1}^N\int_a^b\mathrm{d}x\,f(x)P(x) \nn\\
+%
+&= (b-a)\frac{1}{b-a}\int_a^b\mathrm{d}x\,f(x) = \int_a^b\mathrm{d}x\,f(x)=I,
+\end{align}
+where we used that $P(x)=1/(b-a)$ for the uniform probability density \cite{kalos}\comment{28}. This shows that $\langle I^N\rangle$ is a so-called \emph{unbiased estimator} of $I$ \cite{devore}. The same is true of the generalized Monte Carlo estimator with non-uniform distribution $P(x)$, which we will denote $\langle J^N\rangle$:
+\begin{align}
+E\big[\langle J^N\rangle\big]&=E\left[\frac{1}{N}\sum_{i=1}^N \frac{f(X_i)}{P(X_i)} \right] = \frac{1}{N}\sum_{i=1}^NE\left[\frac{f(X_i)}{P(X_i)}\right] \nn\\
+%
+&= \frac{1}{N}\sum_{i=1}^N\int_a^b\mathrm{d}x\,\frac{f(x)}{P(x)}P(x) \nn\\
+%
+&= \int_a^b\mathrm{d}x\,f(x) = I.
+\end{align}
+
+For \emph{uncorrelated} random variables, $\{Y_i\}_{i=1}^M$, the variance of the sum equals the sum of the variance, i.e.\ $\sigma^2[\sum_{i=1}^NY_i]=\sum_{i=1}^N\sigma^2[Y_i]$. Note also the relation $\sigma^2[aY_i]=a^2\sigma^2[Y_i]$ \cite{devore} Using this, we may compute the variance of the Monte Carlo estimator as
+\begin{align}
+\sigma^2\big[\langle J^N\rangle\big]&=\sigma^2\left[\frac{1}{N}\sum_{i=1}^N \frac{f(X_i)}{P(X_i)} \right] = \frac{1}{N^2}\sum_{i=1}^N\sigma^2\left[\frac{f(X_i)}{P(X_i)}\right] \nn\\
+%
+&= \frac{1}{N}\sigma^2\left[\frac{f(X_i)}{P(X_i)}\right].
+\end{align}
+We note that the standard deviation in the mean goes $\sigma[\langle J^N\rangle]\rightarrow0$ as $\mathcal{O}(\sqrt{N})$. The same is true of the basic Monte Carlo estimator $\langle I^N\rangle$, but $\sigma^2[f(X_i)/P(X_i)]$ is likely much smaller than the corresponding $\sigma^2[f(X_i)]$. 
+
+%Distribution of the \emph{sample mean}: For random samples $\{Y_i\}_{i=1}^M$, each with mean $\mu$ and standard deviation $\sigma$. Then $E[\bar Y]=\mu$ and $V[\bar Y] = \sigma_{\bar Y}^2=\sigma^2/N$ \cite{devore}\comment{p291}.
 
 
+%The average of $f(x)$ across random samples $\{X_i\}_{i=1}^N$\textemdash we denote this $\langle f$ is \emph{itself} a random variable and with variance \cite{hjorth-jensen,assaraf}\comment{p343,287}
+%\begin{align}
+%\sigma_f^2&=\frac{1}{N}\sum_{i=1}^N \big(f(X_i)-\langle f\rangle  \big)^2p(X_i) \nn\\
+%&=
+%\end{align}
 
+\newcommand{\EL}{E_\text{L}}
+\subsection{The local energy, $E_\text{L}$}
+Like we did in section \ref{section:encusp}, we introduce a spatially dependent measure of the "instantaneous" energy, $\EL$. The \emph{local energy} is defined as
+\begin{align}
+\EL(\R) = \frac{\hat H \Psi(\R)}{\Psi(\R)}=\frac{1}{\Psi(\R)}\sum_{i=1}^N\left[ -\frac{\nabla_i^2}{2}-\sum_{A=1}^M \frac{Z_A}{|\r_i-\r_A|} + \sum_{j=i+1}^N \frac{1}{|\r_i-\r_j|}\right]\Psi(\R).
+\end{align}
+Note that if $\Psi(\R)$ is the exact ground state wave function then $\EL(\R)=\EL$ is constant for all electronic configurations because 
+\begin{align}
+\frac{\hat H\Psi(\R)}{\Psi(\R)}=\frac{E_0\Psi(\R)}{\Psi(\R)}=E_0.
+\end{align}
+The variational energy can be written \emph{in terms of} the local energy by \cite{assaraf}\comment{p286}
+\begin{align}
+E_\text{V} &= \frac{\langle \Psi|\hat H|\Psi\rangle}{\langle \Psi|\Psi\rangle} = \frac{\displaystyle \int\mathrm{d}\R\,\Psi^*(\R) \hat H\Psi(\R)}{\displaystyle \int\mathrm{d}\R\, \Psi^*(\R)\Psi(\R)} 
+= 
+\frac{\displaystyle \int\mathrm{d}\R\,\Psi^*(\R)\left(\frac{\Psi(\R)}{\Psi(\R)}\right) \hat H\Psi(\R)}{\displaystyle \int\mathrm{d}\R\, |\Psi(\R)|^2} \nn\\
+%
+&= \frac{\displaystyle \int\mathrm{d}\R\,\Psi^*(\R)\Psi(\R)\frac{\hat H\Psi(\R)}{\Psi(\R)}}{\displaystyle \int\mathrm{d}\R\, |\Psi(\R)|^2} = \int\mathrm{d}\R\, \rho(\R)\EL(\R),
+\end{align}
+with 
+\begin{align}
+\rho(\R) \equiv \frac{|\Psi(\R)|^2}{\int\mathrm{d}\R\,|\Psi(\R)|^2}.
+\end{align}
 
+\newcommand{\Psit}{\Psi_\text{T}}
+Consider now this in light of \eq{mci1}, and note that for any trial wave function ansatz $\Psit$ the following is an unbiased estimator for the true variational energy \cite{hammond}\comment{p50}
+\begin{align}
+E\big[\Psit\big]&= \langle \EL^M \rangle = \frac{1}{M}\sum_{i=1}^M\EL(\R_i).
+\end{align}
+In the language of the previous section, $f=\rho(\R)\EL(\R)$, $g=\EL(\R)$, and $P=\rho(\R)$ which is the normalized probability density. This means that if we can pick samples randomly from the probability density function $\sim|\Psit(\R)|^2/\int\mathrm{d}\R\,|\Psit(\R)|^2$, then we can simply evaluate the local energy and take the average. This will give us an estimate for the true variational energy, aswell as a measure of the \emph{error} from calculating the variance. 
 
 
 
