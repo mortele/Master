@@ -874,14 +874,82 @@ double PrimitiveGaussian::operator()(double x, double y, double z) {
 Note that the current value of each primitive is saved, to avoid having to re-compute the function value when derivatives are computed shortly thereafter.
 
 \subsection{The Metropolis class}
+The \inlinecc{Metropolis} class sets up and runs the Markov chain in the $N$-electron configuration space. The user calls the \inlinecc{Metropolis::runSteps}, which handles the "time" steps. Some automatic estimates are used if no user input is specified, e.g.\ the minimum \emph{size} atom present determines the step length if no user specified step length is provided. 
 
-
+The proposition of new configurations, aswell as the accept-reject Metropolis test is performed in the \inlinecc{Metropolis::step} method. In order to draw samples from pseudo-random distributions, the standard \CC{11}{ }machinery is used: A random \emph{device} and a \emph{generator} is defined, and then samples are drawn according to some \emph{distribution}. An excerpt of the \inlinecc{step} method is shown in the following:
 \begin{lstlisting}[language={[std]c++}]
+bool Metropolis::step() {
+    std::normal_distribution      <double> normalDistribution{0,1};
+    std::uniform_real_distribution<double> uniformDouble     {0,1};
+    std::uniform_int_distribution <int>    uniformIntElectron 
+                                                    {0, 
+                                                     m_numberOfElectrons-1};
+    int    electron = uniformIntElectron (m_randomGenerator);
+    double D        = 0.5;
+    double xProposedChange = normalDistribution(m_randomGenerator) *
+              m_dtSqrt + m_waveFunction->getQuantumForceOld(electron,0) *
+              m_dt * D;
+    double yProposedChange = normalDistribution(m_randomGenerator) *
+              m_dtSqrt + m_waveFunction->getQuantumForceOld(electron,1) *
+              m_dt * D;
+    double zProposedChange = normalDistribution(m_randomGenerator) *
+              m_dtSqrt + m_waveFunction->getQuantumForceOld(electron,2) *
+              m_dt * D;
+
+    m_waveFunction->passProposedChangeToWaveFunction(electron, dimension);
+    
+    m_system->getElectrons().at(electron)->
+                       adjustPosition(xProposedChangeImportanceSampling, 0);
+    m_system->getElectrons().at(electron)->
+                       adjustPosition(yProposedChangeImportanceSampling, 1);
+    m_system->getElectrons().at(electron)->
+                       adjustPosition(zProposedChangeImportanceSampling, 2);
+
+    m_waveFunction->updateOldWaveFunctionValue();
+    
+    double R = m_waveFunction->computeWaveFunctionRatio(electron) *
+               computeGreensFunction();
+    
+    if (R > uniformDouble(m_randomGenerator)) {
+        m_waveFunction->updateWaveFunctionAfterAcceptedStep();
+        return true;
+    } else {
+        m_waveFunction->updateWaveFunctionAfterRejectedStep();
+
+        m_system->getElectrons().at(electron)->
+                       adjustPosition(-xProposedChangeImportanceSampling, 0);
+        m_system->getElectrons().at(electron)->
+                       adjustPosition(-yProposedChangeImportanceSampling, 1);
+        m_system->getElectrons().at(electron)->
+                       adjustPosition(-zProposedChangeImportanceSampling, 2);
+        return false;
+    }
+}
 \end{lstlisting}
+Note that the possibility of \emph{not} using importance sampling is removed in this excerpt. In the actual \inlinecc{Metropolis::step}, this possibility is of course preserved.
 
-
-
-
+As a final note on the specific implementation of the VMC framework, we present the evaluation of the Green's function. This is handled by the \inlinecc{Metropolis} class, which asks the wave function currently in use\textemdash\inlinecc{m_waveFunction}\textemdash for quantum force values. Recall from \eq{greens} that the Green's function of the short-time limit Fokker-Planck equation is given by
+\begin{align}
+G(Y,X;\delta t)=\left(\frac{1}{4\pi D \delta t}\right)^{-3N/2}\exp\left(\frac{-\left[Y-X-D\delta t {\bf F}(X)\right]^2}{4D\delta t}\right).
+\end{align}
+This is computed as follows
+\begin{lstlisting}[language={[std]c++}]
+double Metropolis::computeGreensFunction() {
+    const double D = 0.5;
+    WaveFunction* wf = m_waveFunction;
+    double greensFunction = 0;
+    for (int i = 0; i < m_numberOfElectrons; i++) {
+        for (int j = 0; j < 3; j++) {
+            greensFunction += 0.5 * 
+                 (wf->getQuantumForceOld(i,j) + wf->getQuantumForce(i,j)) * 
+                 (D * m_dt * 0.5 * 
+                    (wf->getQuantumForceOld(i,j) - wf->getQuantumForce(i,j)) - 
+                     wf->getPosition(i,j)        + wf->getPositionOld(i,j));
+        }
+    }
+    return exp(greensFunction);
+}
+\end{lstlisting}
 
 
 \end{document}

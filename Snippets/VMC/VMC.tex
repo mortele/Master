@@ -20,7 +20,7 @@ In the following, we will present the fundamentals of Monte Carlo integration an
 The Metropolis algorithm, originally proposed by Metropolis and co-workers \cite{metropolis} and later generalized by Hastings \cite{hastings} is a method for sampling probability distributions which may be impossible to sample directly\footnote{Direct sampling in this context means e.g.\ \emph{inverse transform sampling}, which neccessitate inverting the cumulative distribution associated with the probability density function (PDF) \cite{numericalrecipes}. For complicated distributions, this is often either impossible of unfeasible \cite{assaraf}.} \cite{assaraf}\comment{p291}. The Metropolis-Hastings algorithm  generates a Markov chain of random samples distributed according to the PDF in question. 
 
 \subsection{Markov chains, detailed balance and ergodicity \label{markov}}
-A Markov chain is a sequence of stochastic variables $\{X_i\}_{i=1}^n$ for which step $i+1$ depends soley on step $i$, meaning the process has no "memory." In other words, the probability of stepping from state $X_k$ to state $X_l$ depends only on the states $k$ and $l$, not on \emph{how} it got to $X_k$, \cite{hammond}\comment{p25}\cite{gilks}\comment{p5}
+A Markov chain is a sequence of stochastic variables $\{X_i\}_{i=1}^n$ for which step $i+1$ depends soley on step $i$, meaning the process has no "memory." In other words, the probability of stepping from state $X_k$ to state $X_l$ depends only on the states $k$ and $l$, not on \emph{how} it got to $X_k$, \cite{hammond,gilks}\comment{p25}\comment{p5}
 \begin{align}
 W\left(X_{i+1};i+1|X_i;i|X_{i-1};i-1|\dots|X_0;0\right)=W\left(X_{i+1};i+1|X_i;i\right).
 \end{align}
@@ -48,7 +48,7 @@ W(Z;i+2|X;i) &= \sum_{Y\in\mathcal{X}}W(Z;i+2|Y;i+1)W(Y;i+1|X;i), \ \ \text{ or}
 % 
 W(Z;i+2|X;i) &= \int_{\mathcal{X}}\mathrm{d}Y\,W(Z;i+2|Y;i+1)W(Y;i+1|X;i). \label{eq:VMC3}
 \end{align}
-This is also sometimes known as the Einstein–Smoluchowski–Kolmogorov–Chapman or the Chapman-Einstein-Enskog-Kolmogorov relation \cite{chaichian}\comment{p21}\cite{hjorth-jensen}\comment{p401}.\footnote{Or apparently pretty much \emph{any} combination of two or more of the names Chapman, Kolmogorov Einstein, Smoluchowski, and Enskog; depending on who you ask.} 
+This is also sometimes known as the Einstein–Smoluchowski–Kolmogorov–Chapman or the Chapman-Einstein-Enskog-Kolmogorov relation \cite{chaichian,hjorth-jensen}\comment{p21}\comment{p401}.\footnote{Or apparently pretty much \emph{any} combination of two or more of the names Chapman, Kolmogorov Einstein, Smoluchowski, and Enskog; depending on who you ask.} 
 
 In the following, we drop the temporal $i$-indices on the stepping probability which we assume to not depend on the \emph{Markov time}. In addition, without any loss of generality, we split it into two parts: a proposal probability and a corresponding acceptance probability. We write thus
 \begin{align}
@@ -201,7 +201,7 @@ G(Y,X;\delta t) = \exp\left(D\delta t \left[\nabla^2-\nabla \cdot {\bf F}-{\bf F
 \end{align} 
 over the time interval $\delta t$ to obtain 
 \begin{align}
-G(Y,X;\delta t)=\left(\frac{1}{4\pi D \delta t}\right)^{-3N/2}\exp\left(\frac{-\left[Y-X-D\delta t {\bf F}(X)\right]^2}{4D\delta t}\right).
+G(Y,X;\delta t)=\left(\frac{1}{4\pi D \delta t}\right)^{-3N/2}\exp\left(\frac{-\left[Y-X-D\delta t {\bf F}(X)\right]^2}{4D\delta t}\right). \label{eq:greens}
 \end{align}
 Recall that $X$ here denotes a full configuration of the system, meaning all the electronic coordinates. This means that a more natural labelling of $X$ and $Y$ would be $Y=\R_\text{new}$ and $X=\R_\text{old}$, however we keep the $X$s and $Y$s to remain in line with the notation of the previous sections.
 
