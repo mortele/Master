@@ -440,7 +440,7 @@ J|D_\uparrow|\nabla_i^2|D_\downarrow|
    \frac{\nabla_i^2 J}{J} +
    2\left[ \frac{\nabla_i|D_\uparrow|}  {|D_\uparrow|}   +
    	  	   \frac{\nabla_i|D_\downarrow|}{|D_\downarrow|}  
-   	  	   \right] \cdot \frac{\nabla_i J}{J},
+   	  	   \right] \cdot \frac{\nabla_i J}{J}, \label{eq:laplaceprog}
 \end{align}
 where we have supressed the arguments $\R$. As we can see, the computation of the Laplacian involves expressions on the form $\nabla_i^2|D|/|D|$. Analogous to the gradient expression, we can write out the Laplacian in terms of the inverse Slater matrix as \cite{hjorth-jensen}\comment{p524}
 \begin{align}
@@ -576,7 +576,7 @@ and $u_{ij}(\r_{ij}^\text{new})-u_{ij}(\r_{ij}^{\text{new}})$ obviously vanishes
 \begin{align}
 \frac{J(\R_\text{new})}{J(\R_\text{old})}&=\exp\left[\sum_{i=1}^N\sum_{j=i+1}^N \big\{u_{ij}(\r_{ij}^\text{new})-u_{ij}(\r_{ij}^\text{old})\big\}(\delta_{ik}+\delta{kj})\right] \nn\\
 %
-&= \exp\left[\sum_{i=1}^N \big\{u_{ik}(\r_{ik}^\text{new})-u_{ik}(\r_{ik}^\text{old})\big\}+\sum_{j=i+1}^N\big\{u_{kj}(\r_{kj}^\text{new})-u_{kj}(\r_{kj}^\text{old})\big\}\right].
+&= \exp\left[\sum_{i=1}^{k-1} \big\{u_{ik}(\r_{ik}^\text{new})-u_{ik}(\r_{ik}^\text{old})\big\}+\sum_{j=k+1}^N\big\{u_{kj}(\r_{kj}^\text{new})-u_{kj}(\r_{kj}^\text{old})\big\}\right].
 \end{align}
 In the VMC framework this is implemented as 
 \begin{lstlisting}[language={[std]c++}]
@@ -598,17 +598,237 @@ The calculation of the quantum force involves calculating that ratio of the grad
 \begin{align}
 \frac{\nabla_i\Psit}{\Psit} &=\frac{\nabla_i |D_\uparrow(\R)|}{|D_\uparrow(\R)|}+\frac{\nabla_i |D_\downarrow(\R)|}{|D_\downarrow(\R)|} +  \frac{\nabla_i J(\R)}{J(\R)}.
 \end{align}
+We require therefore an efficient algorithm for calculating $\nabla_k J(\R)/J(\R)$. By the chain rule on the exponential form of $J(\R)$, we have trivially that
+\begin{align}
+\nabla_k J(\R)&=\nabla_k \exp\left[
+\sum_{i=1}^N\sum_{j=i+1}^N u_{ij}(\r_{ij})
+\right] 
+= 
+J(\R) \nabla_k \left[
+\sum_{i=1}^N\sum_{j=i+1}^N u_{ij}(\r_{ij})
+\right] \nn\\
+%
+&=J(\R) \left[
+\sum_{i=1}^N\sum_{j=i+1}^N \nabla_k u_{ij}(\r_{ij}) \label{eq:jastrowtrivial}
+\right].
+\end{align}
+Furthermore, only the terms containing coordinate indexed $k$ survive the differentiation without vanishing, i.e.\ $u_{kj}$ or $u_{ik}$. The first Cartesian coordinate of the gradient w.r.t.\ the coordinates of electron $k$ correspond to the differentiation $\partial /\partial x_k$,
+\begin{align}
+\frac{1}{J(\R)}\pder{J(\R)}{x_k} &= \sum_{i=1}^N\sum_{j=i+1}^N \pder{}{x_k} u_{ij}(\r_{ij}) 
+=
+\sum_{i=1}^{k-1} \pder{}{x_k}u_{ik}(\r_{ik})+\sum_{j=k+1}^N \pder{}{x_k}u_{kj}(\r_{kj}), \label{eq:jastrowprog1}
+\end{align}
+but with $u_{ij}(\r_{ij})$ depending exclusively on the relative coordinates $|\r_i-\r_j|$ it is more natural to differentiate w.r.t.\ $r_{ij}$. By the chain rule we have 
+\begin{align}
+\pder{}{x_k}=\pder{r_{ik}}{x_k}\pder{}{r_{ik}}=\frac{x_k-x_i}{r_{ik}}\pder{}{r_{ik}}=-\frac{x_i-x_k}{r_{ki}}\pder{}{r_{ki}},
+\end{align}
+meaning \eq{jastrowprog1} simplifies to \cite{hjorth-jensen}\comment{p526}
+\begin{align}
+\frac{1}{J(\R)}\pder{J(\R)}{x_k}
+&=
+\sum_{i=1}^{k-1} \frac{x_k-x_i}{r_{ik}}\pder{}{r_{ik}}u_{ik}(\r_{ik})-\sum_{j=k+1}^N \frac{x_j-x_k}{r_{kj}}\pder{}{r_{kj}}u_{kj}(\r_{kj}).
+\end{align}
+Identical arguments for the Cartesian $y_k$ and $z_k$ coordinates lead finally to the gradient 
+\begin{align}
+\frac{\nabla_k J(\R)}{J(\R)}
+&=
+\sum_{i=1}^{k-1} \frac{{\bf r}_{ik}}{r_{ik}}\pder{u_{ik}}{r_{ik}}-\sum_{j=k+1}^N \frac{{\bf r}_{kj}}{r_{kj}}\pder{u_{kj}}{r_{ki}}.
+\end{align} 
+For the simple two-body Jastrow factor used in the present work, the partial derivatives of $u_{ij}$ take the simple form \cite{hammond}\comment{p280} 
+\begin{align}
+\pder{u_{ij}}{r_{ij}}=\pder{}{r_{ij}}\left(\frac{a_{ij}r_{ij}}{1+\beta r_{ij}}\right) = \frac{a_{ij}}{(1+\beta r_{ij})^2}. 
+\end{align}
+
+Updating the terms of the Jastrow gradient is done in the method \inlinecc{updateJastrowGradient} of the \inlinecc{SlaterWithJastrow} class:
+\begin{lstlisting}[language={[std]c++}]
+void SlaterWithJastrow::updateJastrowGradient(int k) {
+    mat& a = m_spinMatrix;
+    mat& R = m_interElectronDistances;
+
+    for (int i = 0; i < k; i++) {
+        const double    rik     = R(k,i);
+        double          factor  = 1 + m_beta * rik;
+        m_jastrowGradient(i, k) = a(k,i) / (factor * factor);
+    }
+    for (int j = k+1; j < m_numberOfElectrons; j++) {
+        const double    rkj     = R(k,j);
+        double          factor  = 1 + m_beta * rkj;
+        m_jastrowGradient(k, j) = a(j,k) / (factor * factor);
+    }
+}
+\end{lstlisting}
+At the very first Metropolis step a loop over the electrons where \inlinecc{updateJastrowGradient} is performed\textemdash on each one in turn\textemdash is performed. This calculates $\nabla_kJ(\R)$ from scratch for all electrons, and is of course done only once.
+
+\subsubsection{Efficient calculation of the Laplacian, $\nabla_i^2J(\R)$}
+As the gradient was needed for the quantum force calculation, the Laplacian is neccessary for computing the kinetic energy. Recall from \eq{laplaceprog} that
+\begin{align}
+\frac{\nabla_i^2\Psit}{\Psit} &= \frac{\nabla_i^2|D_\uparrow|}  {|D_\uparrow|} +
+   \frac{\nabla_i^2|D_\downarrow|}{|D_\downarrow|} +
+   \frac{\nabla_i^2 J}{J} +
+   2\left[ \frac{\nabla_i|D_\uparrow|}  {|D_\uparrow|}   +
+   	  	   \frac{\nabla_i|D_\downarrow|}{|D_\downarrow|}  
+   	  	   \right] \cdot \frac{\nabla_i J}{J}.
+\end{align}
+In the following we derive an efficient scheme for calculating the $\nabla_i^2J(\R)/J(\R)$ term. 
+
+Let us consider the differentiation w.r.t.\ the first Cartesian coordinate of electron $k$, i.e.\ $x_k$. By \eq{jastrowtrivial} we have 
+\begin{align}
+\pder{^2J}{x_k^2}&=\pder{}{x_k}\left\{\pder{J(\R)}{x_k}\right\} 
+%
+= \pder{}{x_k}\left\{J(\R)\sum_{i=1}^N\sum_{j=i+1}^N \pder{u_{ij}}{x_k}\right\} \nn\\
+%
+&= \pder{J(\R)}{x_k}\sum_{i=1}^N\sum_{j=i+1}^N \pder{u_{ij}}{x_k} + J(\R) \sum_{i=1}^N\sum_{j=i+1}^N \pder{^2u_{ij}}{x_k^2} \nn\\
+%
+&= \left\{J(\R)\sum_{m=1}^N\sum_{n=m+1}^N \pder{u_{mn}}{x_k}\right\} \sum_{i=1}^N\sum_{j=i+1}^N \pder{u_{ij}}{x_k} + J(\R) \sum_{i=1}^N\sum_{j=i+1}^N \pder{^2u_{ij}}{x_k^2}. \label{eq:jastrowprog3}
+\end{align}
+Taking the ratio of $\partial^2J(\R)/\partial x_k^2$ with $J(\R)$ will cancel the $J(\R)$ factors. The double derivatives in the last term evaluate to
+\begin{align}
+\pder{^2 u_{ik}}{x_k^2} &= \pder{}{x_k}\left[\frac{(x_k-x_i)}{r_{ik}} \pder{u_{ik}}{r_{ik}} \right] \nn\\
+%
+&=\frac{(x_k-x_i)}{r_{ik}}\pder{}{r_{ik}}\left[\frac{(x_k-x_i)}{r_{ik}} \pder{u_{ik}}{r_{ik}} \right] \nn\\ 
+%
+&=\frac{(x_k-x_i)}{r_{ik}}\left[\frac{\frac{r_{ik}^2}{(x_k-x_i)}-(x_k-x_i)}{r_{ik}^2} \pder{u_{ik}}{r_{ik}} + \frac{(x_k-x_i)}{r_{ik}}\pder{^2u_{ik}}{r_{ik}^2} \right], \label{eq:jastrowprog2}
+\end{align}
+after two applications of the chain rule to move the differentiation onto $r_{ik}$ and using that
+\begin{align}
+\pder{}{r_{ik}}\left[\frac{(x_k-x_i)}{r_{ik}}\right] &= \frac{\pder{}{r_{ik}}(x_k-x_i)  }{y}
+\end{align}
+with
+\begin{align}
+\pder{(x_k-x_i)}{r_{ik}}=\frac{1}{\left[\frac{\partial r_{ik}}{\partial (x_k-x_i)}\right]}=\frac{1}{\left[\frac{(x_k-x_i)}{r_{ik}}\right]}=\frac{r_{ik}}{(x_k-x_i)}.
+\end{align}
+
+Taking the sum over all three Cartesian coordinates, \eq{jastrowprog2} simplifies dramatically to
+\begin{align}
+\nabla_k^2u_{ik} &= \left[\frac{d-1}{r_{ik}}\right]\pder{u_{ik}}{r_{ik}}+\pder{^2 u_{ik}}{r_{ik}^2},
+\end{align}
+where $d$ denotes the number of spatial dimensions used. In our case, $d=3$ always. Note carefully that the same equation holds when differentiating w.r.t.\ the second index, i.e.\ $\partial^2u_{kj} / \partial x_k^2$ does \emph{not} carry a minus sign as was the case for the gradient. 
+
+As before, only the $N-1$ terms in the sum containing a $k$ index survive the differentiation, giving in total 
+\begin{align}
+\sum_{i=1}^N\sum_{j=i+1}^N\nabla_k^2u_{ij} &= \sum_{i=1}^{k-1}\left\{\frac{2}{r_{ik}}\pder{u_{ik}}{r_{ik}}+\pder{^2 u_{ik}}{r_{ik}^2}\right\} + \sum_{j=k+1}^{N}\left\{\frac{2}{r_{kj}}\pder{u_{kj}}{r_{kj}}+\pder{^2 u_{kj}}{r_{kj}^2}\right\}.
+\end{align}
+
+The first term of \eq{jastrowprog3} equals\textemdash after taking the sum over the three Cartesian coordinates\textemdash the inner product of the gradient with itself \cite{hjorth-jensen}\comment{p528}. %Here, $N-1$ terms from each sum yield non-vanishing contributions, giving a total of $(N-1)^2$ significant terms in the product. Removing non-contributing terms, we find
+%\begin{align}
+%\left[\sum_{m,n\not=k}^N \pder{u_{mn}}{x_k}\right] \sum_{i,j\not=1}^N \pder{u_{ij}}{x_k} &= 
+%
+%\left[\sum_{i=1}^{k-1}\frac{(x_k-x_i)}{r_{ik}}\pder{u_{ik}}{r_{ik}} - \sum_{i=k+1}^{N}\frac{(x_i-x_k)}{r_{ki}}\pder{u_{ki}}{r_{ki}}\right]  \times
+%\nn\\
+%& \phantom{--}\left[\sum_{j=1}^{k-1}\frac{(x_k-x_j)}{r_{jk}}\pder{u_{jk}}{r_{jk}} - \sum_{j=k+1}^{N}\frac{(x_j-x_k)}{r_{kj}}\pder{u_{kj}}{r_{kj}}\right], \label{eq:jastrowlong}
+%\end{align}
+%and after taking the sum over $x$, $y$, and $z$ we obtain
+%\begin{align}
+%\left[\sum_{m,n\not=k}^N \nabla_ku_{mn}\right] \sum_{i,j\not=1}^N \nabla_ku_{ij} &= 
+% first
+%\left[\sum_{i=1}^{k-1}\frac{\r_{ik}}{r_{ik}}\pder{u_{ik}}{r_{ik}} - \sum_{i=k+1}^{N}\frac{\r_{ki}}{r_{ki}}\pder{u_{ki}}{r_{ki}}\right] \cdot \nn\\
+%&\phantom{--} 
+% second
+%\left[\sum_{j=1}^{k-1}\frac{\r_{jk}}{r_{jk}}\pder{u_{jk}}{r_{jk}} - \sum_{j=k+1}^{N}\frac{\r_{kj}}{r_{kj}}\pder{u_{kj}}{r_{kj}}\right] \nn\\
+% AC
+%&= \sum_{i=1}^{k-1}\sum_{j=1}^{k-1}\frac{\r_{ik}\cdot \r_{jk}}{r_{ik}r_{jk}}\pder{u_{ik}}{r_{ik}}\pder{u_{jk}}{r_{jk}} -\nn\\
+% -AD
+%&\phantom{--}\sum_{i=1}^{k-1}\sum_{j=k+1}^{N}\frac{\r_{ik}\cdot \r_{kj}}{r_{ik}r_{kj}}\pder{u_{ik}}{r_{ik}}\pder{u_{kj}}{r_{kj}} -\nn\\
+% -BC
+%&\phantom{----}\sum_{i=k+1}^{N}\sum_{j=1}^{k-1}\frac{\r_{ki}\cdot \r_{jk}}{r_{ki}r_{jk}}\pder{u_{ki}}{r_{ki}}\pder{u_{jk}}{r_{jk}} +\nn\\
+% BD
+%&\phantom{------}\sum_{i=k+1}^{N}\sum_{j=k+1}^{N}\frac{\r_{ki}\cdot \r_{kj}}{r_{ki}r_{kj}}\pder{u_{ki}}{r_{ki}}\pder{u_{kj}}{r_{kj}}.
+%\end{align}
+Since the evaluation of this term neccessitates the evaluation of the gradient, we perform this computation in conjunction with computing the quantum force. This is also where we handle the \emph{cross term} in the total Laplacian, c.f.\ \eq{laplaceprog}. The rest of the Jastrow laplacian is calculated in 
+\begin{lstlisting}[language={[std]c++}]
+void SlaterWithJastrow::updateJastrowLaplacianTerms(int k) {
+    mat& a          = m_spinMatrix;
+    mat& R          = m_interElectronDistances;
+    mat& laplacianJ = m_jastrowLaplacianTerms;
+
+    for (int j = 0; j < k; j++) {
+        double   factor  = 1 + m_beta * R(k,j);
+        laplacianJ(j, k) = -2*a(j,k) * m_beta / (factor*factor*factor);
+    }
+    for (int j = k+1; j < m_numberOfElectrons; j++) {
+        double   factor  = 1 + m_beta * R(k,j);
+        laplacianJ(k, j) = -2*a(k,j) * m_beta / (factor*factor*factor);
+    }
+}
+\end{lstlisting}
+and
+\begin{lstlisting}[language={[std]c++}]
+void SlaterWithJastrow::computeJastrowLaplacian() {
+    mat& R          = m_interElectronDistances;
+    mat& laplacianJ = m_jastrowLaplacianTerms;
+    mat& gradientJ  = m_jastrowGradient;
+
+    double sum = 0;
+    for (int k = 0; k < m_numberOfElectrons; k++) {
+        for (int i = 0; i < k; i++) {
+            sum += 2/R(i,k) * gradientJ(i,k) + laplacianJ(i,k);
+        }
+        for (int i = k+1; i < m_numberOfElectrons; i++) {
+            sum += 2/R(i,k) * gradientJ(k,i) + laplacianJ(k,i);
+        }
+    }
+    m_jastrowLaplacian = sum;
+}
+\end{lstlisting}
+Here, the double derivative of $u_{ij}$ w.r.t.\ $r_{ij}$ is computed as
+\begin{align}
+\pder{^2}{r_{ij}^2}\left[\frac{a_{ij}r_{ij}}{1+\beta r_{ij}}\right] = -\frac{2a_{ij}\beta}{(1+\beta r_{ij})^3}.
+\end{align}
 
 
+\subsubsection{Calculating the quantum force}
+Combining methods for calculating the gradients of the Slater determinants and the Jatrow factor, computing the quantum force
+\begin{align}
+{\bf F}=2\frac{\nabla \Psi(\R)}{\Psi(\R)},
+\end{align}
+is relatively straight forward. 
+\begin{lstlisting}[language={[std]c++}]
+void SlaterWithJastrow::computeQuantumForce() {
+    mat& R = m_interElectronDistances;
+    mat& r = m_electronPositions;
 
-%\begin{lstlisting}[language={[std]c++}]
-%\end{lstlisting}
+    m_energyCrossTerm = 0;
+    for (int k = 0; k < m_numberOfElectrons; k++) {
+        const int kSpin      = m_system->getElectrons().at(k)->getSpin();
+        const int kSpinIndex = m_system->getElectrons().at(k)->getSpinIndex();
+
+        mat& slaterGradient = (kSpin==1 ? m_slaterGradientUp :
+                                          m_slaterGradientDown);
+
+        for (int j = 0; j < 3; j++) {
+            double sum = 0;
+            for (int i = 0; i < k ; i++) {
+                const double xk = r(k,j);
+                const double xi = r(i,j);
+                sum += (xk - xi) / R(i,k) * m_jastrowGradient(i, k);
+            }
+            for (int i = k + 1; i < m_numberOfElectrons; i++) {
+                const double xk = r(k,j);
+                const double xi = r(i,j);
+                sum -= (xi - xk) / R(i,k) * m_jastrowGradient(k,i);
+            }
+            m_quantumForce(k , j) = 2 * slaterGradient(kSpinIndex,j);
+
+            if (m_jastrow) {
+            	m_quantumForce(k ,j) += 2   * sum;
+            	m_energyCrossTerm    -= 0.5 * sum*sum + 
+            	                        (slaterGradient(kSpinIndex,j) * sum);
+            }
+        }
+    }
+}
+\end{lstlisting}
+Note carefully that the \inlinecc{m_energyCrossTerm} described earlier is computed here, as we have direct access to the fully computed Jastrow gradient, aswell as the gradient of the Slater determinant. Also computed is the $\nabla_kJ(\R)\cdot \nabla_kJ(\R)$ factor which was missing in the \inlinecc{computeJastrowLaplacian} method earlier.
 
 
 \subsection{The Orbital class \label{orbital}}
 
 
+\subsection{The Metropolis class}
 
+
+\begin{lstlisting}[language={[std]c++}]
+\end{lstlisting}
 
 
 
