@@ -334,12 +334,19 @@ Consider now this in light of \eq{mci1}, and note that for any trial wave functi
 \begin{align}
 E\big[\Psit\big]&= \langle \EL^M \rangle = \frac{1}{M}\sum_{i=1}^M\EL(\R_i).
 \end{align}
-In the language of the previous section, $f=\rho(\R)\EL(\R)$, $g=\EL(\R)$, and $P=\rho(\R)$ which is the normalized probability density. This means that if we can pick samples randomly from the probability density function $\sim|\Psit(\R)|^2/\int\mathrm{d}\R\,|\Psit(\R)|^2$, then we can simply evaluate the local energy and take the average. This will give us an estimate for the true variational energy, aswell as a measure of the \emph{error} from calculating the variance. 
+In the language of the previous section, $f=\rho(\R)\EL(\R)$, $g=\EL(\R)$, and $P=\rho(\R)$ which is the normalized probability density. This means that if we can pick samples randomly from the probability density function $\sim|\Psit(\R)|^2/\int\mathrm{d}\R\,|\Psit(\R)|^2$, then we can simply evaluate the local energy and take the average. This will give us an estimate for the true variational energy, aswell as a measure of the stastical uncertainty from calculating the variance. 
+
+The Metropolis-Hastings (MH) algorithm of the previous section enables us to draw samples directly from $\rho(\R)$. Note carefully that since MH always works in terms of ratios, $\rho(\R)$ need strictly speaking not be normalized. We require simply a quantity proportional to $|\Psit(\R)|^2$. 
+
+A relatively short \emph{burn-in} time is usually employed, wherein the first $K$ samples are taken to be thermalization samples which are discarded. This is done in order to allow the MH Markov chain time to "forget" about it's starting point, and to allow the system as a whole to equilibrate and an energetically favourable region of the configuration space \cite{gilks}\comment{p14}.
 
 
-
-
-
+\subsection{Uncertainty estimates and \emph{blocking}}
+The naive straight forward calculation of the variance of mean as 
+\begin{align}
+\sigma^2=\langle\EL^2\rangle-\langle \EL\rangle^2
+\end{align}
+has the under-lying assumption that all the samples are \emph{un-correlated}. If this is not the case\textemdash i.e.\ subsequent samples are correlated\textemdash then this equation will seriously underestimate the variance \cite{kalos}\comment{p109}.
 
 
 
