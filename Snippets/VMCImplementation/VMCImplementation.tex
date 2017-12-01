@@ -354,6 +354,7 @@ void SlaterWithJastrow::evaluateWaveFunctionInitial() {
 }
 \end{lstlisting}
 
+
 \subsubsection{Efficient evaluation of the gradient, $\nabla_i D(\R)$}
 The calculation of the quantum force involved in the importance sampling of the Metropolis-Hastrings algorithm requires the evaluation of the ratio of the gradient to the wave function itself. Since, by repeated application of the product rule, 
 \begin{align}
@@ -364,7 +365,7 @@ The calculation of the quantum force involved in the importance sampling of the 
 &= \frac{J(\R)|D_\downarrow(\R)|\nabla_i |D_\uparrow(\R)|}{\Psit}+\frac{J(\R)|D_\uparrow(\R)|\nabla_i|D_\downarrow(\R)|}{\Psit} + \nn\\
 & \ \ \ \  \ \ \ \  \ \ \ \  \ \ \ \  \ \ \ \  \ \ \ \  \ \ \ \frac{|D_\downarrow(\R)||D_\uparrow(\R)|\nabla_i J(\R)}{\Psit} \nn\\
 %
-&= \frac{\nabla_i |D_\uparrow(\R)|}{|D_\uparrow(\R)|}+\frac{\nabla_i |D_\downarrow(\R)|}{|D_\downarrow(\R)|} +  \frac{\nabla_i J(\R)}{J(\R)},
+&= \frac{\nabla_i |D_\uparrow(\R)|}{|D_\uparrow(\R)|}+\frac{\nabla_i |D_\downarrow(\R)|}{|D_\downarrow(\R)|} +  \frac{\nabla_i J(\R)}{J(\R)}, \label{eq:gradratio}
 \end{align}
 we require an efficient algorithm for calculating $\nabla_i |D(\R)|/|D(\R)|$ terms. The indexed del operator $\nabla_i$ denotes differentiation w.r.t.\ the coordinates of electron $i$. We note that if said electron has spin projection $\sigma_i=\chi(\uparrow)$, then $\nabla_i |D_\downarrow|$ neccessaily vanishes. The same is true of $\nabla_i |D_\uparrow|$ if the spin state is flipped. This means we only ever need to calculate one such term for every Monte Carlo move. 
 
@@ -477,13 +478,134 @@ void SlaterWithJastrow::computeSlaterLaplacian(int electron) {
 }
 \end{lstlisting}
 
-\subsubsection{The Jastrow ratio and derivatives}
-The correlation part of the VMC trial wave function 
+\subsubsection{The Jastrow ratio}
+The correlation part of the VMC trial wave function is stored in the matrix \inlinecc{m_correlationMatrix}, which holds the value of 
+\begin{align}
+u_{ij}=\frac{a_{ij}r_{ij}}{1+\beta r_{ij}},
+\end{align}
+where $a_{ij}$ equals $\nicefrac{1}{2}$ ($\nicefrac{1}{4}$) for opposite (parallel) spins and $\beta$ is a variational parameter (c.f.\ section \ref{section:jastrow}). Only the upper diagonal part of the $u$ matrix needs to be filled, since the correlations are obviously symmetric relations, i.e.\ $u_{ij}=u_{ji}$. The same is true of $r_{ij}$, the values of which are stored in a matrix called \inlinecc{m_interElectronDistances}. The computation of the full $u$ matrix is done exactly once, at the very first Metropolis step. This is handled by the \inlinecc{SlaterWithJastrow::fillCorrelationMatrix} method:
+\begin{lstlisting}[language={[std]c++}]
+void SlaterWithJastrow::fillCorrelationMatrix() {
+	mat& u = m_correlationMatrix;
+    for (int k = 0; k < m_numberOfElectrons; k++) {
+        Electron* kElectron = m_system->getElectrons().at(k);
+        for (int i = k+1; i < m_numberOfElectrons; i++) {
+            Electron* iElectron = m_system->getElectrons().at(i);
+            u(k,i)              = computeJastrowFactor(kElectron,iElectron);
+        }
+    }
+    for (int k = 0; k < m_numberOfElectrons; k++) {
+        for (int i = k+1; i < m_numberOfElectrons; i++) {
+            u(i,k) = u(k,i);
+        }
+    }
+}
+\end{lstlisting}
+The method which evaluates the elements of the matrix $u$, \inlinecc{computeJastrowFactor} is implemented in the following
+\begin{lstlisting}[language={[std]c++}]
+inline double SlaterWithJastrow::computeJastrowFactor(Electron*i, Electron*j){ 
+    const double a     = spinCoefficient(i,j);
+    const double rik   = m_interElectronDistances(i,j);
+    return a * rij / (1.0 + m_beta * rij);
+}
+\end{lstlisting}
+with the spin coefficient $a_{ij}$ being computed in the \inlinecc{spinCoefficient} method by a simple \inlinecc{return (i->getSpin() == j->getSpin() ? 0.25 : 0.5)}. The \inlinecc{m_interElectronDistances}, the matrix $R$, is also fully computed only once. 
 
+As a single electron is moved, only one row and column of $u$ and $R$ change. Efficiently updating instead of re-computing is done in the following two \inlinecc{SlaterWithJastrow} methods:
+\begin{lstlisting}[language={[std]c++}]
+void SlaterWithJastrow::updateElectronDistanceMatrices() {
+    Electron* kElectron = m_system->getElectrons().at(m_changedElectron);
+    mat&      r         = m_electronPositions;
+    mat&      R         = m_interElectronDistances;
+    int       k         = m_changedElectron;
+
+    for (int dimension = 0; dimension < 3; dimension++) {
+        r(k,dimension) = kElectron->getPosition().at(dimension);
+    }
+    for (int i = 0; i < k; i++) {
+        double x = r(k,0) - r(i,0);
+        double y = r(k,1) - r(i,1);
+        double z = r(k,2) - r(i,2);
+        R(k,i) = sqrt(x*x + y*y + z*z);
+        R(i,k) = R(k,i);
+    }
+    for (int i = k+1; i < m_numberOfElectrons; i++) {
+        double x = r(k,0) - r(i,0);
+        double y = r(k,1) - r(i,1);
+        double z = r(k,2) - r(i,2);
+        R(k,i) = sqrt(x*x + y*y + z*z);
+        R(i,k) = R(k,i);
+    }
+    double x = r(k,0);
+    double y = r(k,1);
+    double z = r(k,2);
+    R(k,k) = sqrt(x*x + y*y + z*z);
+}
+\end{lstlisting}
+and
+\begin{lstlisting}[language={[std]c++}]
+void SlaterWithJastrow::updateCorrelationsMatrix() {
+    mat& R = m_interElectronDistances;
+    mat& u = m_correlationMatrix;
+    mat& a = m_spinMatrix;
+
+    int k = m_changedElectron;
+    for (int i = 0; i < k; i++) {
+        u(i,k) = a(i,k) * R(i,k) / (1 + m_beta * R(i,k));
+        u(k,i) = u(i,k);
+    }
+    for (int i = k+1; i < m_numberOfElectrons; i++) {
+        u(k,i) = a(k,i) * R(k,i) / (1 + m_beta * R(k,i));
+        u(i,k) = u(k,i);
+    }
+}
+\end{lstlisting}
+Please note that the $k$-th diagonal element of the \inlinecc{m_interElectronDistance} matrix is used to hold the distance of electron $k$ relative to the global origin. 
+
+Because of the exponential nature of the Jastrow factor as a whole, extensive cancelation happens when taking the ratio of $J(\R_\text{new})$ to $J(\R_\text{old})$, since
+\begin{align}
+\frac{J(\R_\text{new})}{J(\R_\text{old})}&=\exp\left[\sum_{i=1}^N\sum_{j=i+1}^N u_{ij}(\r_{ij}^\text{new})\right] 
+\Bigg/
+\exp\left[\sum_{i=1}^N\sum_{j=i+1}^N u_{ij}(\r_{ij}^\text{old})\right] \nn\\
+%
+&= \exp\left[\sum_{i=1}^N\sum_{j=i+1}^N u_{ij}(\r_{ij}^\text{new})-\sum_{i=1}^N\sum_{j=i+1}^Nu_{ij}(\r_{ij}^\text{old})\right] \nn\\
+%
+&=\exp\left[\sum_{i=1}^N\sum_{j=i+1}^N \big\{u_{ij}(\r_{ij}^\text{new})-u_{ij}(\r_{ij}^\text{old})\big\}\right],
+\end{align}
+and $u_{ij}(\r_{ij}^\text{new})-u_{ij}(\r_{ij}^{\text{new}})$ obviously vanishes is $\r^\text{new}_i=\r_i^\text{old}$ and $\r^\text{new}_j=\r_j^\text{old}$. The only terms which survive the sum are the ones involving \inlinecc{m_changedElectron}, which we (for the moment) will call $k$ for ease of notation. We find that
+\begin{align}
+\frac{J(\R_\text{new})}{J(\R_\text{old})}&=\exp\left[\sum_{i=1}^N\sum_{j=i+1}^N \big\{u_{ij}(\r_{ij}^\text{new})-u_{ij}(\r_{ij}^\text{old})\big\}(\delta_{ik}+\delta{kj})\right] \nn\\
+%
+&= \exp\left[\sum_{i=1}^N \big\{u_{ik}(\r_{ik}^\text{new})-u_{ik}(\r_{ik}^\text{old})\big\}+\sum_{j=i+1}^N\big\{u_{kj}(\r_{kj}^\text{new})-u_{kj}(\r_{kj}^\text{old})\big\}\right].
+\end{align}
+In the VMC framework this is implemented as 
+\begin{lstlisting}[language={[std]c++}]
+void SlaterWithJastrow::computeJastrowRatio() {
+    double sum = 0;
+    int k = m_changedElectron;
+    for (int i = 0; i < k; i++) {
+        sum += m_correlationMatrix(i,k) - m_correlationMatrixOld(i,k);
+    }
+    for (int i = k+1; i < m_numberOfElectrons; i++) {
+        sum += m_correlationMatrix(k,i) - m_correlationMatrixOld(k,i);
+    }
+    m_Rc = exp(sum);
+}
+\end{lstlisting}
+
+\subsubsection{Efficient calculation of the gradient, $\nabla_i J(\R)$}
+The calculation of the quantum force involves calculating that ratio of the gradient of the wave function. Recall from \eq{gradratio} that
+\begin{align}
+\frac{\nabla_i\Psit}{\Psit} &=\frac{\nabla_i |D_\uparrow(\R)|}{|D_\uparrow(\R)|}+\frac{\nabla_i |D_\downarrow(\R)|}{|D_\downarrow(\R)|} +  \frac{\nabla_i J(\R)}{J(\R)}.
+\end{align}
+
+
+
+%\begin{lstlisting}[language={[std]c++}]
+%\end{lstlisting}
 
 
 \subsection{The Orbital class \label{orbital}}
-
 
 
 
