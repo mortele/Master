@@ -822,7 +822,56 @@ Note carefully that the \inlinecc{m_energyCrossTerm} described earlier is comput
 
 
 \subsection{The Orbital class \label{orbital}}
+The orbitals populating the Slater determinants can in principle be any square integrable $\mathbb{R}^3\mapsto\mathbb{C}$ function. The only neccessary conditions for adding new orbital types in the VMC program is that three methods are present: \inlinecc{evaluate}, computing the value; \inlinecc{computeDerivative}, which evaluates the derivative w.r.t.\ one of the Cartesian coordinates; and \inlinecc{computeLaplacian} which predictably evaluates the Laplacian at given coordinates. 
 
+A global ordering of the orbitals is assumed, and all three neccessary methods provide an index telling which specific orbital is to be evaluated / differentiated. As an example, if index $2$ is provided to the \inlinecc{HydrogenOrbital::evaluate} function, the following code is executed
+\begin{lstlisting}[language={[std]c++}]
+double HydrogenOrbital::evaluate2s(double r) {
+   return m_2sNormalization * (1 - m_alpha * 0.5*r) * exp(-m_alpha * 0.5 * r);
+}
+\end{lstlisting}
+Both the \inlinecc{HydrogenOrbital} and the \inlinecc{SlaterTypeOrbital} sub-classes use the standard numbering, 1s, 2s, 2p${}_x$, 2p${}_y$, and so on. The global ordering of the \inlinecc{GaussianOrbital}s is\textemdash in a sense\textemdash more arbitrary. As the raw Hartree-Fock orbitals are used, we are in no way guaranteed that they are sorted in the sense that the orbital Hartree-Fock energies satisfy $\varepsilon_1<\varepsilon_2<\varepsilon_3<\dots$
+
+The Gaussian type orbitals employ two classes, \inlinecc{PrimitiveGaussian} and \inlinecc{ContractedGaussian}. The orbital class holds the Hartree-Fock basis expansion coefficients, and organizes the evaluation of the former two. Calling the \inlinecc{GaussianOrbital::evaluate} method produces the following cascade
+\begin{lstlisting}[language={[std]c++}]
+double GaussianOrbital::evaluate(double x,     double y,    double z,
+                                 int    index, int    spin) {
+    double value = 0;
+    for (int i=0; i < m_basisSize; i++) {
+        double c = (spin==1 ? m_spinUpCoefficients(i,index) :
+                              m_spinDownCoefficients(i,index));
+        value += (spin==1 ? m_spinUpCoefficients(i,index) :
+                            m_spinDownCoefficients(i,index)) * 
+                            m_basis.at(i)->evaluate(x,y,z);
+    }
+    return value;
+}
+\end{lstlisting}
+which calls 
+\begin{lstlisting}[language={[std]c++}]
+double ContractedGaussian::evaluate(double x, double y, double z) {
+    double result = 0;
+    for (PrimitiveGaussian* primitive : m_primitives) {
+        result += (*primitive)(x - m_x, y - m_y, z - m_z);
+    }
+    m_currentValue = result;
+    return result;
+}
+\end{lstlisting}
+which finally computes the Gaussian function value in 
+\begin{lstlisting}[language={[std]c++}]
+double PrimitiveGaussian::operator()(double x, double y, double z) {
+    const double r2    = x*x + y*y + z*z;
+    const double value = m_constant  * 
+                         pow(x, m_i) * 
+                         pow(y, m_j) * 
+                         pow(z, m_k) * 
+                         exp(- m_alpha * r2);
+    m_currentValue     = value;
+    return value;
+}
+\end{lstlisting}
+Note that the current value of each primitive is saved, to avoid having to re-compute the function value when derivatives are computed shortly thereafter.
 
 \subsection{The Metropolis class}
 
