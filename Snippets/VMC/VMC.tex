@@ -295,7 +295,7 @@ For \emph{uncorrelated} random variables, $\{Y_i\}_{i=1}^M$, the variance of the
 %
 &= \frac{1}{N}\sigma^2\left[\frac{f(X_i)}{P(X_i)}\right].
 \end{align}
-We note that the standard deviation in the mean goes $\sigma[\langle J^N\rangle]\rightarrow0$ as $\mathcal{O}(\sqrt{N})$. The same is true of the basic Monte Carlo estimator $\langle I^N\rangle$, but $\sigma^2[f(X_i)/P(X_i)]$ is likely much smaller than the corresponding $\sigma^2[f(X_i)]$. 
+We note that the standard deviation in the mean $\sigma[\langle J^N\rangle]\rightarrow0$ as $\mathcal{O}(\sqrt{N})$. The same is true of the basic Monte Carlo estimator $\langle I^N\rangle$, but $\sigma^2[f(X_i)/P(X_i)]$ is likely much smaller than the corresponding $\sigma^2[f(X_i)]$. 
 
 %Distribution of the \emph{sample mean}: For random samples $\{Y_i\}_{i=1}^M$, each with mean $\mu$ and standard deviation $\sigma$. Then $E[\bar Y]=\mu$ and $V[\bar Y] = \sigma_{\bar Y}^2=\sigma^2/N$ \cite{devore}\comment{p291}.
 
@@ -338,23 +338,94 @@ In the language of the previous section, $f=\rho(\R)\EL(\R)$, $g=\EL(\R)$, and $
 
 The Metropolis-Hastings (MH) algorithm of the previous section enables us to draw samples directly from $\rho(\R)$. Note carefully that since MH always works in terms of ratios, $\rho(\R)$ need strictly speaking not be normalized. We require simply a quantity proportional to $|\Psit(\R)|^2$. 
 
-A relatively short \emph{burn-in} time is usually employed, wherein the first $K$ samples are taken to be thermalization samples which are discarded. This is done in order to allow the MH Markov chain time to "forget" about it's starting point, and to allow the system as a whole to equilibrate and an energetically favourable region of the configuration space \cite{gilks}\comment{p14}.
+A relatively short \emph{burn-in} time is usually employed, wherein the first $K$ samples are taken to be thermalization samples which are discarded. This is done in order to allow the MH Markov chain time to "forget" about it's starting point, and to allow the system as a whole to equilibrate and an energetically favourable region of the configuration space found \cite{gilks}\comment{p14}.
 
-
-\subsection{Uncertainty estimates and \emph{blocking}}
-The naive straight forward calculation of the variance of mean as 
+\newcommand{\err}{\text{err}_{\langle \EL\rangle}}
+\subsection{Uncertainty estimates and correlated sampling}
+A stochastic method such as quantum Monte Carlo is useless without an estimate of the precision of the result. The quantity normally used to gauge this is the \emph{estimated standard error} of the mean, $\err$. The standard error is the standard deviation of the mean,
 \begin{align}
-\sigma^2=\langle\EL^2\rangle-\langle \EL\rangle^2
+\err = \sigma_{\langle\EL\rangle} = \frac{\sigma}{\sqrt{n}},
 \end{align}
-has the under-lying assumption that all the samples are \emph{un-correlated}. If this is not the case\textemdash i.e.\ subsequent samples are correlated\textemdash then this equation will seriously underestimate the variance \cite{kalos}\comment{p109}.
+where $\sigma$ denotes the true standard deviation which we can estimate by the \emph{sample standard deviation},
+\begin{align}
+s=\sqrt{\frac{1}{N-1}\sum_{i=1}^N(x_i-\langle x\rangle)^2}\approx \sigma.
+\end{align}
+Note the $N-1$ in the denominator\footnote{The reason for using a $N-1$ denominator\textemdash as opposed to the more intuitive $N$\textemdash is that 
+\begin{align}
+s^2=\frac{1}{N-1}\sum_{i=1}^N(x_i-\langle x\rangle)^2
+\end{align}
+is an \emph{unbiased} estimator of the variance, but the corresponding expression with the denominator replaced by $(N-1)\rightarrow N$ is not. This is sometimes referred to as \emph{Bessel's correction} \cite{devore}\comment{p333}. Although it is not true that $s$ is an unbiased estimator of the standard deviation (because of the non-linearity of the square root), it is in a sense \emph{less biased} than the $N$-denominator version.}. In order to find a point estimate of $\sigma$, we could simply calculate 
+\begin{align}
+s^2= \frac{\sum_{i=1}^N(x_i-\langle x\rangle)^2}{N-1} = \frac{1}{N-1}\sum_{i=1}^Nx_i^2 - \frac{1}{N(N-1)}\left( \sum_{i=1}^Nx_i\right)
+\end{align}
+where the sample variance $s^2$ is an unbiased estimator of $\sigma^2$, i.e.\ \cite{devore}\comment{p328}
+\begin{align}
+s^2\approx \sigma^2=\langle\EL^2\rangle-\langle \EL\rangle^2.
+\end{align}
+This, however, has the under-lying assumption that all the samples are \emph{un-correlated}. If this is not the case\textemdash i.e.\ subsequent samples \emph{are} correlated\textemdash then this equation will seriously underestimate the error \cite{kalos}\comment{p109}. 
 
+In order to account for the auto-correlation of the Markov chain samples, we start instead from the definition of the variance in terms of the covariance, $\text{Var}(X)=\text{Cov}(X,X)$. Setting $\err=\sum_{ij}\text{Cov}(X_i,X_j)/N^2$ accounts for the correlation between subsequent samples \cite{hjorth-jensen}\comment{slides, 4411vmc, p51}. The covariance $\text{Cov}(X_i,X_j)$ can we written as
+\begin{align}
+\text{Cov}(X_i,X_j) &= \Big\langle \big(x_i-\langle x_i\rangle\big)\big(x_j-\langle x_j\rangle\big)\Big\rangle \nn\\
+%
+&= \Big\langle x_ix_j-x_i\langle x_j\rangle -\langle x_i\rangle x_j +\langle x_i\rangle\langle x_j\rangle  \Big\rangle \nn\\
+%
+&= \langle x_ix_j\rangle - \langle x_i\rangle\langle x_j\rangle,
+\end{align}
+with  
+\begin{align}
+\text{Cov}(X_i,X_j) = \frac{1}{N^2}\sum_{i=1}^N\sum_{j=1}^N(x_i-\langle x\rangle)(x_j-\langle x\rangle) = \frac{1}{N}\text{Cov}(x).
+\end{align}
+A proper estimate for the standard error of the mean can now be written in terms of the \emph{sample covariance}, $\text{Cov}(x)$, as \cite{hjorth-jensen}\comment{slides, 52}
+\begin{align}
+\err^2=\frac{1}{N^2}\sum_{i=1}^N\sum_{j=1}^N\text{Cov}(X_i,X_j) = \frac{1}{N^2}\sum_{i=1}^N\sum_{j=1}^N \frac{1}{N}\text{Cov}(x) = \frac{1}{N}\text{Cov}(x). \label{eq:stderr}
+\end{align}
 
+Note carefully that \eq{stderr} requires simultaneous knowledge of every single sample, and the evaluation is a double sum over the number of MC samples: a variable which routinely runs $N\gtrsim10^{6}$. We would very much like to avoid having to perform this calculation. In order to circumvent this costly and inconvenient summation, lets us consider the the standard error of the mean split into two terms as
+\begin{align}
+\err^2=\frac{1}{N}\text{Var}(x)+\frac{1}{N}\big(\text{Cov}(x)-\text{Var}(x) \big).
+\end{align}
+The second term\textemdash the correlation term\textemdash can be written in terms of it's partial sums as
+\begin{align}
+\frac{1}{N}\big(\text{Cov}(x)-\text{Var}(x) \big) &= \frac{2}{N}\sum_{k=1}^N\sum_{l=k+1}^N\big(x_k-\langle x\rangle \big)\big(x_l-\langle x\rangle\big) \nn\\
+%
+&= 2\sum_{d=1}^{N-1}\bigg[\underbrace{\frac{1}{N-d}\sum_{k=1}^{N-d}\big(x_k-\langle x\rangle\big)\big(x_{k+d}-\langle x\rangle\big)}_{\displaystyle\equiv f_d} \bigg].
+\end{align}
+Dividing $f_d$ by the sample variance yields the \emph{autocorrelation function} $\kappa_d=f_d/\text{Var}(x)$ \cite{hammond}\comment{p59}. Defining now the \emph{autocorrelation time} $\tau$,
+\begin{align}
+\tau\equiv 1+2\sum_{d=1}^{N-1}\kappa_d,
+\end{align}
+we can rewrite $\err$ as
+\begin{align}
+\err^2 &= \frac{1}{N}\text{Var}(x)+\frac{1}{N}\big(\text{Cov}(x)-\text{Var}(x) \big) \nn\\
+%
+&= \left(1+2\sum_{d=1}^{N-1}\right)\frac{1}{N}\text{Var}(x) = \frac{\tau}{N}\text{Var}(x).
+\end{align}
+Note that if the samples are indeed uncorrelated, then $\tau=1$ and we recover the expression for the standard error of the mean as $\err = \sigma/\sqrt{N}$.
 
-
-
-
-
-
+\subsection{Blocking}
+In order to account for the correlation in the sampling, we may simply treat \emph{blocks} of samples\textemdash with block size $b\ge \tau$ \textemdash as the samples. From $N$ total samplings of $\EL$, this gives an \emph{effective} number of samples 
+\begin{align}
+N_\text{eff}=\frac{N}{b}.
+\end{align}
+Each effective sample is thus taken to be the average of $b$ samples, and since $b\ge\tau$ we know subsequent \emph{block} samples are uncorrelated. This means we can calculate the standard error of the mean \emph{of the blocks} simply as 
+\begin{align}
+\err^\text{blocks} &= \frac{1}{N_\text{blocks}}\sqrt{\langle \EL^2\rangle^\text{block}-\Big(\langle \EL\rangle^\text{block}\Big)^2} \nn\\
+%
+&= \frac{1}{N_\text{blocks}}\sqrt{
+\sum_{i=1}^{N_\text{blocks}} \left(\sum_{j=1}^b \EL^{ib+j}\right)^2
+-
+\left(
+\sum_{i=1}^{N_\text{blocks}}\sum_{j=1}^b \EL^{ib+j}
+\right)^2} \nn\\
+&= \frac{1}{N_\text{blocks}}\sqrt{
+\sum_{i=1}^{N_\text{blocks}} \left(\sum_{j=1}^b \EL^{ib+j}\right)^2
+-
+\left(
+\sum_{i=1}^{N} \EL^{i}
+\right)^2},
+\end{align} 
+where $\EL^i$ denotes the $i$-th sample of the local energy. Calculating $\tau$ directly constitutes calculating the autocovariance, 
 
 
 
