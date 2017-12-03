@@ -425,8 +425,16 @@ Each effective sample is thus taken to be the average of $b$ samples, and since 
 \sum_{i=1}^{N} \EL^{i}
 \right)^2},
 \end{align} 
-where $\EL^i$ denotes the $i$-th sample of the local energy. Calculating $\tau$ directly constitutes calculating the autocovariance, 
-
+where $\EL^i$ denotes the $i$-th sample of the local energy. Calculating $\tau$ directly constitutes calculating the autocovariance, but we can estimate it using the calculated standard deviation for different block sizes, $b$. This procedure is known as {\bf blocking} \cite{blocking}:
+\begin{shadeframe}
+\begin{itemize}
+ \item[(1)] Calculate the standard deviation of the measurement set with block size $b=1$, i.e.\ the usual standard deviation.
+ \item[(2)] Calculate the standard deviation using $b=1,2,\dots$, and plot $\sigma(b)$ versus $b$.
+ \item[(3)] Take the value for which $\sigma(b)$ seems to plateu to be $b^*\approx \tau$.
+ \item[(4)] The blocking estimate of the true standard deviation is then taken to be $\sigma(b^*)$.
+\end{itemize}
+\end{shadeframe}
+Since the standard deviation with block size $b=k$ contains $k/(k+1)$ as many samples as the corresponding deviation with block size $b=k+1$, the expected change in the standard deviation is on the order of $\sim \sqrt{(k+1)/k}$. However, if the samples are correlated with $\tau<k$, then increasing the block size will sharply increase the calculated standard deviation. As $k\gtrsim\tau$, this effect vanishes and leaves only the $\sqrt{(k+1)/k}$ order change. The resulting plot has a sharp increase for low $k$ and then a characteristic plateu around $k=\tau$. 
 
 
 
