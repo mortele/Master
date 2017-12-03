@@ -234,7 +234,7 @@
 
 
 \author{Morten Ledum}
-\title{Something something computational quantum chemistry something something neural networks}
+\title{Im trapped in a title, please send help}
 \date{December 2017}
 
 \makeatletter
@@ -246,9 +246,9 @@
 \maketitle
 
 \begin{abstract}
-We implement three different \emph{ab initio} electronic structure methods: Hartree-Fock (HF), Kohn-Sham density functional theory (DFT), and quantum variational Monte Carlo (VMC). Gaussian type orbitals are used for the former two, while the VMC framework allows more general orbital bases (including the possibility of using the optmized HF orbitals). For the DFT implementation, the local density approximation and the correlation energy functional parametrization of Vosko, Wilk, and Nusair is used. A thorough introduction to the underlying theory of all three methods is presented, and the codes are tested on the ten-electron series \ce{CH4}, \ce{NH3}, \ce{H2O}, \ce{HF}, as well as on \ce{N2}, \ce{H2}, and \ce{H2+}. Ground state energies are found to be in good agreement with the litterature. 
+We implement three different \emph{ab initio} electronic structure methods: Hartree-Fock (HF), Kohn-Sham density functional theory (DFT), and quantum variational Monte Carlo (VMC). Gaussian type orbitals are used for the former two, while the VMC framework allows more general orbital bases (including the possibility of using the optmized HF orbitals). For the DFT implementation, the local density approximation and the correlation energy functional parametrization of Vosko, Wilk, and Nusair is used. A thorough introduction to the underlying theory of all three methods is presented, and the codes are tested on the ten-electron series \ce{CH4}, \ce{NH3}, \ce{H2O}, \ce{HF}, as well as on \ce{N2}, \ce{H2}, and \ce{H2+}. Ground state energies are found to be in perfect agreement with the litterature. 
 
-Secondly, a method for parameterizing the Born-Oppenheimer energy hypersurfaces\textemdash obtained by \emph{ab initio} calculations\textemdash with artificial neural networks (ANN) is presented. The ANN calcuations are done using TensorFlow, and the resulting analytical inter-atomic potentials may be used directly in molecular dynamics simulations.
+Secondly, a method for parameterizing the Born-Oppenheimer energy hypersurfaces\textemdash obtained by \emph{ab initio} calculations\textemdash with artificial neural networks (ANN) is presented. The ANN calcuations are done using TensorFlow, and the resulting analytical inter-atomic potentials may be used directly in molecular dynamics simulations. We present a simple\textemdash proof of concept\textemdash MD simulation using the ANN potential for \ce{H2} in the gas state using LAMMPS.
 \end{abstract}
 
 
