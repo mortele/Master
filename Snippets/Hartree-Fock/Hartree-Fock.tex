@@ -56,12 +56,40 @@ In order to relate this to spatial coordinates only, we need to sum over the spi
 \end{align}
 which means the second term vanishes for opposite spin electrons. However, for same spin electrons, the second term of \eq{exchange} gives rise to a correlation effect: for electrons of the same spin-projection the first and second term cancel exactly for $\r_1=\r_2$ \cite{thijssen}\comment{p54}. This is known as \emph{exchange correlation}, all electrons are surrounded by \emph{exchange holes} where the chance of finding other like-spin electrons is drastically reduced. 
 
-\section{Variational }
+\section{The Hartree-Fock energy}
+Assuming now the wave function takes the form of a single Slater determinant inhabited by \emph{orthonormal} orbitals, let us work out what the exected value of the energy is. The Hamiltonian consists of two parts\textemdash a one-body and a two-body term\textemdash which we will handle separately. 
 
+\subsubsection{One-body Hamiltonian}
+The electronic one-body part of the Hamiltonian takes the form
+\begin{align}
+\hat h=\sum_{i=1}^N\hat h_i = \sum_{i=1}^N\left[ -\frac{\nabla_i^2}{2}-\sum_{A=1}^M \frac{Z_A}{|\r_i-\r_A|}  \right],
+\end{align}
+where $M$ denotes the number of nuclei. Since $\hat h_i$ only acts on the coordinates of particle $i$, we find
+\begin{align}
+\langle \Psi|\hat h|\Psi\rangle &= \int\mathrm{d}^3\r_1\dots\mathrm{d}^3\r_N\, \Psi^*(\R)\sum_{i=1}^N\hat h_i \Psi(\R) \label{eq:hf1}
+\end{align}
+with terms 
+\begin{align}
+(\ref{eq:hf1}) &= \int \mathrm{d}^3\r_1\dots\mathrm{d}^3\r_N\, \Psi^*(\R) \hat h_k\Psi(\R) \nn\\
+&= \frac{1}{N!} \int \mathrm{d}^3\r_1\dots\mathrm{d}^3\r_N\,\sum_{\mu,\nu\in S_N}(-1)^{|\mu|+|\nu|}\hat P_\mu \hat P_\nu \Psi^*(\r_{\mu(1)}\dots \r_{\mu(N)})\hat h_k \Psi(\r_{\nu(1)}\dots \r_{\nu(N)}) \nn\\
+%
+&= \frac{1}{N!}\sum_{\mu,\nu\in S_N}(-1)^{|\mu|+|\nu|} \hat P_\mu \hat P_\nu \delta_{\mu(1)}^{\nu(1)}\dots\delta_{\mu(k-1)}^{\nu(k-1)} \delta_{\mu(k+1)}^{\nu(k+1)}\dots\delta_{\mu(N)}^{\nu(N)}  \nn\\
+%
+& \phantom{-----------------}\times \int \mathrm{d}^3\r_k  \phi^*_{\mu(k)}(\r_k)\hat h_k \phi_{\nu(k)}(\r_k). \label{eq:hf2}
+\end{align}
+Here, $\hat P_\mu$ acts on the orbital indices of $\Psi^*(\R)$, while $\hat P_\nu$ acts on the corresponding indices of $\Psi(\R)$. Since all indices must appear exactly once, and there are $N-1$ delta functions, the only suriving terms appear for permutations which satisfy $\mu(k)=\nu(k)$. In fact, $\mu$ must be equal to $\nu$ on the whole, making $(-1)^{|\mu|+|\nu|}=+1$. 
 
-
-
-
+In total, there are $N!$ possible permutations, meaning we have $(N-1)!$ permutations in the sum of \eq{hf2},
+\begin{align}
+(\ref{eq:hf2}) &= \frac{(N-1)!}{N!}\sum_{i=1}^N\int\mathrm{d}^3\r_k \phi_i^*(\r_k)\hat h_k \phi_i(\r_k) \nn\\
+%
+&= \frac{1}{N}\sum_{i=1}^N\int\mathrm{d}^3\r_k \phi_i^*(\r_k)\hat h_k \phi_i(\r_k). 
+\end{align}
+Since we have one such term for each $k$, we find in total that 
+\begin{align}
+\langle \Psi|\hat h|\Psi\rangle &= \sum_{i=1}^N\int\mathrm{d}^3\r\, \phi_i(\r)\hat h \phi_i(\r),
+\end{align}
+where we have omitted the subscript on $\hat h$. 
 
 \subsection{The \emph{Hartree-Fock limit} \label{HFlimit}}
 
