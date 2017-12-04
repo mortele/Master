@@ -304,7 +304,7 @@ We may now use dimensional analysis in order to work out the rough size of these
 Rough back of the envelope estimations of the order of magnitude of the correction terms are shown in \tab{QM1}. The binding energy of e.g. hydrogen is on the order of $\sim 1E_h$, so these are all miniscule compared to the typical energy scale we are working with. 
 
 
-\subsection{Born-Oppenheimer approximation}
+\subsection{Born-Oppenheimer approximation \label{section:bornoppenheimer}}
 Let us now consider again the atomic Hamiltonian of \eq{QM5}. For a system of $N$ electrons in the presence of $M$ nuclei in three spatial dimensions, we have a system of $3(N+M)$ degrees of freedom (treating the nuclei as point particles). The solution of the TDSE is the wave function, a function depending on at least $3(N+M)$ variables. If we were to seek the solution to the Schrödinger equation for, say an isolated caffeine molecule \ce{C8H10N4O2}, then $\Psi(\R;t)$ would depend on a bit more than 300(!) coordinates. This is an unbelievably monumentous task, and we are only asking for the solution of an \emph{isolated}, fairly small molecule consisting of first row atoms. As it turns out, the wave function is a "very, very, \emph{very} complicated function" and solving the Schrödinger equation is a very, very, \emph{very} hard problem for all but the smallest of systems \cite{kvaal}\comment{p8}. This was in fact realized in the very early days of quantum mechanics. Dirac, for example, wrote in 1929 that \cite{dirac1929}\comment{p1}
 \begin{shadequote}[r]{P. A. M. Dirac}
 The underlying physical laws necessary for the mathematical theory of a large part of physics and the whole of chemistry are thus completely known, and the difficulty is only that the exact application of these equations leads to equations much too complicated to be soluble. It therefore becomes desirable that approximate practical methods of applying quantum mechanics should be developed, which can lead to an explanation of the main features of complex atomic systems without too much computation.
@@ -378,7 +378,7 @@ Let us now consider for a moment how much effect this intentional oversight will
 \\[-0.9em]
 \hline
 \end{tabularx}
-\caption{Values of the Born-Oppenheimer supression ratio, $S=(m_e/m_A)^{\nicefrac{1}{4}}$ for various different atomic systems. Note the \emph{very} slow scaling of quarter power, despite the massively differing masses (is this a pun?). \label{tab:QM2}}
+\caption{Values of the Born-Oppenheimer supression ratio, $S=(m_e/m_A)^{\nicefrac{1}{4}}$ for various different atomic systems. Note the \emph{very} slow scaling of quarter power, despite the widely differing masses. \label{tab:QM2}}
 \end{SCtable}
 
 The ratio 

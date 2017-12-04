@@ -27,7 +27,7 @@ We will begin our discussion of {\bf Density functional theory} (DFT [sometimes 
 
 
 \section{The Hohenberg-Kohn theorems}
-Recall from ((Born-oppenheimer section)) that the \emph{electronic} Hamiltonian under the Born-Oppenheimer approximation takes the form
+Recall from \ref{section:bornoppenheimer} that the \emph{electronic} Hamiltonian under the Born-Oppenheimer approximation takes the form
 \begin{align}
 \hat H &= -\frac{1}{2}\sum_{i=1}^N\nabla^2_i + \sum_{i=1}^N\sum_{j=i+1}^N \frac{1}{|\r_i-\r_j|} - \sum_{i=1}^N\sum_{A=1}^M \frac{Z_A}{|\r_i-\r_A|}.
 \end{align}
@@ -75,7 +75,7 @@ In terms of the wave functions (projecting the equation onto the position basis)
 \end{align}
 which means $\hat V_1-\hat V_2=\text{const}$, in contradiction with the assumption. 
 
-We proceed thus with $\Psi_1(\R)$ and $\Psi_2(\R)$ neccessarily different. Assume now that $\Psi_1(\R)$ and $\Psi_2(\R)$ have the same ground state electronic density, $\rho_0(\r)$. From the variational principle ((Ref var principle section)), we know that 
+We proceed thus with $\Psi_1(\R)$ and $\Psi_2(\R)$ neccessarily different. Assume now that $\Psi_1(\R)$ and $\Psi_2(\R)$ have the same ground state electronic density, $\rho_0(\r)$. From the variational principle (c.f.\ section \ref{variational}), we know that 
 \begin{align}
 E_1=\big\langle \Psi_1 |\hat H_1 |\Psi_1\big\rangle &< \big\langle \Psi_2 |\hat H_1 |\Psi_2\big\rangle \nn\\
 %
@@ -89,7 +89,7 @@ Exchanging the arbitrary indices $1\leftrightarrow2$, gives rise to
 \begin{align}
 E_2 &< E_1 + \int \,\mathrm{d}^3\r \big[v_2(\r) - v_1(\r) \big] \rho_0(\r), \label{eq:dft2}
 \end{align}
-and adding \eq{dft1} from \eq{dft2} gives finally the contradiction $E_1+E_2 < E_1 + E_2$ since the integrals differ only by a sign. But this means that clearly, different $\hat V_\text{ext}$ neccessarily produce differing $\rho_0(\r)$ \cite{toulouse}\comment{p5}.\footnote{As a hands-on example of the first theorem in practice, it is instructive to consider the Coulombic external potential of $M$ stationary nuclei, $\hat V=-\sum_{A=1}^M Z_A/|\r-\r_A|$. In order to uniquely determine the system, we need to know the number of electrons, $N$, the position of the nuclei, $\r_A$, and their charges, $Z_A$. The local maxima of the ground state density coincides perfectly with the nuclei positions. Furthermore, the Kato cusp condition states that at the nuclei ((ref cusp condition section)) $(\partial \bar\rho_0(r_A)/\partial r_A)_{r_A\rightarrow 0}=-2Z_A\bar\rho_0(0)$, where $\bar\rho(r_A)$ denotes the spherical average of density around nucleus $A$ and $r_A=|\r-\r_A|$. This determines $Z_A$ from the ground state density also. Finally, the integral over the density itself gives the number of electrons, $N=\int\,\mathrm{d}^3\r \rho_0(\r)$. 
+and adding \eq{dft1} from \eq{dft2} gives finally the contradiction $E_1+E_2 < E_1 + E_2$ since the integrals differ only by a sign. But this means that clearly, different $\hat V_\text{ext}$ neccessarily produce differing $\rho_0(\r)$ \cite{toulouse}\comment{p5}.\footnote{As a hands-on example of the first theorem in practice, it is instructive to consider the Coulombic external potential of $M$ stationary nuclei, $\hat V=-\sum_{A=1}^M Z_A/|\r-\r_A|$. In order to uniquely determine the system, we need to know the number of electrons, $N$, the position of the nuclei, $\r_A$, and their charges, $Z_A$. The local maxima of the ground state density coincides perfectly with the nuclei positions. Furthermore, the Kato cusp condition states that at the nuclei (c.f.\ section \ref{cuspconds}) $(\partial \bar\rho_0(r_A)/\partial r_A)_{r_A\rightarrow 0}=-2Z_A\bar\rho_0(0)$, where $\bar\rho(r_A)$ denotes the spherical average of density around nucleus $A$ and $r_A=|\r-\r_A|$. This determines $Z_A$ from the ground state density also. Finally, the integral over the density itself gives the number of electrons, $N=\int\,\mathrm{d}^3\r \rho_0(\r)$. 
 
 This is known as E. Bright Wilson's observation \cite{roos}\comment{p92}.}
 
@@ -151,7 +151,7 @@ Recall that the universal energy functional has the form $F[\rho]=T[\rho]+W[\rho
 \begin{align}
 F[\rho]&= T_s[\rho] + J[\rho] + E_\text{xc}[\rho],
 \end{align}
-where $J[\rho]$ is the classical coulomb interaction functional and $E_\text{xc}[\rho]$ is essentially \emph{everything that is left over} \cite{hohenberg-kohn}. The $J[\rho]$ functional we will shortly see is the functional form of the $\hat J$ operator in the Hartree-Fock approximation ((HF section)), while $E_\text{xc}[\rho]$ is called the exchange-correlation energy and contains the (hopefully small) correction needed for $T_s[\rho]$ in order to make it into $T[\rho]$ and the non-classical part of the electron-electron interaction $\hat W$ \cite{yangparr,martin}\comment{p144}\comment{p138}. 
+where $J[\rho]$ is the classical coulomb interaction functional and $E_\text{xc}[\rho]$ is essentially \emph{everything that is left over} \cite{hohenberg-kohn}. The $J[\rho]$ functional we will shortly see is the functional form of the $\hat J$ operator in the Hartree-Fock approximation (see section \ref{HF}), while $E_\text{xc}[\rho]$ is called the exchange-correlation energy and contains the (hopefully small) correction needed for $T_s[\rho]$ in order to make it into $T[\rho]$ and the non-classical part of the electron-electron interaction $\hat W$ \cite{yangparr,martin}\comment{p144}\comment{p138}. 
 
 The \emph{exact} (recall that the density of the auqiliary system is the same as the original density) energy functional of the fully interacting system can now be written as 
 \begin{align}
@@ -168,7 +168,7 @@ It may seem like we have made no progress at all: We started off with an unknown
 
 
 \section{The Kohn-Sham equations}
-In the same way Roothan and Hall introduced orbitals to the Hartree-Fock formalism ((ref H-F section)), we now introduce a set of spin-orbitals in the DFT scheme. The single determinantal wave function is constructed from $N$ orthonormal spin-orbitals, $\{\psi_i(\r)\}_{i=1}^N$, where we have absorbed the spin quantum number into the label $i$. In the restricted case, this means that $i$ and $i+1$ are spatially pair-wise identical, with differing spin index. The energy functional can now be written in terms of the orbitals as 
+In the same way Roothan and Hall introduced orbitals to the Hartree-Fock formalism \ref{HF}, we now introduce a set of spin-orbitals in the DFT scheme. The single determinantal wave function is constructed from $N$ orthonormal spin-orbitals, $\{\psi_i(\r)\}_{i=1}^N$, where we have absorbed the spin quantum number into the label $i$. In the restricted case, this means that $i$ and $i+1$ are spatially pair-wise identical, with differing spin index. The energy functional can now be written in terms of the orbitals as 
 \begin{align}
 E[\{\psi_i\}] = \sum_{i=1}^N %\langle \phi_i | -\frac{\nabla^2_i}{2} | \phi_i\rangle 
 \end{align}
