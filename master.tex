@@ -316,10 +316,33 @@ In the spirit of multiscale modelling, developing "parameter free" MD schemes is
 
 
 \section{Goals}
-The goals of the thesis are as follows:
+The main goal of this thesis is to implement a fully functional (albeit simple) multiscale modelling framework for connecting quantum mechanics to microscopic molecular dynamics simulations. Quantum \emph{ab initio} training data will be generated at different levels of theory and used as training data for a feed-forward ANN. The fully trained ANN-potential-energy surface (PES) is then used in molcular dynamics simulations. 
+
+This goal is naturally split into a few intermediate objectives:
+\begin{itemize}
+  \item[{\bf (a)}]{\bf Develop \emph{ab initio} quantum simulation software}
+  \begin{itemize}
+  \item[{\bf (1)}]{\bf  Develop a Hartree-Fock code}\newline The first level of \emph{ab initio} theory\textemdash and the starting point for the others\textemdash is the Hartree-Fock scheme. We wish to write a completely general HF implementation for atoms and molecular systems using Gaussian type orbitals as bases. This will be done completely from scratch in \CC{}.
+  \item[{\bf (2)}] {\bf Develop a Variational Monte Carlo code} \newline Having solved the Hartree-Fock equations, the next level of theory we want to employ is the variational quantum Monte Carlo approach. The VMC framework should be general enough to both work with the results from HF simulations, and as a fully stand-alone code. This will also be done completely from scratch in \CC{}.
+  \item[{\bf (3)}]{\bf Develop a \emph{local density approximation}\textemdash density functional theory code} \newline Having developed a functioning HF program, we wish to extend it to also be able to handle density functional calculations at the LDA level. This primarily entails developing a framework for efficient numerical integration of the electronic density and derived quantities. This will be done from scratch in \CC{}, with the \inlinecc{dftlibs/numgrid} library specifically handling the integration grid setup.
+  \end{itemize}
+  \item[{\bf (b)}] {\bf Develop a ANN model for PES fitting}\newline Having developed various \emph{ab initio} frameworks for computing molecular energy, we wish to develop a method of fitting said data to PES for use in molecular dynamics simulations. This will be done using the TensorFlow framework, which we will interface from Python scripts.
+  \item[{\bf (c)}]{\bf Use the ANN-PES in simple MD simulations} \newline As a proof of concept and validation of the entire multiscale modelling scheme, we wish to implement the code neccessary to run molecular dynamics simulations using the ANN potential surfaces.  This will be done using the MD package LAMMPS.
+\end{itemize}
+
+\section{Our contributions}
+Dozens of highly optimized, well-tested, and professional \emph{ab initio} QM code bases already exist. Developing code which is able to compete with such packages is unfortunately well outside the scope of the present work. The goal of developing \emph{ab initio} QM methods from scratch is to glean useful insight about the various methods, their inner workings, their strenghts, and potential pit-falls associated with their use.
+ 
+For the ANN and the training process, we employ the TensorFlow (TF) library. We manually set up and feed the NN data for the training, but the optimization, backpropagation, and automatic differentiation is all handled by TF.
+
+For the molecular dynamics modelling, the LAMMPS library is used. In order to evaluate the ANN and it's derivatives, the custom LAMMPS extension of Stende and Treider is used \cite{stende,treider}. 
+
+All in all about 16\,000 significant lines of code\footnote{As counted by the \lstinline{cloc} program which counts \emph{significant} lines of code, leaving out blank lines, comment lines, etc. \cite{cloc}} was developed for the present work of which about 85\% is written in \CC{}, about 10\% in Python, with the remaining few percentages written in a mix of {\sc Matlab}, Mathematica, and Julia. 
+
+Bridging quantum mechanics and molecular dynamics with machine learning techniques is not a new concept: researchers have been using ANNs for potential-energy surface fitting for at least two decades. We do not offer any fundamental contributions to this field. We do however note that\textemdash to the best of our knowledge\textemdash the coupling of quantum Monte Carlo, ANNs, and MD simulations is a relatively novel approach. 
 
 \section{Developed source code}
-All the code developed in conjunction with the present work is freely available on the author's github site, \url{github.com/mortele}.
+All the code developed in conjunction with the present work is freely available on the author's github site, \inlinecc{github.com/mortele}, under a \emph{"do whatever you want with it"} public licence. (Re)Using any parts of it is highly encouraged.
 
 
 \section{Structure of the thesis}
