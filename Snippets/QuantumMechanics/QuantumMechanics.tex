@@ -397,7 +397,7 @@ However, Born-Oppenheimer works because vibrational energies of atoms arent larg
 
 
 
-\section{Anti-symmetry and the Pauli principle}
+\section{Anti-symmetry and the Pauli principle \label{pauli}}
 Let us now consider a system of $N$ \emph{indistinguishable} particles, i.e. particles that are fundamentally identical as to make telling them apart from each other is impossible. If our theory is to handle such a system with any logical consistency, we must require our wave function (and thus also the observables we derive from it) to be \emph{permutation invariant} (up to a phase factor, which does not affect the physics [as per the postulates of QM]). If we cannot tell the particles apart, it does not make sense to say particle one is \emph{here}, while particle two is \emph{over there}\textemdash essentially we need our theory to account for both cases simultaneously. We may do this by constructing a wave function that is non-commital as to which particle is where \cite{griffiths}\comment{p204}.
 
 Following Kvaal we may define this mathematically by defining $\sigma\in S_N$, a permutation of the indices in a set of $N$ such indices \cite{kvaal}\comment{p8}. $S_N$ here denotes the symmetric group of degree $N$.\footnote{The symmetric group on a finite set $M$ is a mathematical group, and consists of all possible permutations of the elements of the set $M$. Mathematically, these permutations are bijections from $M$ onto $M$ itself. There are $N!$ unique permutations in the group, including the identity permutation (which just leaves the set un-changed).} We must demand that $|\Psi|^2$ be permutation invariant, that is
@@ -527,7 +527,7 @@ The axiomatic formulation of QM was set up by British physicist P. Dirac and Hun
 
 
 
-\section{The variational principle}
+\section{The variational principle \label{variational}}
 For a given Hamiltonian, calculating the expectation value of $\langle \Psi | \hat H | \Psi\rangle$ (for \emph{any} $\Psi\in\mathcal{L}_2$) gives an upper bound on the ground state energy. Following Griffiths, a simple proof goes as follows: Since the spectrum of $\hat H$ spans\footnote{Asumming \emph{crucially} that the Hamiltonian is hermitian \cite{griffiths}\comment{p293}. This is not the case for e.g. the similarity transformed $\bar H$ used in coupled cluster theory, predictably leading to all kinds of difficulties.} all of $\mathcal{L}_2$. We assume also that the eigenstates are orthonormalized. This means that \emph{any} normalized $\Psi$ we choose can be expressed in terms of the eigenstates of $\hat H$,
 \begin{align}
 \Psi = \sum_{n=0}^\infty c_n \Phi_n, \ \ \text{ where } \ \ \hat H \Phi_n = E_n \Phi_n.

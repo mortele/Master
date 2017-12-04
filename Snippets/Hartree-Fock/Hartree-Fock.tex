@@ -35,15 +35,15 @@ with $\phi_n(\x_k)$ being the index $n$ spin-orbital evaluated at the spatial an
 
 Recall from section ((Born-Oppenheimer section)) that the Born-Oppenheimer Hamiltonian for a system of $N$ electrons subject to the Coulomb potential from $M$ atoms takes the form
 \begin{align}
-\hat H &= \underbrace{\sum_{i=1}^N -\frac{\nabla^2}{2} + \sum_{i=1}^N\sum_{A=1}^M -\frac{Z_A}{|\r_A-\r_i|}} + \sum_{i=1}^N \sum_{j=i+1}^N \frac{1}{|\r_i-\r_j|} \nn\\
+\hat H &= \underbrace{-\sum_{i=1}^N\frac{\nabla^2}{2} - \sum_{i=1}^N\sum_{A=1}^M \frac{Z_A}{|\r_A-\r_i|}} + \sum_{i=1}^N \sum_{j=i+1}^N \frac{1}{|\r_i-\r_j|} \nn\\
 %
-&\equiv \phantom{------}\sum_{i=1}^N \hat h_i \phantom{-----}+ \sum_{i=1}^N\sum_{j=i+1}^N\hat w_{ij}, 
+&\equiv \phantom{-----}\sum_{i=1}^N \hat h_i \phantom{-----}+ \sum_{i=1}^N\sum_{j=i+1}^N\hat w_{ij}, 
 \end{align}
 where we have defined the \emph{one-body operator} $\hat h_i=-\nabla^2/2-\sum_AZ_A/|\r_A-\r_i|$. The \emph{two-body operator} $\hat w_{ij}$ represents the Coulombic electron-electron interaction between electrons labelled $i$ and $j$. 
 
 
 
-\subsection{Exchange correlation}
+\subsection{Exchange correlation \label{hfexchange}}
 With only applying the Slater determinant ansatz, the electrons are already correlated. If we consider the probability of finding two electrons at coordinates $\x_1$ and $\x_2$ respectively, \cite{thijssen}\comment{p53}
 \begin{align}
 \rho(\x_1,\x_2) &= \int\mathrm{d}\x_3\,\mathrm{d}\x_4\,\dots\,\mathrm{d}\x_N\,|\Psi(\x_1,\x_2,\dots,\x_N)|^2 \nn\\
@@ -62,15 +62,15 @@ Assuming now the wave function takes the form of a single Slater determinant inh
 \subsubsection{One-body Hamiltonian}
 The electronic one-body part of the Hamiltonian takes the form
 \begin{align}
-\hat h=\sum_{i=1}^N\hat h_i = \sum_{i=1}^N\left[ -\frac{\nabla_i^2}{2}-\sum_{A=1}^M \frac{Z_A}{|\r_i-\r_A|}  \right],
+\hat H_0=\sum_{i=1}^N\hat h_i = \sum_{i=1}^N\left[ -\frac{\nabla_i^2}{2}-\sum_{A=1}^M \frac{Z_A}{|\r_i-\r_A|}  \right],
 \end{align}
 where $M$ denotes the number of nuclei. Since $\hat h_i$ only acts on the coordinates of particle $i$, we find
 \begin{align}
-\langle \Psi|\hat h|\Psi\rangle &= \int\mathrm{d}^3\r_1\dots\mathrm{d}^3\r_N\, \Psi^*(\R)\sum_{i=1}^N\hat h_i \Psi(\R) \label{eq:hf1}
+\langle \Psi|\hat H_0|\Psi\rangle &= \int\mathrm{d}^3\r_1\dots\mathrm{d}^3\r_N\, \Psi^*(\R)\sum_{i=1}^N\hat h_i \Psi(\R) \label{eq:hf1}
 \end{align}
 with terms 
 \begin{align}
-(\ref{eq:hf1}) &= \int \mathrm{d}^3\r_1\dots\mathrm{d}^3\r_N\, \Psi^*(\R) \hat h_k\Psi(\R) \nn\\
+\hspace{-10pt}(\ref{eq:hf1}) &= \int \mathrm{d}^3\r_1\dots\mathrm{d}^3\r_N\, \Psi^*(\R) \hat h_k\Psi(\R) \nn\\
 &= \frac{1}{N!} \int \mathrm{d}^3\r_1\dots\mathrm{d}^3\r_N\,\sum_{\mu,\nu\in S_N}(-1)^{|\mu|+|\nu|}\hat P_\mu \hat P_\nu \Psi^*(\r_{\mu(1)}\dots \r_{\mu(N)})\hat h_k \Psi(\r_{\nu(1)}\dots \r_{\nu(N)}) \nn\\
 %
 &= \frac{1}{N!}\sum_{\mu,\nu\in S_N}(-1)^{|\mu|+|\nu|} \hat P_\mu \hat P_\nu \delta_{\mu(1)}^{\nu(1)}\dots\delta_{\mu(k-1)}^{\nu(k-1)} \delta_{\mu(k+1)}^{\nu(k+1)}\dots\delta_{\mu(N)}^{\nu(N)}  \nn\\
@@ -85,11 +85,151 @@ In total, there are $N!$ possible permutations, meaning we have $(N-1)!$ permuta
 %
 &= \frac{1}{N}\sum_{i=1}^N\int\mathrm{d}^3\r_k \phi_i^*(\r_k)\hat h_k \phi_i(\r_k). 
 \end{align}
-Since we have one such term for each $k$, we find in total that 
+Since we have one such term for each $k$, we find in total that \cite{szabo}
 \begin{align}
-\langle \Psi|\hat h|\Psi\rangle &= \sum_{i=1}^N\int\mathrm{d}^3\r\, \phi_i(\r)\hat h \phi_i(\r),
+\langle \Psi|\hat H_0|\Psi\rangle &= \sum_{i=1}^N\int\mathrm{d}^3\r\, \phi_i(\r)\hat h \phi_i(\r),
 \end{align}
-where we have omitted the subscript on $\hat h$. 
+where we have omitted the arbitrary subscript on $\r$ and $\hat h$.
+
+\subsubsection{Two-body Hamiltonian}
+The electronic two-body part of the Hamiltonian takes the form
+\begin{align}
+\hat W = \sum_{i=1}^N\sum_{j=i+1}^N\hat w_{ij}= \sum_{i=1}^N\sum_{j=i+1}^N \frac{1}{|\r_i-\r_j|}.
+\end{align}
+In the same way as before, we insert into $\langle \Psi|\hat W|\Psi\rangle$ the definition of the Slater determinants and find
+\begin{align}
+\langle \Psi|\hat W|\Psi\rangle &= \int\mathrm{d}^3\r_1\dots \mathrm{d}^3\r_N\, \Psi^*(\R)\sum_{i=1}^N\sum_{j=i+1}^N\hat w_{ij}\Psi(\R),
+\end{align}
+with terms 
+\begin{align}
+\frac{1}{N!}\int\mathrm{d}^3\r_1\dots \mathrm{d}^3\r_N\,(-1)^{|\mu|+|\nu|}\hat P_\mu\hat P_\nu  \Psi^*(\r_{\mu(1)}\dots\r_{\mu(N)})\hat w_{ij}\Psi(\r_{\mu(1)}\dots\r_{\mu(N)}). \label{eq:hf3}
+\end{align}
+The orthogonality of the orbitals ensures that all $\mu(k)=\nu(k)$ for all $k$ \emph{except for} $i$ and $j$. There are now two non-vanishing contributions: $\mu(i)=\nu(i)$ and $\mu(j)=\nu(j)$, or $\mu(i)=\nu(j)$ and $\mu(j)=\nu(i)$. In the latter case, the factor $(-1)^{|\mu|+|\nu|}$ contributes an overall minus sign. The sum over all non-zero permutations now entails $(N-2)!$ terms,
+\begin{align}
+(\ref{eq:hf3}) &= \frac{(N-2)!}{N!}\sum_{i=1}^N\sum_{j=i+1}^N\int\mathrm{d}^3\r_1\mathrm{d}^3\r_2\, \Big[\phi^*_i(\r_1)\phi_j^*(\r_2)\hat w \phi_i(\r_1)\phi_j(\r_2) -\nn\\
+%
+& \phantom{-------------------} \phi^*_i(\r_1)\phi_j^*(\r_2)\hat w \phi_j(\r_1)\phi_i(\r_2) \Big],
+\end{align}
+with $N(N-1)$ total such terms giving finally \cite{kvaal}
+\begin{align}
+\langle \Psi|\hat W|\Psi\rangle = \sum_{i=1}^N\sum_{j=i+1}^N  \int\mathrm{d}^3\r_1\mathrm{d}^3\r_2\, \phi^*_i(\r_1)\phi_j^*(\r_2)\hat w \Big[\phi_i(\r_1)\phi_j(\r_2) - \phi_j(\r_1)\phi_i(\r_2)\Big].
+\end{align}
+
+Please note that spin projections $\sigma$ are included in $\r$ and the collection $\R$ (for this chapter alone). This is also the case for the integral measures, which integrate over spatial coordinates and sum over spins. The $\r$ notation is used for brevity (and laziness). 
+
+\subsubsection{Total expression for the Hatree-Fock energy}
+Combining the one-, and two-body expectation values, we find
+\begin{align}
+\langle \Psi|\hat H|\Psi\rangle &= \left\langle \Psi\Bigg| \sum_{i=1}^N \left[-\frac{\nabla^2_i}{2} - \sum_{A=1}^M \frac{Z_A}{|\r_A-\r_i|} +  \sum_{j=i+1}^N \frac{1}{|\r_i-\r_j|} \right] \Bigg|\Psi\right\rangle \nn\\
+%
+&= \sum_{i=1}^N \langle \phi_i|\hat h|\phi_i\rangle + \sum_{i=1}^N\sum_{j=i+1}^N\Big[\langle \phi_i\phi_j|\hat w|\phi_i\phi_j\rangle - \phi_i\phi_j|\hat w|\phi_j\phi_i\rangle \Big] \nn\\
+%
+E_\text{HF} &= \sum_{i=1}^N\langle i|\hat h|i\rangle + \sum_{i=1}^N\sum_{j=i+1}^N\langle ij|\hat w|ij\rangle-\langle ij|\hat w|ji\rangle,
+\end{align}
+where we used the notation 
+\begin{align}
+\langle \phi_i|\hat h|\phi_i\rangle = \langle i|\hat h|i\rangle = \int\mathrm{d}^3\r\, \phi_i^*(\r)\hat h\phi_i(\r),
+\end{align}
+and 
+\begin{align}
+\langle \phi_i\phi_j|\hat w|\phi_i\phi_j\rangle = \langle ij|\hat w|ij\rangle = \int\mathrm{d}^3\r_1\mathrm{d}^3\r_2\, \phi^*_i(\r_1)\phi_j^*(\r_2)\hat w \phi_i(\r_1)\phi_j(\r_2).
+\end{align}
+
+\section{Variational minimization of $E_\text{HF}$}
+We now vary the spin-orbitals $\phi_k\rightarrow \phi_k+\delta\phi_k$ in order to find the variational minimum. Recall from section \ref{variational} that the energy functional satisfies $\delta E[\Psi]|_{\Psi=\Psi_0}=0$ evaluated at \emph{the true ground state} and that finding such a wave function constitutes solving the Schrödinger equation. 
+
+In order to ensure orthonormality still holds during and after the variation, we introduce Lagrange multipliers $\varepsilon_{ij}$, one for each integral 
+\begin{align}
+\int\mathrm{d}^3\r\,\phi_i^*(\r)\phi_j(\r)\stackrel{!}{=}\delta_{ij}.
+\end{align}
+The resulting Lagrange functional takes the form 
+\begin{align}
+\hspace{-8pt}\mathcal{L}\big[\phi_1,\phi_2,\dots,\phi_N\big]&=\langle \Psi|\hat H|\Psi\rangle - \sum_{i=1}^N\sum_{j=1}^N \varepsilon_{ij}\Big( \langle \phi_i|\phi_j\rangle - \delta_{ij} \Big) \nn\\
+%
+&= \sum_{i=1}^N\langle i|\hat h| i\rangle +\frac{1}{2}\sum_{i=1}^N\sum_{j=1}^N\langle ij|\hat w|ij-ji\rangle - \sum_{i=1}^N\sum_{j=1}^N \varepsilon_{ij}\Big( \langle \phi_i|\phi_j\rangle - \delta_{ij} \Big), \nn
+\end{align}
+where we included a factor $1/2$ in front of the $\hat W$ term because the sum is now taken from $j=1$ \cite{hjorth-jensen}. 
+
+It turns out that varying only $\phi_k^*$ is sufficient to derive all the Hartree-Fock equations \cite{kvaal}\comment{p46}. In addition, due to the symmetry of the Langrange multipliers, the multiplier matrix $\varepsilon$ can be assumed to be Hermitian \cite{thijssen}\comment{p59}. Assume now that $\epsilon$ is a small complex number and $\eta$ a normalized orbital, and take $\delta \phi_k$ to be $\epsilon\eta$. We define the function 
+\begin{align}
+f(\epsilon)=\mathcal{L}\Big[\phi_1,\phi_2,\dots,\phi_{k-1},\phi_k+\epsilon\eta,\phi_{k+1},\dots,\phi_N],
+\end{align}
+and note that to first order in $\epsilon$, $f(\epsilon)=f(0)+\epsilon f'(0)+\mathcal{O}(\epsilon^2)$. At the variational minimum, $f'(0)$ for \emph{any} $\eta$. For a (very) brief introduction to functional derivatives, see appendix \ref{functionals}.
+
+Keeping the other orbitals fixed, we consider now the Taylor expansion of $f$ to first order in $\epsilon$:
+\begin{align}
+f(\epsilon) &= \sum_{i=1}^N\langle i+\varepsilon_{ik}\epsilon \eta|\hat h|i\rangle + \frac{1}{2}\sum_{i=1}^N\sum_{j=1}^N \Big\langle \big(i+\varepsilon_{ki}\epsilon\eta\big)\big(j+\varepsilon_{kj}\epsilon\eta\big)\big|\hat w\big|ij-ji\Big\rangle  \nn\\
+%
+& \phantom{--------} - \sum_{i=1}^N\sum_{j=1}^N\Big[  \big\langle \big(i+\varepsilon_{ik}\epsilon \eta\big)\big|j\big\rangle - \varepsilon_{ij}\Big]\nn\\
+%
+&= \sum_{i=1}^N \langle i |\hat h|i\rangle + \frac{1}{2}\sum_{i=1}^N\sum_{j=1}^N\big\langle ij\big|\hat w\big|ij-ji\big\rangle + \epsilon \langle \eta|\hat h|\phi_k\rangle \nn\\
+& \phantom{---} + \frac{\epsilon}{2} \left[\sum_{i=1}^N \langle \eta i|\hat w|ki\rangle + \langle i\eta |\hat w|ik\rangle - \langle \eta i|\hat w|ik\rangle - \langle i\eta |\hat w|ki\rangle \right] \nn\\
+%
+& \phantom{------} - \sum_{j=1}^N\varepsilon_{jk}\epsilon \langle \eta|j\rangle - \sum_{i=1}^N\sum_{j=1}^N \varepsilon_{ij}\Big( \langle \phi_i|\phi_j\rangle - \delta_{ij} \Big) + \mathcal{O}(\epsilon^2).
+\end{align}
+By the symmetry of the $\hat w$ integrals we obtain
+\begin{align}
+f(\epsilon) &= \sum_{i=1}^N \langle i |\hat h|i\rangle + \frac{1}{2}\sum_{i=1}^N\sum_{j=1}^N\big\langle ij\big|\hat w\big|ij-ji\big\rangle -\sum_{i=1}^N\sum_{j=1}^N \varepsilon_{ij}\Big( \langle \phi_i|\phi_j\rangle- \delta_{ij} \Big) \nn\\
+& \phantom{---} + \epsilon \langle \eta|\hat h|\phi_k\rangle + \epsilon\sum_{j=1}^N\Big[ \langle \eta j|\hat w|kj\rangle  - \langle \eta j|\hat w|jk\rangle  \Big] - \sum_{j=1}^N\varepsilon_{jk}\epsilon \langle \eta|j\rangle +\mathcal{O}(\epsilon^2),
+\end{align}
+where we note that $f(0)=\mathcal{L}[\phi_1,\phi_2,\dots,\phi_N,\varepsilon]$ and we can read off $f'(0)$ as \cite{kvaal}\comment{p47}
+\begin{align}
+f'(0) &=  \langle \eta|\hat h|\phi_k\rangle + \sum_{j=1}^N\Big[ \langle \eta j|\hat w|kj\rangle  - \langle \eta j|\hat w|jk\rangle  \Big] - \sum_{j=1}^N\varepsilon_{jk} \langle \eta|j\rangle \stackrel{!}{=} 0. \label{eq:hf4}
+\end{align}
+
+Without changing the Slater determinant (up to a phase which doesnt affect the physics) we may apply a unitary transformation to the orbitals such that
+\begin{align}
+\tilde \phi_k=\sum_{j=1}^N \phi_j U_{jk}. \label{eq:unitary}
+\end{align}
+Since $\det U = \mathrm{e}^{\mathrm{i}\theta}$ for some \emph{real} $\theta$\textemdash and we know that the Slater transforms as $|\tilde\Phi\rangle = \det U|\Phi\rangle$\textemdash the state does not change under this transformation and so the energy must also remain the same. As mentioned, $\varepsilon$ can be assumed to be Hermitian, which means we may choose $U$ such that $\varepsilon=UEU^\dagger$ with $E_{ij}=\delta_{ij}\varepsilon_i$ (with $\varepsilon_i$ being the eigenvalues of the $\varepsilon$ matrix). 
+
+Since \eq{hf4} must hold for \emph{any} $\eta$, the only possible solution is for all the integrands to vanish. Notice that 
+\begin{align}
+\langle \ \cdot \ i|\hat w|jk\rangle &= \int\mathrm{d}^3\r_2\, \phi^*_i(\r_2)\hat w \phi_j(\r_1)\phi_k(\r_2)
+\end{align}
+defines a single particle operator where the inner product with any $\langle l|$ gives the two-body integral $\langle li|\hat w|jk\rangle$. The condition that the integrands of \eq{hf4} must exactly vanish can be written in terms of these operators, as
+\begin{align}
+\sum_{j=1}^N\varepsilon_{jk}|\phi_j\rangle  = \hat h|\phi_k\rangle +\sum_{j=1}^N\Big[\langle\ \cdot\ \phi_j|\hat w|\phi_k\phi_j\rangle -\langle \ \cdot \ \phi_j|\hat w|\phi_j\phi_k\rangle\Big].
+\end{align}
+Under the unitary transformation of \eq{unitary}, this yields finally the {\bf canonical Hartree-Fock equations}
+\begin{align}
+\varepsilon_{i}|\phi_i\rangle  = \hat h|\phi_i\rangle +\sum_{j=1}^N\Big[\langle\ \cdot\ \phi_j|\hat w|\phi_i\phi_j\rangle -\langle \ \cdot \ \phi_j|\hat w|\phi_j\phi_i\rangle\Big].
+\end{align}
+
+\subsection{Defining $\hat J$, $\hat K$ and the Fock operator}
+The expression for the Hartree-Fock energy and the Hartree-Fock equations can be simplified by the introduction of three operators. The \emph{Coulomb} and \emph{exchange} operators,
+\begin{align}
+\hat J_k(\r)\phi(\r)&=\langle \ \cdot \  \phi_k|\hat w|\phi\phi_k\rangle =\int \mathrm{d}^3\r_2\, \phi_k^*(\r_2)\hat w\phi(\r_1)\phi_k(\r_2) \nn\\
+&= \int \mathrm{d}^3\r_2\, |\phi_k(\r_2)|^2\hat w\phi(\r_1), \ \ \text{ and } \\
+\hat K_k(\r)\phi(\r)&=\langle \ \cdot \  \phi_k|\hat w|\phi_k\phi\rangle =\int \mathrm{d}^3\r_2\, \phi_k^*(\r_2)\hat w\phi(\r_2)\phi_k(\r_1)
+\end{align}
+are defined such that the HF equations can be written in the succinct form \cite{thijssen}
+\begin{align}
+\left[\hat h + \hat J - \hat K\right]\phi_i &= \varepsilon_i\phi_i.
+\end{align}
+The $\hat J$ and $\hat K$ with no subscripts are sums over all orbitals,
+\begin{align}
+\hat J =\sum_{k=1}^N\hat J_k, \ \ \text{ and } \ \ \hat K = \sum_{k=1}^N\hat K.
+\end{align}
+In this notation, the HF energy may also be expressed with brevity:
+\begin{align}
+E\big[\Psi\big]  &= \sum_{k=1}^N\left\langle \phi_k \bigg|\hat h + \frac{1}{2}\Big(\hat J - \hat K\Big) \bigg|\phi_k\right\rangle.
+\end{align}
+
+The Coulomb operator represents the averaged electronic repulsion from all the other electrons. This also includes un-physical \emph{self-interaction} with $i=j$, but this is luckily cancelled exactly by corresponding terms in the exchange term. The exchange operator is present simply because of the anti-symmetry properties of the wave function\textemdash as was mentioned briefly in section \ref{hfexchange}\textemdash which makes same-spin electrons repel each other. This is nothing more than a manifestation of the Pauli principle, see section \ref{pauli} \cite{hjorth-jensen}\comment{advanced p27}.
+
+The sum of $\hat h$, and the Coulomb and exchange operators defines the {\bf Fock operator},  \cite{thijssen}\comment{p59}
+\begin{align}
+\hat F = \hat h + \hat J - \hat K,
+\end{align}
+and we note that the HF equations can be written as $\hat F \phi_k = \varepsilon_k \phi_k$.
+
+\section{Restricted Hartree-Fock}
+
+
+
+
+
 
 \subsection{The \emph{Hartree-Fock limit} \label{HFlimit}}
 
