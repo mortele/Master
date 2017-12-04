@@ -276,12 +276,54 @@ We can identify \eq{rhf} as a matrix equation in terms of the {\bf Fock matrix} 
 FC=\bm{\varepsilon}SC.
 \end{align} 
 
+The components of the (restricted) Fock matrix are sums of one-, and two-body integrals in terms of the new basis functions 
+\begin{align}
+F_{pq}&=h_{pq} + \sum_{k=1}^{N/2}\sum_{r=1}^L\sum_{s=1}^L \underbrace{C_{rk}^*C_{sk}}_{\displaystyle \equiv D_{rs}/2}\Big[ 2\big\langle pr|\hat w|qs\big\rangle - \big\langle pr|\hat w|sq\big\rangle \Big],
+\end{align}
+with 
+\begin{align}
+h_{pq}=\langle p|\hat h|q\rangle = \int \mathrm{d}^3\r\, \varphi_p^*(\r)\left[-\frac{\nabla^2}{2}-\sum_{A=1}^M \frac{Z_A}{|\r-\r_A|}\right]\varphi_q(\r).
+\end{align}
+It is convenient to define the density matrix, $D_{pq}=2\sum_{k=1}^{N/2}C_{pk}^*C_{qk}$ with a factor $2$ coming from the spin-restricted nature of the Roothan-Hall equations \cite{kvaal}. In terms of the density matrix, and the one-, and two-body integrals over $\varphi$s, the energy is given as
+\begin{align}
+E_\text{HF} = \sum_{pq}D_{pq}h_{pq}+\frac{1}{2}\sum_{pqrs}D_{pq}D_{sr}\Big[\big\langle pr|\hat w|qs\big\rangle - \frac{1}{2}\big\langle pr|\hat w|sq\big\rangle \Big].
+\end{align}
+We outline in detail how such an equation may be solved in section \ref{rhfs}.
+
+\section{Unrestricted Hartree-Fock and the Pople-Nesbet equations}
+Relaxing the condition that all occupied spatial orbitals be paired leads to what is known as \emph{unrestricted Hartree-Fock}. In the weak formulation\textemdash à la the Roothan-Hall equation\textemdash the unrestricted scheme gives rise to the Pople-Nesbet equations \cite{poplenesbet}. These are essentially two sets of coupled Roothan-Hall equations, one for spin-up and one for spin-down electrons,
+\begin{align}
+F^\uparrow C^\uparrow &= \bm{\varepsilon}^\uparrow S C^\uparrow, \ \ \text{ and } \\
+F^\downarrow C^\downarrow &= \bm{\varepsilon}^\downarrow S C^\downarrow. 
+\end{align}
+Since $\hat K$ only couples same-spin electrons, there is no cross-term. The Coulumb term, however, couples opposite \emph{and} same-spin electrons, and gives rise to a cross-term in $F^\uparrow$ depending on $C^\downarrow$ \cite{thijssen}\comment{p64} 
+\begin{align}
+F^\uparrow_{pq}&=h_{pq} + \sum_{k=1}^{N^\uparrow}\sum_{r=1}^L\sum_{s=1}^L C_{rk}^\uparrow C_{sk}^\uparrow \Big[\big\langle pq|\hat w|qs \big\rangle-\big\langle pq|\hat w|sq \big\rangle\Big] \nn\\
+%
+&\phantom{-----}+ \sum_{k=1}^{N^\downarrow}\sum_{r=1}^L\sum_{s=1}^L C_{rk}^\downarrow C_{sk}^\downarrow \Big[\big\langle pq|\hat w|qs \big\rangle\Big]. \label{eq:poplenesbet}
+\end{align}
+The $F^\downarrow$ results from exchanging $\uparrow\,\leftrightharpoons\, \downarrow$ in \eq{poplenesbet}.
+
+\section{Choice of orbital basis set}
+In the present work we use Gaussian type orbitals exclusively because of their favorable integration properties. This is discussed in depth in chapter \ref{wavefunctions}. The specific basis sets in use are discussed alongside the HF code implementation in chapter \ref{HFI}.
 
 \section{The \emph{Hartree-Fock limit} \label{HFlimit}}
+In order to achieve completeness in the basis set representation of the Hartree-Fock orbitals, we need to (in general) use an infinite set. This is clearly not computationally feasible, so a cut-off is always chosen. However, using only $L$ orbitals limits the accuracy with which we can represent arbitray spin-orbitals $\psi\in\mathcal{H}$. Expansion in the $\{\varphi_k\}_{k=1}^L$ basis constitutes a projection onto the $L$-dimensional Hilbert subspace $\mathcal{H}'=\text{span}\{\varphi_i\}$. This means we introduce an error in the Hartree-Fock orbitals $\psi$ proportional to $\psi\in\mathcal{H}\diagdown \mathcal{H}'=\{\psi\in\mathcal{H}\text{ and }\psi\not\in\mathcal{H}'\}$.
+
+This is known as \emph{basis set truncation error} \cite{hjorth-jensen}\comment{advanced p55}. Taking larger and larger basis sets will predictably reduce this error and the limiting value\textemdash with an infinite basis\textemdash is known as the Hartree-Fock limit \cite{szabo}\comment{p55}. Even though we can never evaluate $E_\text{HF}$ at the limit, there are ways to estimate the limiting value, see e.g.\ \cite{kutzelnigg,hflimit}. 
+
+The difference between the \emph{true} (non-relativistic) ground state energy and the Hartree-Fock limit is known as the {\bf correlation energy},
+\begin{align}
+E_\text{corr}=E_\text{exact}-E_\text{HF (limit)}.
+\end{align}
+Calling HF an un-correlated method altogether is a bit of a misnomer, as electron-electron correlation is taken into account albeit in the mean-field sense. Also worth noting is that HF fully accounts for the exchange correlation of same-spin electrons, c.f.\ section {hfexchange}. However, so-called \emph{dynamic correlation} effects are  completely neglected at the Hartree-Fock level of theory. Dynamic correlation refers the instantaneous Coulomb repulsion of two electrons moving around in space.
+
+A separate correlation effect which HF fails to take into account is what is known as \emph{static correlation}. A single Slater determinant may be fundamentally unable to accurately represent the true ground state wave function of any given quantum system. In some systems, only a linear combination of (nearly-)degenerate Slater determinants may describe the state well. This may be important in certain molecular systems, for which the single-Slater HF approximation is qualitatively wrong. 
 
 
-!!!!!!!
-!!!!!!!
+
+%!!!!!!!
+%!!!!!!!
 %INSANE SHIT: 
 %Integrals:\url{https://github.com/psi4/psi4numpy/blob/master/Tutorials/11_Integrals/11a_1e_Integrals.ipynb}
 %RHF:\url{https://github.com/psi4/psi4numpy/blob/master/Tutorials/03_Hartree-Fock/3a_restricted-hartree-fock.ipynb}
