@@ -46,7 +46,7 @@ where we have defined the \emph{one-body operator} $\hat h_i=-\nabla^2/2-\sum_AZ
 \subsection{Exchange correlation \label{hfexchange}}
 With only applying the Slater determinant ansatz, the electrons are already correlated. If we consider the probability of finding two electrons at coordinates $\x_1$ and $\x_2$ respectively, \cite{thijssen}\comment{p53}
 \begin{align}
-\rho(\x_1,\x_2) &= \int\mathrm{d}\x_3\,\mathrm{d}\x_4\,\dots\,\mathrm{d}\x_N\,|\Psi(\x_1,\x_2,\dots,\x_N)|^2 \nn\\
+\rho(\x_1,\x_2) &= \int\mathrm{d}^4\x_3\,\mathrm{d}^4\x_4\,\dots\,\mathrm{d}^4\x_N\,|\Psi(\x_1,\x_2,\dots,\x_N)|^2 \nn\\
 %
 &= \frac{1}{N(N-1)}\sum_{k=1}^N\sum_{l=1}^N \Big[ |\phi_k(\x_1)|^2 |\phi_l(\x_2)|^2 - \phi^*_k(\x_1)\phi_k(\x_2)\phi_l^*(\x_2)\phi_l(\x_1)\Big]. \label{eq:exchange}
 \end{align}
@@ -59,6 +59,8 @@ which means the second term vanishes for opposite spin electrons. However, for s
 \section{The Hartree-Fock energy}
 Assuming now the wave function takes the form of a single Slater determinant inhabited by \emph{orthonormal} orbitals, let us work out what the exected value of the energy is. The Hamiltonian consists of two parts\textemdash a one-body and a two-body term\textemdash which we will handle separately. 
 
+\renewcommand{\r}{{\bf x}}
+\renewcommand{\R}{{\bf X}}
 \subsubsection{One-body Hamiltonian}
 The electronic one-body part of the Hamiltonian takes the form
 \begin{align}
@@ -66,28 +68,28 @@ The electronic one-body part of the Hamiltonian takes the form
 \end{align}
 where $M$ denotes the number of nuclei. Since $\hat h_i$ only acts on the coordinates of particle $i$, we find
 \begin{align}
-\langle \Psi|\hat H_0|\Psi\rangle &= \int\mathrm{d}^3\r_1\dots\mathrm{d}^3\r_N\, \Psi^*(\R)\sum_{i=1}^N\hat h_i \Psi(\R) \label{eq:hf1}
+\langle \Psi|\hat H_0|\Psi\rangle &= \int\mathrm{d}^4\r_1\dots\mathrm{d}^4\r_N\, \Psi^*(\R)\sum_{i=1}^N\hat h_i \Psi(\R) \label{eq:hf1}
 \end{align}
 with terms 
 \begin{align}
-\hspace{-10pt}(\ref{eq:hf1}) &= \int \mathrm{d}^3\r_1\dots\mathrm{d}^3\r_N\, \Psi^*(\R) \hat h_k\Psi(\R) \nn\\
-&= \frac{1}{N!} \int \mathrm{d}^3\r_1\dots\mathrm{d}^3\r_N\,\sum_{\mu,\nu\in S_N}(-1)^{|\mu|+|\nu|}\hat P_\mu \hat P_\nu \Psi^*(\r_{\mu(1)}\dots \r_{\mu(N)})\hat h_k \Psi(\r_{\nu(1)}\dots \r_{\nu(N)}) \nn\\
+\hspace{-10pt}(\ref{eq:hf1}) &= \int \mathrm{d}^4\r_1\dots\mathrm{d}^4\r_N\, \Psi^*(\R) \hat h_k\Psi(\R) \nn\\
+&= \frac{1}{N!} \int \mathrm{d}^4\r_1\dots\mathrm{d}^4\r_N\,\sum_{\mu,\nu\in S_N}(-1)^{|\mu|+|\nu|}\hat P_\mu \hat P_\nu \Psi^*(\r_{\mu(1)}\dots \r_{\mu(N)})\hat h_k \Psi(\r_{\nu(1)}\dots \r_{\nu(N)}) \nn\\
 %
 &= \frac{1}{N!}\sum_{\mu,\nu\in S_N}(-1)^{|\mu|+|\nu|} \hat P_\mu \hat P_\nu \delta_{\mu(1)}^{\nu(1)}\dots\delta_{\mu(k-1)}^{\nu(k-1)} \delta_{\mu(k+1)}^{\nu(k+1)}\dots\delta_{\mu(N)}^{\nu(N)}  \nn\\
 %
-& \phantom{-----------------}\times \int \mathrm{d}^3\r_k  \phi^*_{\mu(k)}(\r_k)\hat h_k \phi_{\nu(k)}(\r_k). \label{eq:hf2}
+& \phantom{-----------------}\times \int \mathrm{d}^4\r_k  \phi^*_{\mu(k)}(\r_k)\hat h_k \phi_{\nu(k)}(\r_k). \label{eq:hf2}
 \end{align}
-Here, $\hat P_\mu$ acts on the orbital indices of $\Psi^*(\R)$, while $\hat P_\nu$ acts on the corresponding indices of $\Psi(\R)$. Since all indices must appear exactly once, and there are $N-1$ delta functions, the only suriving terms appear for permutations which satisfy $\mu(k)=\nu(k)$. In fact, $\mu$ must be equal to $\nu$ on the whole, making $(-1)^{|\mu|+|\nu|}=+1$. 
+Note that $\r=\{{\bf r},\sigma\}$ labels both spatial and spin coordinates, with $\R=\{\r_1,\r_2\dots,\r_N\}$. Here, $\hat P_\mu$ acts on the orbital indices of $\Psi^*(\R)$, while $\hat P_\nu$ acts on the corresponding indices of $\Psi(\R)$. Since all indices must appear exactly once, and there are $N-1$ delta functions, the only suriving terms appear for permutations which satisfy $\mu(k)=\nu(k)$. In fact, $\mu$ must be equal to $\nu$ on the whole, making $(-1)^{|\mu|+|\nu|}=+1$. 
 
 In total, there are $N!$ possible permutations, meaning we have $(N-1)!$ permutations in the sum of \eq{hf2},
 \begin{align}
-(\ref{eq:hf2}) &= \frac{(N-1)!}{N!}\sum_{i=1}^N\int\mathrm{d}^3\r_k \phi_i^*(\r_k)\hat h_k \phi_i(\r_k) \nn\\
+(\ref{eq:hf2}) &= \frac{(N-1)!}{N!}\sum_{i=1}^N\int\mathrm{d}^4\r_k \phi_i^*(\r_k)\hat h_k \phi_i(\r_k) \nn\\
 %
-&= \frac{1}{N}\sum_{i=1}^N\int\mathrm{d}^3\r_k \phi_i^*(\r_k)\hat h_k \phi_i(\r_k). 
+&= \frac{1}{N}\sum_{i=1}^N\int\mathrm{d}^4\r_k \phi_i^*(\r_k)\hat h_k \phi_i(\r_k). 
 \end{align}
 Since we have one such term for each $k$, we find in total that \cite{szabo}
 \begin{align}
-\langle \Psi|\hat H_0|\Psi\rangle &= \sum_{i=1}^N\int\mathrm{d}^3\r\, \phi_i(\r)\hat h \phi_i(\r),
+\langle \Psi|\hat H_0|\Psi\rangle &= \sum_{i=1}^N\int\mathrm{d}^4\r\, \phi_i(\r)\hat h \phi_i(\r),
 \end{align}
 where we have omitted the arbitrary subscript on $\r$ and $\hat h$.
 
@@ -98,24 +100,22 @@ The electronic two-body part of the Hamiltonian takes the form
 \end{align}
 In the same way as before, we insert into $\langle \Psi|\hat W|\Psi\rangle$ the definition of the Slater determinants and find
 \begin{align}
-\langle \Psi|\hat W|\Psi\rangle &= \int\mathrm{d}^3\r_1\dots \mathrm{d}^3\r_N\, \Psi^*(\R)\sum_{i=1}^N\sum_{j=i+1}^N\hat w_{ij}\Psi(\R),
+\langle \Psi|\hat W|\Psi\rangle &= \int\mathrm{d}^4\r_1\dots \mathrm{d}^4\r_N\, \Psi^*(\R)\sum_{i=1}^N\sum_{j=i+1}^N\hat w_{ij}\Psi(\R),
 \end{align}
 with terms 
 \begin{align}
-\frac{1}{N!}\int\mathrm{d}^3\r_1\dots \mathrm{d}^3\r_N\,(-1)^{|\mu|+|\nu|}\hat P_\mu\hat P_\nu  \Psi^*(\r_{\mu(1)}\dots\r_{\mu(N)})\hat w_{ij}\Psi(\r_{\mu(1)}\dots\r_{\mu(N)}). \label{eq:hf3}
+\frac{1}{N!}\int\mathrm{d}^4\r_1\dots \mathrm{d}^4\r_N\,(-1)^{|\mu|+|\nu|}\hat P_\mu\hat P_\nu  \Psi^*(\r_{\mu(1)}\dots\r_{\mu(N)})\hat w_{ij}\Psi(\r_{\mu(1)}\dots\r_{\mu(N)}). \label{eq:hf3}
 \end{align}
 The orthogonality of the orbitals ensures that all $\mu(k)=\nu(k)$ for all $k$ \emph{except for} $i$ and $j$. There are now two non-vanishing contributions: $\mu(i)=\nu(i)$ and $\mu(j)=\nu(j)$, or $\mu(i)=\nu(j)$ and $\mu(j)=\nu(i)$. In the latter case, the factor $(-1)^{|\mu|+|\nu|}$ contributes an overall minus sign. The sum over all non-zero permutations now entails $(N-2)!$ terms,
 \begin{align}
-(\ref{eq:hf3}) &= \frac{(N-2)!}{N!}\sum_{i=1}^N\sum_{j=i+1}^N\int\mathrm{d}^3\r_1\mathrm{d}^3\r_2\, \Big[\phi^*_i(\r_1)\phi_j^*(\r_2)\hat w \phi_i(\r_1)\phi_j(\r_2) -\nn\\
+(\ref{eq:hf3}) &= \frac{(N-2)!}{N!}\sum_{i=1}^N\sum_{j=i+1}^N\int\mathrm{d}^4\r_1\mathrm{d}^4\r_2\, \Big[\phi^*_i(\r_1)\phi_j^*(\r_2)\hat w \phi_i(\r_1)\phi_j(\r_2) -\nn\\
 %
 & \phantom{-------------------} \phi^*_i(\r_1)\phi_j^*(\r_2)\hat w \phi_j(\r_1)\phi_i(\r_2) \Big],
 \end{align}
 with $N(N-1)$ total such terms giving finally \cite{kvaal}
 \begin{align}
-\langle \Psi|\hat W|\Psi\rangle = \sum_{i=1}^N\sum_{j=i+1}^N  \int\mathrm{d}^3\r_1\mathrm{d}^3\r_2\, \phi^*_i(\r_1)\phi_j^*(\r_2)\hat w \Big[\phi_i(\r_1)\phi_j(\r_2) - \phi_j(\r_1)\phi_i(\r_2)\Big].
+\langle \Psi|\hat W|\Psi\rangle = \sum_{i=1}^N\sum_{j=i+1}^N  \int\mathrm{d}^4\r_1\mathrm{d}^4\r_2\, \phi^*_i(\r_1)\phi_j^*(\r_2)\hat w \Big[\phi_i(\r_1)\phi_j(\r_2) - \phi_j(\r_1)\phi_i(\r_2)\Big].
 \end{align}
-
-Please note that spin projections $\sigma$ are included in $\r$ and the collection $\R$ (for this chapter alone). This is also the case for the integral measures, which integrate over spatial coordinates and sum over spins. The $\r$ notation is used for brevity (and laziness). 
 
 \subsubsection{Total expression for the Hatree-Fock energy}
 Combining the one-, and two-body expectation values, we find
@@ -128,11 +128,11 @@ E_\text{HF} &= \sum_{i=1}^N\langle i|\hat h|i\rangle + \sum_{i=1}^N\sum_{j=i+1}^
 \end{align}
 where we used the notation 
 \begin{align}
-\langle \phi_i|\hat h|\phi_i\rangle = \langle i|\hat h|i\rangle = \int\mathrm{d}^3\r\, \phi_i^*(\r)\hat h\phi_i(\r),
+\langle \phi_i|\hat h|\phi_i\rangle = \langle i|\hat h|i\rangle = \int\mathrm{d}^4\r\, \phi_i^*(\r)\hat h\phi_i(\r),
 \end{align}
 and 
 \begin{align}
-\langle \phi_i\phi_j|\hat w|\phi_i\phi_j\rangle = \langle ij|\hat w|ij\rangle = \int\mathrm{d}^3\r_1\mathrm{d}^3\r_2\, \phi^*_i(\r_1)\phi_j^*(\r_2)\hat w \phi_i(\r_1)\phi_j(\r_2).
+\langle \phi_i\phi_j|\hat w|\phi_i\phi_j\rangle = \langle ij|\hat w|ij\rangle = \int\mathrm{d}^4\r_1\mathrm{d}^4\r_2\, \phi^*_i(\r_1)\phi_j^*(\r_2)\hat w \phi_i(\r_1)\phi_j(\r_2).
 \end{align}
 
 \section{Variational minimization of $E_\text{HF}$}
@@ -140,7 +140,7 @@ We now vary the spin-orbitals $\phi_k\rightarrow \phi_k+\delta\phi_k$ in order t
 
 In order to ensure orthonormality still holds during and after the variation, we introduce Lagrange multipliers $\varepsilon_{ij}$, one for each integral 
 \begin{align}
-\int\mathrm{d}^3\r\,\phi_i^*(\r)\phi_j(\r)\stackrel{!}{=}\delta_{ij}.
+\int\mathrm{d}^4\r\,\phi_i^*(\r)\phi_j(\r)\stackrel{!}{=}\delta_{ij}.
 \end{align}
 The resulting Lagrange functional takes the form 
 \begin{align}
@@ -185,7 +185,7 @@ Since $\det U = \mathrm{e}^{\mathrm{i}\theta}$ for some \emph{real} $\theta$\tex
 
 Since \eq{hf4} must hold for \emph{any} $\eta$, the only possible solution is for all the integrands to vanish. Notice that 
 \begin{align}
-\langle \ \cdot \ i|\hat w|jk\rangle &= \int\mathrm{d}^3\r_2\, \phi^*_i(\r_2)\hat w \phi_j(\r_1)\phi_k(\r_2)
+\langle \ \cdot \ i|\hat w|jk\rangle &= \int\mathrm{d}^4\r_2\, \phi^*_i(\r_2)\hat w \phi_j(\r_1)\phi_k(\r_2)
 \end{align}
 defines a single particle operator where the inner product with any $\langle l|$ gives the two-body integral $\langle li|\hat w|jk\rangle$. The condition that the integrands of \eq{hf4} must exactly vanish can be written in terms of these operators, as
 \begin{align}
@@ -199,9 +199,9 @@ Under the unitary transformation of \eq{unitary}, this yields finally the {\bf c
 \subsection{Defining $\hat J$, $\hat K$ and the Fock operator}
 The expression for the Hartree-Fock energy and the Hartree-Fock equations can be simplified by the introduction of three operators. The \emph{Coulomb} and \emph{exchange} operators,
 \begin{align}
-\hat J_k(\r)\phi(\r)&=\langle \ \cdot \  \phi_k|\hat w|\phi\phi_k\rangle =\int \mathrm{d}^3\r_2\, \phi_k^*(\r_2)\hat w\phi(\r_1)\phi_k(\r_2) \nn\\
-&= \int \mathrm{d}^3\r_2\, |\phi_k(\r_2)|^2\hat w\phi(\r_1), \ \ \text{ and } \\
-\hat K_k(\r)\phi(\r)&=\langle \ \cdot \  \phi_k|\hat w|\phi_k\phi\rangle =\int \mathrm{d}^3\r_2\, \phi_k^*(\r_2)\hat w\phi(\r_2)\phi_k(\r_1)
+\hat J_k(\r)\phi(\r)&=\langle \ \cdot \  \phi_k|\hat w|\phi\phi_k\rangle =\int \mathrm{d}^4\r_2\, \phi_k^*(\r_2)\hat w\phi(\r_1)\phi_k(\r_2) \nn\\
+&= \int \mathrm{d}^4\r_2\, |\phi_k(\r_2)|^2\hat w\phi(\r_1), \ \ \text{ and } \\
+\hat K_k(\r)\phi(\r)&=\langle \ \cdot \  \phi_k|\hat w|\phi_k\phi\rangle =\int \mathrm{d}^4\r_2\, \phi_k^*(\r_2)\hat w\phi(\r_2)\phi_k(\r_1)
 \end{align}
 are defined such that the HF equations can be written in the succinct form \cite{thijssen}
 \begin{align}
@@ -224,27 +224,69 @@ The sum of $\hat h$, and the Coulomb and exchange operators defines the {\bf Foc
 \end{align}
 and we note that the HF equations can be written as $\hat F \phi_k = \varepsilon_k \phi_k$.
 
+\renewcommand{\r}{{\bf r}}
+\renewcommand{\R}{{\bf R}}
+\renewcommand{\x}{{\bf x}}
+\newcommand{\X}{{\bf X}}
 \section{Restricted Hartree-Fock}
+Under the assumption that all spatial orbitals are doubly occupied\textemdash i.e.\ the even index spin-orbitals represent $\phi_{2n'}(\x)=\psi_{n}(\r)\chi(\uparrow)$, with odd numbered $\phi_{2n'+1}(\x)=\psi_{n}(\r)\chi(\downarrow)$, for \emph{spatial} orbitals $\psi$\textemdash the Hartree-Fock framework simplifies considerably. Under Restricted Hartree-Fock (RHF), we may explicitly integrate out the spin-dependency of the Fock operator. 
+
+Let us now consider the Coulomb operator, $\hat J$. Since the spin-orbitals entering $\hat J$ are always lined up in the sense that the integral over $\x_2$ happens over $\phi_{k'}^*(\x_2)\phi_{k'}(\x_2)=\psi_k^*(\r_2)\chi^*(\sigma_k)\psi_k(\r_2)\chi(\sigma_k)$, the spin functions $\chi(\sigma_k)$ are always equal. This means they integrate out, and we can write the \emph{spatial} Coulomb operator $\tilde J$ as \cite{thijssen}\comment{p63}
+\begin{align}
+\hat J(\x)\phi(\x) &=\sum_{i=1}^{N}\int\mathrm{d}^4\x_2\, \phi_i^*(\x_2)\phi_i(\x_2)\hat w \phi(\x) \nn\\
+&= \sum_{i=1}^{N}\int\mathrm{d}\sigma_2\int\mathrm{d}^3\r_2\, \psi_i^*(\r_2)\chi^*(\sigma_2)\psi_i(\r_2)\chi(\sigma_2)\hat w \psi(\r)\chi(\sigma) \nn\\
+&= 2\sum_{l=1}^{N/2}\int\mathrm{d}^3\r_2\, \psi_l^*(\r_2)\psi_l(\r_2)\hat w \psi(\r) = \tilde J(\r)\psi(\r).
+\end{align}
+Note the changed sum limits in the last equation, we are now only summing over half $l$ up to $N/2$.  A corresponding doubling of the exchange operator does \emph{not} happen, since the spin integral only evaluates to one half of the time. We find thus \cite{szabo}\comment{p134}
+\begin{align}
+\hat K(\x)\phi(\x) &=\sum_{i=1}^{N}\int\mathrm{d}^4\x_2\, \phi_i^*(\x_2)\phi(\x_2)\hat w \phi_i(\x) \nn\\
+&= \sum_{i=1}^{N}\int\mathrm{d}\sigma_2\int\mathrm{d}^3\r_2\, \psi_i^*(\r_2)\chi^*(\sigma_2)\psi(\r)\chi(\sigma)\hat w \psi(\r_2)\chi(\sigma_2) \nn\\
+&= \sum_{l=1}^{N/2}\int\mathrm{d}^3\r_2\, \psi_l^*(\r_2)\psi(\r)\hat w \psi_l(\r_2) = \tilde K(\r)\psi(\r).
+\end{align}
+This partial supression of the exchange operator can be understood by the fact that exchange correlation is only felt by same-spin electrons. Thus explicitly integrating away the spin degrees of freedom reveals that for any spin-orbital $\phi(\x)=\psi(\r)\chi(\sigma)$, the $\hat K_k$ operator only has an effect for orbitals of corresponding spin projection $\sigma$. The number of such orbitals is exactly $N/2$. 
+
+Since the one-body operator $\hat h$ has no explicit \emph{or} implicit spin-dependence, it remains unchanged in the RHF scheme. We may now write down the spatial, restricted, Fock operator
+\begin{align}
+\tilde F(\r) &= \hat h(\r) + 2\tilde J(\r)-\tilde K(\r)
+\end{align}
+and the restricted Hartee-Fock energy 
+\begin{align}
+\tilde E_\text{HF} &= 2\sum_{k=1}^{N/2}\langle \psi_k|\hat h|\psi_k\rangle + \sum_{k=1}^{N/2}\Big[ 2\big\langle \psi_k|\tilde J|\psi_k\big\rangle - \big\langle \psi_k|\tilde K|\psi_k\big\rangle  \Big].
+\end{align}
+Note carefully the subtle (read: lazy) redefinition of $\langle \,\cdot\, |\,\cdot\,\rangle$ to now only include \emph{spatial} integrals when discussing RHF. 
 
 
+\subsection{The Roothan-Hall equations}
+In order to discretize the RHF equations in a way suitable for numerical solution, we apply the method of Galerkin \cite{matinf5620}. This method was independently developed by both Dutch physicist C. C. J. Roothan and Irish mathematician G. C. Hall in 1951 \cite{roothan,hall}. 
+
+Consider a finite basis set of $L$ spatial orbitals, $\{\varphi_k\}_{k=1}^L$. Whereas the number of occupied restricted Hartree-Fock orbitals is constrained to be $N/2$, this basis set can in general be any size. Let us now expand $\psi_i$ in terms of this basis,
+\begin{align}
+\psi_i=\sum_{k=1}^LC_{ki} \varphi_k(\r),
+\end{align}
+which gives us the RHF equations projected onto the Hilbert subspace spanned by the new basis set\textemdash$\mathcal{H}'=\text{span}\{\varphi_k\}$\textemdash as
+\begin{align}
+\sum_{k=1}^LC_{ki}\tilde F(\r)\varphi_k(\r) &= \varepsilon_i \sum_{k=1}^LC_{ki}\varphi_k(\r). 
+\end{align}
+Taking the inner product with $\varphi_q(\r)$ gives the \emph{weak formulation} of the RHF equations on $\mathcal{H}'$:
+\begin{align}
+\sum_{k=1}^LC_{ki}\int\mathrm{d}^3\r\, \varphi_q(\r)\tilde F(\r)\varphi_k(\r) &= \varepsilon_i \sum_{k=1}^LC_{ki}\int\mathrm{d}^3\r\,\varphi_q(\r)\varphi_k(\r). \label{eq:rhf}
+\end{align}
+We can identify \eq{rhf} as a matrix equation in terms of the {\bf Fock matrix} $F$, the {\bf coefficient matrix} $C$, and the {\bf overlap matrix} $S$,
+\begin{align}
+FC=\bm{\varepsilon}SC.
+\end{align} 
 
 
-
-
-\subsection{The \emph{Hartree-Fock limit} \label{HFlimit}}
+\section{The \emph{Hartree-Fock limit} \label{HFlimit}}
 
 
 !!!!!!!
-
 !!!!!!!
-
-INSANE SHIT: 
-Integrals:\url{https://github.com/psi4/psi4numpy/blob/master/Tutorials/11_Integrals/11a_1e_Integrals.ipynb}
-RHF:\url{https://github.com/psi4/psi4numpy/blob/master/Tutorials/03_Hartree-Fock/3a_restricted-hartree-fock.ipynb}
-
-!!!!!!!
-
-!!!!!!!
+%INSANE SHIT: 
+%Integrals:\url{https://github.com/psi4/psi4numpy/blob/master/Tutorials/11_Integrals/11a_1e_Integrals.ipynb}
+%RHF:\url{https://github.com/psi4/psi4numpy/blob/master/Tutorials/03_Hartree-Fock/3a_restricted-hartree-fock.ipynb}
+%!!!!!!!
+%!!!!!!!
 
 
 
