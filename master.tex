@@ -246,7 +246,7 @@
 \maketitle
 
 \begin{abstract}
-We implement three different \emph{ab initio} electronic structure methods: Hartree-Fock (HF), Kohn-Sham density functional theory (DFT), and quantum variational Monte Carlo (VMC). Gaussian type orbitals are used for the former two, while the VMC framework allows more general orbital bases (including the possibility of using the optmized HF orbitals). For the DFT implementation, the local density approximation and the correlation energy functional parametrization of Vosko, Wilk, and Nusair is used. A thorough introduction to the underlying theory of all three methods is presented, and the codes are tested on the ten-electron series \ce{CH4}, \ce{NH3}, \ce{H2O}, \ce{HF}, as well as on \ce{N2}, \ce{H2}, and \ce{H2+}. Ground state energies are found to be in good agreement with the litterature. 
+We implement three different \emph{ab initio} electronic structure methods: Hartree-Fock (HF), Kohn-Sham density functional theory (DFT), and quantum variational Monte Carlo (VMC). Gaussian type orbitals are used for the former two, while the VMC framework allows more general orbital bases (including the possibility of using the optmized HF orbitals). For the DFT implementation, the local density approximation and the correlation energy functional parametrization of Vosko, Wilk, and Nusair is used. A thorough introduction to the underlying theory of all three methods is presented, and the codes are tested on select first row atoms and simple molecules. Ground state energies are found to be in good agreement with the litterature. 
 
 Secondly, a method for parameterizing the Born-Oppenheimer energy hypersurfaces\textemdash obtained by \emph{ab initio} calculations\textemdash with artificial neural networks (ANN) is presented. The ANN calcuations are done using TensorFlow, and the resulting analytical inter-atomic potentials may be used directly in molecular dynamics simulations. We present a simple\textemdash proof of concept\textemdash MD simulation using the ANN potential for \ce{H2} in the gas state using LAMMPS.
 \end{abstract}
@@ -270,7 +270,7 @@ Secondly, a method for parameterizing the Born-Oppenheimer energy hypersurfaces\
   Lastly, to Vilde: Thank you for the endless encouragement (and all the sushi!). Thank you for putting up with the largely absent and massively stressed out version of myself for long months.
 
   \subsubsection*{Collaboration Details}
-  All code developed for this thesis have been written from scratch by the author. The ANN code has been developed in partial collaboration with Stende \cite{stende} and Treider \cite{treider}, and the HF program was written with a lot of inspiration taken from Dragly \cite{dragly}.
+  All code developed for this thesis have been written from scratch by the author. The ANN code has been developed in partial collaboration with Stende \cite{stende} and Treider \cite{treider}, the HF program was written with a lot of inspiration taken from Dragly \cite{dragly}, and some ideas for the VMC code have been borrowed from an earlier program written by the author and Håvard Tveit Ihle.
 
   \begin{flushright}
   Morten Ledum \\ Oslo, December 2017

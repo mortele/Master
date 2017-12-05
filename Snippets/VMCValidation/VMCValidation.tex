@@ -12,13 +12,89 @@
 
 
 \chapter{Variational Monte Carlo validation tests}
+
+
+
+\section{Non-interacting electrons}
+The simplest possible VMC calculations can be done on non-interacting, hydrogen-like atoms. With $N$ electrons orbiting a single charge-$Z$ nucleus, with no electron-electron interaction, the Hamiltonian takes the form
+\begin{align}
+\hat H=\sum_{i=1}^N\left[-\frac{\nabla_i^2}{2}-\frac{Z}{|\r_i-\r_A|}\right].
+\end{align}
+
+\section{The effect of the Jastrow factor}
+\begin{figure}
+\centering
+\includegraphics[width=0.99\textwidth,trim=50 50 50 50, clip]{jastrowhole2.png}
+\caption{Detail of the \ce{Be} wave function at the point where two electrons meet. Shown is $|\Psi(\r_1;\r_2,\r_3,\r_4)|^2$ for a part of the $x_1-y_1$-plane of the electronic coordinates of electron one, when the (opposite-spin) electron two is held at $\r_2=(1,1,0)$. The placement of electron two is indicated by a floating sphere. The remaining two electrons are far separated and held fixed far from the location of this plot. The plot set into the surface beneath indicate the contours of the wave function. The single \ce{Be} is located at $\r_A=\bm{0}$.  \label{fig:jastrowhole}}
+\end{figure}
+The Jastrow factor introduces dynamic electron correlation to the wave function. As opposed to the Hartree-Fock scheme\textemdash in which all electrons interact only with the combined averaged charge density of the other electrons\textemdash dynamic correlation introduces instantaneous repulsion between electrons moving around in the molecular volume.  In general, VMC is able to recover roughly 80-90\% of the correlation energy\textemdash c.f.\ section \ref{HFlimit}\textemdash with highly optimized (multi-parameter) Jastrow factors (and possibly a linear combination of Slater determinants) \cite{umrigar}. 
+
+The single-parameter, two-body Jastrow factor used in the present work ensures the electron-electron cusp\textemdash c.f.\ section \ref{section:eecusp}\textemdash condition is upheld by reducing the value of the wave function whenever two electrons get close to each other. Same-spin electrons occupying the same spot in space is strictly forbidden by the Pauli princple, and the determinantal form of the wave function ensures that is vanishes exactly as such configurations. This is however not true of opposite-spin electrons. While the Jastrow factor changes the wave function in regions of configuration space where $\r_1$ and $\r_2$ are close, it does not make it vanish. Under certain conditions, the probability density at $\r_1=\r_2$ is even higher than the surrounding configurations \cite{atkins}\comment{\url{https://chemistry.stackexchange.com/questions/68405/can-two-electron-occupy-the-same-spatial-spot-in-a-statistical-way}}. An example of the Jastrow factor's effect on the electron density is shown in \fig{jastrowhole}. The plot shows the wave function as function of $\r_1$ varying over a plane intersecting $\r_2$, with $\r_2$, $\r_3$, and $\r_4$ held fixed. The \ce{Be} nucleus is located at $\r_A=\bm{0}$, and we note the exponential decay away from the origin is the overall form. However, we also note a distinct \emph{Jastrow hole} at the position of electron two. 
+
+Introduction of the Jastrow factor makes the VMC framwork in principle better suited to handle interacting many-electron systems than e.g.\ HF. We have built in a single variational parameter in $J(\R)$, namely $\beta$. Recall that
+\begin{align}
+J(\R)=\exp\left[\sum_{i=1}^N\sum_{j=i+1}^N \frac{a_{ij}r_{ij}}{1+\beta r_{ij}} \right],
+\end{align}
+with $a_{ij}$ depending on the spin-projections of electrons $i$ and $j$. In order to obtain a better parametrization of the many-electron wave function than the single Slater determinant, we need to find the optimal value of $\beta$. The naive brute force method of just trying every single $\beta$ you can think of works at the small scale, but becomes unfeasible as the system size increases. An example of such a search is shown in \fig{hebeta}, for \ce{He} using a STO-6G HF Slater determinant. The statistical error bars shown are standard deviation estimates obtained by blocking.
+\begin{SCfigure}
+\centering
+\includegraphics[width=0.5\textwidth,trim=0  200 0 200, clip]{hebeta2.pdf}
+\caption{Energy expectation value as function of the Jastrow variational parameter, $\beta$. Error bars shown are estimated standard deviations obtained by blocking. The minimum found by a gradient descent search is located at $\beta=0.347$. The inset shows details around the minimum. \label{fig:hebeta}}
+\end{SCfigure}
+
+\newcommand{\EL}{E_\text{L}}
+However, with a Slater already optimized with HF orbitals, we can ideally have a VMC wave function which depends on only \emph{a single} parameter. This makes optimization much easier. Even so, in the present work we employ a simple gradient descent scheme. Between each run of the Metropolis algorithm, the value of $\beta$ is updated according to
+\begin{align}
+\beta_{k+1} = \beta_k - \gamma \nabla \langle \EL\rangle,
+\end{align}
+with the gradient calculated by \cite{hjorth-jensen}
+\begin{align}
+\pder{\langle \EL\rangle}{\beta} &= 2\left( \left\langle \frac{1}{\Psi[\beta]}\pder{\Psi[\beta]}{\beta}\EL[\beta]\right\rangle - \left\langle \frac{1}{\Psi[\beta]}\pder{\Psi[\beta]}{\beta} \right\rangle \Big\langle\EL[\beta]\Big\rangle \right).
+\end{align}
+The basic gradient descent uses $\gamma=1$, but this can be extended to various more optimal alternatives\footnote{See e.g.\ the method of Barzilai and Borwein which attempts to approximate the Hessian without having to actually calculate it \cite{BARZILAIBORWEIN}. This is an example of a larger class of Quasi-Newton methods for optimization in cases where the Hessian (or even the gradient) is too expensive to compute directly.} An example of the gradient descent in action can be seen in \tab{gradd}, where we use the \ce{He} atom as an example\textemdash this time with a Slater determinant occupied by hydrogenic orbitals (with a previously optimized value of the variational exponent $\alpha$). 
+
+\begin{table}
+\centering\sisetup{table-number-alignment=center}
+\setlength\extrarowheight{2pt}
+\begin{tabularx}{\textwidth}{X *{6}{S[table-format=-1.3,table-space-text-post=***]}}
+\hline
+\hline
+\\[-0.9em]
+                   &                          &          &  & \textbf{Gradient}        & & \textbf{Change}\\
+\textbf{Iteration} & \textbf{Energy} $[E_h]$  &  $\beta$ &  & \textbf{w.r.t. } $\beta$ & & \textbf{in } $\beta$\\
+\\[-0.9em]
+\hline
+\\[-0.9em]
+     0   &   -2.8872   &       0.2 & & -0.080519  &  &         \\
+     1   &   -2.8897   &   0.28052 & & -0.02479  &   & 0.0805 \\
+     2   &   -2.8918   &   0.30531 & & -0.013644  &  &  0.0248 \\
+     3   &   -2.8887   &   0.31895 & & -0.0089535  & &   0.0136 \\
+     4   &   -2.8925   &   0.32791 & & -0.0071841  & &   0.0090 \\
+     5   &   -2.8929   &   0.33509 & & -0.0029369  & &   0.0072 \\
+     6   &   -2.8922   &   0.33803 & & -0.0007893  & &   0.0029 \\
+     7   &   -2.8894   &   0.33882 & & -0.0019688  & &   0.0008 \\
+     8   &   -2.8923   &   0.34079 & & -0.0020466  & &   0.0020 \\
+     9   &   -2.8890   &   0.34283 & & -0.0010756  & &   0.0020 \\
+    10   &   -2.8878   &   0.34391 & & -0.0011909  & &   0.0011 \\
+    11   &   -2.8895   &   0.34510 & & -0.0019628  & &   0.0012 \\
+    12   &   -2.8914   &   0.34706 & & -0.0015739  & &   0.0020 \\
+    13   &   -2.8891   &   0.34864 & &  0.0001866  & &   0.0016 \\ 
+    14   &   -2.8866   &   0.34845 & &   & &  -0.0002 \\
+    \\[-0.9em]
+\hline
+\end{tabularx}
+\caption{Example of the gradient descent algorithm applied to the \ce{He} atom with hydrogenic orbitals. The already optimized $\alpha=1.843$ was used for all iterations. The tollerance criteria for stopping was a change in $\beta$ of $\varepsilon\le0.001$ which was achieved in 14 iterations, each with a modest $10^6$ Monte Carlo cycles. \label{tab:gradd}}
+\end{table}
+
+Once an optimization run has been done  with relatively few Monte Carlo cycles and the energy minimum w.r.t.\ the variational parameters has been found we run a heavier \emph{single-point} calculating with these parameters. With the optimal $\alpha$ and $\beta$, we find e.g.\ using the Slater type orbitals an energy of $-2,8901E_h$ with standard deviation (after blocking) $\sigma\sim10^{-4}E_h$. 
+
+
 \section{Effect of cusp correction}
 \url{http://aip.scitation.org/doi/pdf/10.1063/1.2890722}
 \url{http://aip.scitation.org/doi/pdf/10.1063/1.1394757}
 \url{http://www.tcm.phy.cam.ac.uk/~mdt26/papers/nemec_2010.pdf}
 
 
-\section{Testing the hydrogenic orbitals}
 
 \section{Testing the gaussian orbitals}
 
