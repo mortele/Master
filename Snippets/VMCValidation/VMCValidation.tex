@@ -97,7 +97,7 @@ The basic gradient descent uses $\gamma=1$, but this can be extended to various 
     \\[-0.9em]
 \hline
 \end{tabularx}
-\caption{Example of the gradient descent algorithm applied to the \ce{He} atom with hydrogenic orbitals. The already optimized $\alpha=1.843$ was used for all iterations. The tollerance criteria for stopping was a change in $\beta$ of $\varepsilon\le0.001$ which was achieved in 14 iterations, each with a modest $10^6$ Monte Carlo cycles. \label{tab:gradd}}
+\caption{Example of the gradient descent algorithm applied to the \ce{He} atom with hydrogenic orbitals. The already optimized $\alpha=1.843$ was used for all iterations. The tollerance criteria for stopping was a change in $\beta$ of $\varepsilon\le0.001$ which was achieved in 14 iterations, each with a modest $10^6$ Monte Carlo cycles. Produced using \url{github.com/mortele/VMC} commit \inlinecc{a4a2fd7a8698a7fe5a0118b9e78786e118e52d67}. \label{tab:gradd}}
 \end{table}
 
 Once an optimization run has been done  with relatively few Monte Carlo cycles and the energy minimum w.r.t.\ the variational parameters has been found we run a computationally heavier \emph{single-point} calculation with these parameters. With the optimal $\alpha$ and $\beta$, we find e.g.\ using the Slater type orbitals an energy of $-2.8901E_h$ with standard deviation (after blocking) $\sigma\sim10^{-4}E_h$. 
@@ -128,8 +128,13 @@ Ne       & & 10.22  & 0.091  & -127.91   & 0.0012    & 0.81\% \\
 \caption{Energies of first and second row closed-shell atomic and homogenous diatomic systems, calculated under VMC. Hydrogenic orbitals are used, with parameters $\alpha$ and $\beta$ as given below. The given standard deviations are computed using the blocking technique. Reference energies taken from Filippi and Umrigar (\ce{Be2}), Buendía and co-workers (\ce{Be} and \ce{Ne}), and Moskowitz and Kalos (\ce{He} and \ce{H2}) \cite{umrigar,buendia,moskowitz1981new}. \label{tab:vmcval}}
 \end{table}
 
-We note that 
+We note that for \ce{He}, the VMC approach improves considerably on the HF energy ($-2.8599 E_h$ at the 6-311++G** level). The Slater determinant consists of a single orbital only meaning the variational Monte Carlo single-parameter-orbital offers comparable freedom in functional form as the HF linear combinations. In addtion, the presence of the Jastrow factor improves heavily on the ability to model the electron-electron interaction and thus has quite a large effect on the resulting calculated energy. The same observation is true of the \ce{H2} molecule, for which the HF energy is $-1.1325 E_h$ at the 6-311++G** level. Even though our simple VMC wave function recovers some of the missing correlation energy, we are still quite far off of the reference $-1.1746 E_h$ \cite{moskowitz1981new}.
 
+For the case of \ce{Be}, we find that our VMC estimate differs more from the reference energy of Buendía and co-workers of $-14.667 E_h$. Even though \ce{Be} is a closed-shell atom, the first excitation corresponds to a lower energy gap than the corresponding gaps for the noble gasses \ce{He} and \ce{Ne}. Essentially, the transition $E_\text{2s}\rightarrow E_\text{2p}$ is smaller than the first excitation possible in e.g.\ \ce{Ne}, namely $E_\text{2p}\rightarrow E_\text{3s}$. Note carefully that even though the non-interacting hydrogen-like atoms have energies independent of the azimuthal quantum number $l$, this is of course not true of actual atoms for which the electronic interaction breaks the $l$-degeneracy.  
+
+In cases such as \ce{Be}\textemdash where the HOMO-LUMO\footnote{\emph{Highest occupied molecular orbital} and \emph{lowest unoccupied molecular orbital}, respectively.} energy gap is small\textemdash we expect the multi-configurational nature of the true wave function to play an important role. This means that our single Slater determinant is less suited to approximating the true wave function, resulting in less accuracy in calculated energies.
+
+For the larger systems, the \emph{single-parameter} determinant starts to rear it's proverbial ugly head. As the number of orbitals needed increases, the ability of a single variational parameter to approximate well all of them becomes more and more unrealistic. This drawback of our simple variational form begins to overshadow the Jastrow factor asset (as compared to HF) for larger atomic systems At $Z=10$ the Hartree-Fock energy is more accurate than VMC at the 6-311++G** level (at $-128.527 E_h$), only narrowly beating out the minimal 3-21G (at $-127.804 E_h$ compared to $E_\text{VMC}=-127.91 E_h$).
 
 \section{Cusp effects and \emph{cusp corrections}}
 
