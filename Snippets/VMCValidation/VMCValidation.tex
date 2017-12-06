@@ -14,12 +14,27 @@
 \chapter{Variational Monte Carlo validation tests}
 
 
-
+\newcommand{\EL}{E_\text{L}}
 \section{Non-interacting electrons}
 The simplest possible VMC calculations can be done on non-interacting, hydrogen-like atoms. With $N$ electrons orbiting a single charge-$Z$ nucleus, with no electron-electron interaction, the Hamiltonian takes the form
 \begin{align}
 \hat H=\sum_{i=1}^N\left[-\frac{\nabla_i^2}{2}-\frac{Z}{|\r_i-\r_A|}\right].
 \end{align}
+In this case the Schrödinger equation has a known solution, taking the form of a single Slater determinant filled with hydrogenic orbitals. As this is an actual closed form solution, the local energy becomes independent of the electronic configuration
+\begin{align}
+\EL(\R)=\frac{1}{\Psi(\R)}\hat H\Psi(\R) = \frac{1}{\Psi(\R)}E\Psi(\R)=E.
+\end{align}
+Since samples are all identical, the variance vanishes exactly. The orbital energies depend on the squared principal quantum number \textemdash c.f.\ the hydrogen atom energies\textemdash as
+\begin{align}
+E_n^\text{non-interacting}=-\frac{Z^2}{2n^2}.
+\end{align}
+The total energy of the first and second row closed shell systems thus is 
+\begin{align}
+E_\text{He}^\text{non-interacting} &= -2\frac{2^2}{21^2} = -4, \\
+E_\text{Be}^\text{non-interacting} &= -2\frac{4^2}{21^2}-2\frac{4^2}{22^2} = -20, \ \text{ and}\\
+E_\text{Ne}^\text{non-interacting} &= -2\frac{10^2}{21^2}-8\frac{10^2}{22^2} = -200.
+\end{align}
+All three results are reproduced exactly by the VMC implementation, with standard deviations (no blocking) on the order of the machine precision, $\sigma\sim 10^{-15}$.
 
 \section{The effect of the Jastrow factor}
 \begin{figure}
@@ -38,11 +53,10 @@ J(\R)=\exp\left[\sum_{i=1}^N\sum_{j=i+1}^N \frac{a_{ij}r_{ij}}{1+\beta r_{ij}} \
 with $a_{ij}$ depending on the spin-projections of electrons $i$ and $j$. In order to obtain a better parametrization of the many-electron wave function than the single Slater determinant, we need to find the optimal value of $\beta$. The naive brute force method of just trying every single $\beta$ you can think of works at the small scale, but becomes unfeasible as the system size increases. An example of such a search is shown in \fig{hebeta}, for \ce{He} using a STO-6G HF Slater determinant. The statistical error bars shown are standard deviation estimates obtained by blocking.
 \begin{SCfigure}
 \centering
-\includegraphics[width=0.5\textwidth,trim=0  200 0 200, clip]{hebeta2.pdf}
+\includegraphics[width=0.5\textwidth,trim=0  200 0 200, clip]{hebeta3.pdf}
 \caption{Energy expectation value as function of the Jastrow variational parameter, $\beta$. Error bars shown are estimated standard deviations obtained by blocking. The minimum found by a gradient descent search is located at $\beta=0.347$. The inset shows details around the minimum. \label{fig:hebeta}}
 \end{SCfigure}
 
-\newcommand{\EL}{E_\text{L}}
 However, with a Slater already optimized with HF orbitals, we can ideally have a VMC wave function which depends on only \emph{a single} parameter. This makes optimization much easier. Even so, in the present work we employ a simple gradient descent scheme. Between each run of the Metropolis algorithm, the value of $\beta$ is updated according to
 \begin{align}
 \beta_{k+1} = \beta_k - \gamma \nabla \langle \EL\rangle,
@@ -72,7 +86,7 @@ The basic gradient descent uses $\gamma=1$, but this can be extended to various 
      4   &   -2.8925   &   0.32791 & & -0.0071841  & &   0.0090 \\
      5   &   -2.8929   &   0.33509 & & -0.0029369  & &   0.0072 \\
      6   &   -2.8922   &   0.33803 & & -0.0007893  & &   0.0029 \\
-     7   &   -2.8894   &   0.33882 & & -0.0019688  & &   0.0008 \\
+     7   &   -2.8894   &   0.33882 & & -0.0019688  & &   0.0018 \\
      8   &   -2.8923   &   0.34079 & & -0.0020466  & &   0.0020 \\
      9   &   -2.8890   &   0.34283 & & -0.0010756  & &   0.0020 \\
     10   &   -2.8878   &   0.34391 & & -0.0011909  & &   0.0011 \\
@@ -86,10 +100,40 @@ The basic gradient descent uses $\gamma=1$, but this can be extended to various 
 \caption{Example of the gradient descent algorithm applied to the \ce{He} atom with hydrogenic orbitals. The already optimized $\alpha=1.843$ was used for all iterations. The tollerance criteria for stopping was a change in $\beta$ of $\varepsilon\le0.001$ which was achieved in 14 iterations, each with a modest $10^6$ Monte Carlo cycles. \label{tab:gradd}}
 \end{table}
 
-Once an optimization run has been done  with relatively few Monte Carlo cycles and the energy minimum w.r.t.\ the variational parameters has been found we run a heavier \emph{single-point} calculating with these parameters. With the optimal $\alpha$ and $\beta$, we find e.g.\ using the Slater type orbitals an energy of $-2,8901E_h$ with standard deviation (after blocking) $\sigma\sim10^{-4}E_h$. 
+Once an optimization run has been done  with relatively few Monte Carlo cycles and the energy minimum w.r.t.\ the variational parameters has been found we run a computationally heavier \emph{single-point} calculation with these parameters. With the optimal $\alpha$ and $\beta$, we find e.g.\ using the Slater type orbitals an energy of $-2.8901E_h$ with standard deviation (after blocking) $\sigma\sim10^{-4}E_h$. 
+
+\section{First and second row closed-shell atoms and diatomics}
+If we want to run VMC on open-shell systems, we need to account for different spin configurations meaning we need to also suggest spin-flip Metropolis steps. This is a complication we want to avoid, so we will focus the testing now on closed-shell systems. First and second row closed-shell atoms include \ce{He}, \ce{Be}, and \ce{Ne} with $2$, $4$, and $10$ electrons, respectively. In addition we will include the homogenous diatomics \ce{Be2} and \ce{H2} in our validation set. The results of the validation runs are shown in \tab{vmcval}. 
+
+\begin{table}
+\centering\sisetup{table-number-alignment=center}
+\setlength\extrarowheight{2pt}
+\begin{tabularx}{\textwidth}{X  *{6}{S[table-format=-1.3,table-space-text-post=***]}}
+\hline
+\hline
+\\[-0.9em]
+        &  &           &          &                         & \phantom{-}\textbf{Standard} & \phantom{.}\textbf{Relative error}    \\
+        &  &  $\alpha$ & $\beta$  & \textbf{Energy} [$E_h$] & \textbf{deviation, } $\sigma$ & \textbf{w.r.t. reference}             \\
+\\[-0.9em]
+\hline
+\\[-0.9em]
+He       & & 1.843  & 0.347  & -2.89018  & 0.000075  & 0.47\% \\
+H${}_2$  & & 1.289  & 0.401  & -1.1581   & 0.00013   & 1.43\% \\ 
+Be       & & 3.983  & 0.094  & -14.503   & 0.0019    & 1.15\% \\
+Be${}_2$ & & 3.725  & 0.246  & -28.75    & 0.024     & 2.23\% \\ 
+Ne       & & 10.22  & 0.091  & -127.91   & 0.0012    & 0.81\% \\ 
+\\[-0.9em]
+\hline
+\end{tabularx}
+\caption{Energies of first and second row closed-shell atomic and homogenous diatomic systems, calculated under VMC. Hydrogenic orbitals are used, with parameters $\alpha$ and $\beta$ as given below. The given standard deviations are computed using the blocking technique. Reference energies taken from Filippi and Umrigar (\ce{Be2}), Buendía and co-workers (\ce{Be} and \ce{Ne}), and Moskowitz and Kalos (\ce{He} and \ce{H2}) \cite{umrigar,buendia,moskowitz1981new}. \label{tab:vmcval}}
+\end{table}
+
+We note that 
 
 
-\section{Effect of cusp correction}
+\section{Cusp effects and \emph{cusp corrections}}
+
+
 \url{http://aip.scitation.org/doi/pdf/10.1063/1.2890722}
 \url{http://aip.scitation.org/doi/pdf/10.1063/1.1394757}
 \url{http://www.tcm.phy.cam.ac.uk/~mdt26/papers/nemec_2010.pdf}
