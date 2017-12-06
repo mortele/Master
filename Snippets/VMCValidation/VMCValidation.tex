@@ -139,7 +139,7 @@ For the larger systems, the \emph{single-parameter} determinant starts to rear i
 \subsubsection{A comment on the overall accuracy compared to litterature results}
 In general, our variational wave function is much less sophisticated than corresponding ones found in the contemporary litterature. Even the parametrizations used by Moskowitz and Kalos in the early 1980s exhibit more parameters and greater freedom than our functional form \cite{moskowitz1981new}. In more modern VMC approaches, many more variational parameters are used. An example is the Jastrow factor of Buendía and co-workers, consisting of two-, and three-body terms with 17 distinct variational parameters \cite{buendie}. Their Slater determinant combination is the result of an OEP calculation (\emph{optimized effective potential} method, see e.g.\ Talman and co-workers \cite{talman1976optimized}) which yields results roughly analogous to HF.  
 
-In short, competing with such results with out simple trial wave function is in no way realistic. Obtaining results differing from the litterature by on the order of $\sim 1\%$ is thus interpreted as a sign the machinery is working well. 
+In short, competing with such results with our simple trial wave function is in no way realistic. Obtaining results differing from the litterature by on the order of $\sim 1\%$ is thus interpreted as a sign the machinery is working well. 
 
 
 \section{Testing the gaussian orbitals}
@@ -170,7 +170,11 @@ Hydrogenic    & -4.0    & 0.0 & \\
 \caption{Energies calculated using the Gaussian fits of the hydrogenic orbitals, denoted HTO-nG (with n$=1,2,\dots,6$ representing the number of Gaussian primitives used for each orbital) for the \ce{He} atom with \emph{non-interacting} electrons. The \emph{exact} wave function is the hydrogenic Slater, giving $\sigma_\text{hydrogenic}=0$. Produced using \url{github.com/mortele/VMC} commit \inlinecc{a4a2fd7a8698a7fe5a0118b9e78786e118e52d67}. \label{tab:vmcgaussnonint}}
 \end{table}
 
-We note that the implementation appears to work as it should. The next step is to include the 2s orbitals, and calculate the non-interacting energy for \ce{Be}. This is done in \tab{vmcgaussnonint2}.
+We note that the implementation appears to work as it should. The next step is to include the 2s orbitals, and calculate the non-interacting energy for \ce{Be}. This is done in \tab{vmcgaussnonint2}. Evidently, the HTO-1G orbitals are qualitatively wrong, failing to capture the nodal structure of the 2s hydrogenic orbital with only a single primitive. With positive energy, the 1G \ce{Be} does not admit bound state solutions. 
+
+Despite the catastrophic failure at HTO-1G, already with two primitives is the 2s node sufficiently well approximated to result in roughly $\sim5\%$ relative error. The convergence looks strikingly similar to that of the \ce{He} atom in \tab{vmcgaussnonint}. 
+
+Corresponding examples of calculations \emph{with} the Jastrow factor and interacting electrons are shown in Tables \ref{vmcv1} and \ref{vmcv2}, for \ce{He} and \ce{Be} respectively.
 
 \begin{table}
 \centering\sisetup{table-number-alignment=center}
@@ -194,28 +198,10 @@ Hydrogenic    & -20.0    & 0.0 & \\
 \\[-0.9em]
 \hline
 \end{tabularx}
-\caption{Energies calculated using the Gaussian fits of the hydrogenic orbitals, denoted HTO-nG (with n$=1,2,\dots,6$ representing the number of Gaussian primitives used for each orbital) for the \ce{Be} atom with \emph{non-interacting} electrons. The \emph{exact} wave function is the hydrogenic Slater, giving $\sigma_\text{hydrogenic}=0$. Produced using \url{github.com/mortele/VMC} commit \inlinecc{a4a2fd7a8698a7fe5a0118b9e78786e118e52d67}. \label{tab:vmcgaussnonint2}}
+\caption{Energies calculated using the Gaussian fits of the hydrogenic orbitals, denoted HTO-nG (with $\text{n}=1,2,\dots,6$ representing the number of Gaussian primitives used for each orbital) for the \ce{Be} atom with \emph{non-interacting} electrons. The \emph{exact} wave function is the hydrogenic Slater, giving $\sigma_\text{hydrogenic}=0$. Produced using \url{github.com/mortele/VMC} commit \inlinecc{a4a2fd7a8698a7fe5a0118b9e78786e118e52d67}. \label{tab:vmcgaussnonint2}}
 \end{table}
 
-\section{Cusp effects and \emph{cusp corrections}}
-Be-HTO-5G 1s
-0 0 0     6.300657892     1.354606002
-0 0 0     115.3873793    0.8084230715
-0 0 0     1.856767324    0.5238282343
-0 0 0     980.5490224    0.4428485279
-0 0 0     23.90244093     1.256929223
-
-\url{http://aip.scitation.org/doi/pdf/10.1063/1.2890722}
-\url{http://aip.scitation.org/doi/pdf/10.1063/1.1394757}
-\url{http://www.tcm.phy.cam.ac.uk/~mdt26/papers/nemec_2010.pdf}
-
-
-
-
-\section{Blocking}
-
-
-\begin{table}
+\begin{table}[p]
 \centering\sisetup{table-number-alignment=center}
 \setlength\extrarowheight{2pt}
 \begin{tabularx}{\textwidth}{X *{3}{S[table-format=-1.3,table-space-text-post=***]}}
@@ -240,7 +226,7 @@ STO    & -2.8897 & 0.00086 & \\
 \caption{Binding energies for \ce{He} calculated using slater type orbitals (STO) and $n$ gaussians fitted to the slater orbitals (STO-$n$G). Only the 1s slater type orbital is used. $10^7$ monte carlo cycles were used for all simulations. An effective charge of $\alpha=1.843$ was used as exponent for the STO, and $\beta=0.347$ was used as parameter for the Jastrow factor. Produced using \url{github.com/mortele/VMC} commit \inlinecc{a5a3580b2dc7c4a48594b853c32ad7082b99345c}. \label{tab:vmcv1}}
 \end{table}
 
-\begin{table}
+\begin{table}[p]
 \centering\sisetup{table-number-alignment=center}
 \setlength\extrarowheight{2pt}
 \begin{tabularx}{\textwidth}{X *{3}{S[table-format=-1.3,table-space-text-post=***]}}
@@ -264,6 +250,83 @@ STO    & -14.428 & 0.0090 & \\
 \end{tabularx}
 \caption{Binding energies for \ce{Be} calculated using slater type orbitals (STO) and $n$ gaussians fitted to the slater orbitals (STO-$n$G). Only the 1s and 2s slater type orbitals are used. $5\e{6}$ monte carlo cycles were used for all simulations. An effective charge of $\alpha=3.983$ was used as exponent for the STO, and $\beta=0.094$ was used as parameter for the Jastrow factor. Produced using \url{github.com/mortele/VMC} commit \inlinecc{a5a3580b2dc7c4a48594b853c32ad7082b99345c}. \label{tab:vmcv2}}
 \end{table}
+
+\section{Cusp effects and \emph{cusp corrections}}
+As discussed in section \ref{section:gaussianorbitals}, the Gaussian orbitals do not satisfy the electron-nucleus cusp condition at $r_{iA}\rightarrow0$. For the SCF methods\textemdash which depend on the orbitals only in the weak integral sense (see section \ref{rheq})\textemdash this is not a big problem. When the only quantities entering the equations are integrals over all space, then minute imperfections in one tiny region of configuration space is not critical. When performing VMC integration, however, we are continously sampling the local energy at specific configurations. If $\EL$ seemingly diverges for a small portion of these configurations, it poses a very real problem since sampling only a couple such points will cause the Monte Carlo average to become imprecise and make the variance explode. Especially worrying is the fact that this happens at the position of maximum probability, i.e.\ the only place where $\Psi(\R)$ attains a maximum.
+
+As we discussed in chapter \ref{wavefunctions}, any finite linear combination of Gaussian primitives will yield a vanishing derivative at $r_{iA}\rightarrow 0$. For increasing numbers of primitives, we can force the contracted Gaussian into a STO-shape, which holds for smaller and smaller $r_{iA}$. This leads to linear combinations in which some primitives have enormously large exponents. When differentiating twice, these exponents make  $\partial^2/\partial r_{iA}^2 (\text{STO-nG})$ oscillate rapidly and with large amplitude close to the nucleus. A case study is presented in \fig{cuspc}. 
+
+\begin{figure}
+\centering
+\includegraphics[width=0.49\textwidth,trim=0  200 0 200, clip]{cuspc11.pdf}
+\includegraphics[width=0.49\textwidth,trim=0  200 0 200, clip]{cuspc22.pdf}
+\includegraphics[width=0.49\textwidth,trim=0  200 0 200, clip]{cuspc33.pdf}
+\includegraphics[width=0.49\textwidth,trim=0  200 0 200, clip]{cuspc44.pdf}
+\caption{Example showing the cusp problems of the Gaussian linear combinations. A STO-5G fit to the 1s STO of a non-interacting \ce{Be} atom is shown (top-left), along with a comparison of the double derivative of the two (top-right and bottom-left [logarithmic absolute difference]). The bottom-right shows the difference in \emph{local single-electron energy}\textemdash as defined in \eq{selocal}\textemdash for the two orbitals.\label{fig:cuspc}}
+\end{figure}
+
+
+Let us now define the \emph{local single-electron energy}, 
+\begin{align}
+\EL^\text{s-e}(\r)=\frac{1}{\psi(\r)}\left[-\frac{\nabla^2}{2}-\frac{Z}{|\r-\r_A|}\right]\psi(\r), \label{eq:selocal}
+\end{align}
+for the spatial orbital $\psi(\r)$. In \fig{cuspc}, we consider $\EL^\text{s-e}$ for the 1s orbital of a non-interacting \ce{Be} atom. Analogous to the actual full local energy, the single-electron local energy is constant in $\r$ when considering the \emph{true} ground state. In this case, the true ground state is simply the 1s STO which is shown together with a STO-5G Gaussian fit. The top-left plot shows very good correspondence between the two, but differentiating reveals the subtle differences. Taking the Laplacian accentuates the spread, and shown in the bottom-left plot is the absolute difference 
+\begin{align}
+|\psi_\text{STO-5G}(\r)-\psi_\text{STO}(\r)|.
+\end{align}
+For small $r$, the difference blows up. The bottom-right graph shows the proverbial bottom line: The difference between the correct cusp STO and the Gaussians diverges. Since $\EL^\text{s-e}[\psi_\text{STO}]=E^\text{s-e}$ is constant, 
+\begin{align}
+\Big|\EL^\text{s-e}[\phi_\text{STO-5G}]-\EL^\text{s-e}[\phi_\text{STO}]\Big|=\Big|\EL^\text{s-e}[\phi_\text{STO-5G}]-E^\text{s-e}\Big|.
+\end{align}
+The bottom-right plot is worryingly far from the constant it ideally should be.
+
+
+\subsubsection{The case of \ce{Ne}}
+For a noble gas\textemdash such as \ce{Ne}\textemdash this effect is emphasized by the tight electronic structure. With a small spatial extent of only $r\sim0.72 a_0$, the \ce{Ne} atom is more tightly bound than e.g.\ Beryllium at $r\sim2.11 a_0$ \cite{clementi}. A higher density of eletrons around the nucleus point combined with the sharper exponential decay\textemdash neccessitating higher exponent Gaussians for fitting\textemdash give us problems in the VMC calculations. Shown in \tab{stone} are results from running \ce{Ne} with varying STO-nG wave function ansatzes through the Metropolis machinery. Electron-interaction and Jastrow factor are both enabled for these calculations. 
+
+\begin{table}
+\centering\sisetup{table-number-alignment=center}
+\setlength\extrarowheight{2pt}
+\begin{tabularx}{\textwidth}{X *{3}{S[table-format=-1.3,table-space-text-post=***]}}
+\hline
+\hline
+\\[-0.9em]
+                 &                          & \phantom{-}\textbf{Standard}          & \textbf{Relative error}    \\
+\textbf{Orbital} & \textbf{Energy} $[E_h]$  & \textbf{deviation} $[E_h]$ & \textbf{w.r.t. STO} [$\%$]  \\
+\\[-0.9em]
+\hline
+\\[-0.9em]
+STO-1G & -97.07   & 0.24   &  22.35 \\
+STO-2G & -115.90  & 0.23   &  7.29\\
+STO-3G & -118.83  & 0.20   &  4.95\\
+STO-4G & -124.09  & 0.28   &  0.74\\
+STO-5G & -123.91  & 0.13   &  0.89\\
+STO-6G & -123.63  & 0.13  &  1.11\\
+STO    & -125.02  & 0.10   & \\
+\\[-0.9em]
+\hline
+\end{tabularx}
+\caption{Energies calculated using the Gaussian fits of the Slater type orbitals, STO-nG (with $\text{n}=1,2,\dots,6$ representing the number of Gaussian primitives used for each orbital) for the \ce{Ne} atom. A STO calculations is presented for comparison. Note that the $\alpha$ and $\beta$ parameters were not properly tuned to the variational minimum for this calculations. However, the key point is comparison of STO and STO-nG and in this regard the value of the energy is immaterial\textemdash the difference is what matters. Produced using \url{github.com/mortele/VMC} commit \inlinecc{a4a2fd7a8698a7fe5a0118b9e78786e118e52d67}. \label{tab:stone}}
+\end{table}
+
+
+
+
+
+
+
+
+%\url{http://aip.scitation.org/doi/pdf/10.1063/1.2890722}
+%\url{http://aip.scitation.org/doi/pdf/10.1063/1.1394757}
+%\url{http://www.tcm.phy.cam.ac.uk/~mdt26/papers/nemec_2010.pdf}
+
+
+
+
+\section{Blocking}
+
+
+
 
 
 
