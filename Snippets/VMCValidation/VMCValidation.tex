@@ -254,7 +254,11 @@ STO    & -14.428 & 0.0090 & \\
 \section{Cusp effects and \emph{cusp corrections}}
 As discussed in section \ref{section:gaussianorbitals}, the Gaussian orbitals do not satisfy the electron-nucleus cusp condition at $r_{iA}\rightarrow0$. For the SCF methods\textemdash which depend on the orbitals only in the weak integral sense (see section \ref{rheq})\textemdash this is not a big problem. When the only quantities entering the equations are integrals over all space, then minute imperfections in one tiny region of configuration space is not critical. When performing VMC integration, however, we are continously sampling the local energy at specific configurations. If $\EL$ seemingly diverges for a small portion of these configurations, it poses a very real problem since sampling only a couple such points will cause the Monte Carlo average to become imprecise and make the variance explode. Especially worrying is the fact that this happens at the position of maximum probability, i.e.\ the only place where $\Psi(\R)$ attains a maximum.
 
-As we discussed in chapter \ref{wavefunctions}, any finite linear combination of Gaussian primitives will yield a vanishing derivative at $r_{iA}\rightarrow 0$. For increasing numbers of primitives, we can force the contracted Gaussian into a STO-shape, which holds for smaller and smaller $r_{iA}$. This leads to linear combinations in which some primitives have enormously large exponents. When differentiating twice, these exponents make  $\partial^2/\partial r_{iA}^2 (\text{STO-nG})$ oscillate rapidly and with large amplitude close to the nucleus. A case study is presented in \fig{cuspc}. 
+As we discussed in chapter \ref{wavefunctions}, any finite linear combination of Gaussian primitives will yield a vanishing derivative at $r_{iA}\rightarrow 0$. For increasing numbers of primitives, we can force the contracted Gaussian into a STO-shape, which holds for smaller and smaller $r_{iA}$. This leads to linear combinations in which some primitives have enormously large exponents. When differentiating twice, these exponents make  
+\begin{align}
+\pder{^2}{r_{iA}^2} \psi_\text{STO-nG}
+\end{align} 
+oscillate rapidly and with large amplitude close to the nucleus (see \fig{cuspdd}). A case study is presented in \fig{cuspc}. 
 
 \begin{figure}
 \centering
@@ -266,11 +270,11 @@ As we discussed in chapter \ref{wavefunctions}, any finite linear combination of
 \end{figure}
 
 
-Let us now define the \emph{local single-electron energy}, 
+Let us now define the effective \emph{local single-electron energy}, 
 \begin{align}
 \EL^\text{s-e}(\r)=\frac{1}{\psi(\r)}\left[-\frac{\nabla^2}{2}-\frac{Z}{|\r-\r_A|}\right]\psi(\r), \label{eq:selocal}
 \end{align}
-for the spatial orbital $\psi(\r)$. In \fig{cuspc}, we consider $\EL^\text{s-e}$ for the 1s orbital of a non-interacting \ce{Be} atom. Analogous to the actual full local energy, the single-electron local energy is constant in $\r$ when considering the \emph{true} ground state. In this case, the true ground state is simply the 1s STO which is shown together with a STO-5G Gaussian fit. The top-left plot shows very good correspondence between the two, but differentiating reveals the subtle differences. Taking the Laplacian accentuates the spread, and shown in the bottom-left plot is the absolute difference 
+for the spatial orbital $\psi(\r)$ \cite{ma2005scheme}. In \fig{cuspc}, we consider $\EL^\text{s-e}$ for the 1s orbital of a non-interacting \ce{Be} atom. Analogous to the actual full local energy, the single-electron local energy is constant in $\r$ when considering the \emph{true} ground state. In this case, the true ground state is simply the 1s STO which is shown together with a STO-5G Gaussian fit. The top-left plot shows very good correspondence between the two, but differentiating reveals the subtle differences. Taking the Laplacian accentuates the spread, and shown in the bottom-left plot is the absolute difference 
 \begin{align}
 |\psi_\text{STO-5G}(\r)-\psi_\text{STO}(\r)|.
 \end{align}
@@ -330,7 +334,7 @@ The $\gamma$ parameter is another variational parameter which needs to be optimi
     \text{Replacement function} & \text{ for } & |\r|\le r_\text{cutoff} \\
 }\right. 
 \end{align} 
-The method of replacement differs, with various researchers using quintic splines (Manolo and co-workers) or substitution by STOs (Manten and Lüchow), among other approaches \cite{manolo,manten}. An illustration of the idea is shown in \fig{cuspdd}, where replacement within some finite cutoff $r_\text{cutoff}$ yields a smooth second derivative à la the STO. 
+The method of replacement differs, with various researchers using quintic splines (Manolo and co-workers), a fourth order polynomial (Ma and co-workers), or substitution by STOs (Manten and Lüchow), among other approaches \cite{manolo,ma2005scheme,manten}. An illustration of the idea is shown in \fig{cuspdd}, where replacement within some finite cutoff $r_\text{cutoff}$ yields a smooth second derivative à la the STO. 
 
 Performing any form of cusp correction is unfortunately outside the scope of the present work. This means we are consigned to work with Slater type orbitals for VMC in the main body of this thesis.
 
@@ -341,12 +345,21 @@ Performing any form of cusp correction is unfortunately outside the scope of the
 
 
 
+\begin{SCfigure}
+\centering
+\includegraphics[width=0.49\textwidth,trim=0  200 0 200, clip]{blocking.pdf}
+\caption{Example of the blocking procedure applied to the \ce{Be} atom, running $N=10^6$ Monte Carlo cycles. The notation $\sigma(b)$ denotes the standard deviation, calculated with a block size of $b$. We note the clear plateau starting at around $b=1500$. Final blocking estimate for the standard deviation is calculated to be $\sigma(1500)=0.011 E_h$. \label{fig:blocking}}
+\end{SCfigure}
 
 \section{Blocking}
-A short example of the blocking procedure is shown in the following. We consider the \ce{Be} atom with an STO Slater-Jastrow wave function. 
+A short example of the blocking procedure is shown in the following. We consider the \ce{Be} atom with an STO Slater-Jastrow wave function. Running $10^6$ Monte Carlo cycles yields an energy of $E=-14.4937 E_h$ with a naive non-blocking estimate of the standard deviation of $\sigma(1)=0.00137 E_h$. We define in the following $\sigma(b)$ to denote the value of the standard deviation, calculated with a block size $b$. The calculated blocking deviations are shown in \fig{blocking}, where we note a clear initial increase and a subsequent plateau. 
 
+As dictated by Flyvbjerg and Petersen, we interpret the (approximate) point at which the plateau starts to be an estimate of the correlation time $\tau$ \cite{blocking}. In this case, that appears to be around $b=1500$. The blocking estimate for the \emph{true} standard deviation thus becomes $\sigma(1500)=0.011$, and the energy can be presented as 
+\begin{align}
+E=-14.49E_h \pm 0.011 E_h.
+\end{align} 
 
-
+Once the correlation length is known for a system, it is reasonable to assume the same correlation length holds for similar systems. For this reason, the actual blocking procedure needs only be performed a handful of times. When the correlation length is known for a particular system (or one closely related), the calculation of the blocking variance and standard deviations can be done on the fly directly in the \CC{}{ }code. In order to avoid having to perform blocking too many times, we use a modest \emph{over-estimate} of the correlation length $\tau$ in the present work. This over-estimate is then used for numerous more or less similar systems. This comes at the cost of essentially reporting \emph{under-estimates} of the real accuracy of our program.
 
 
 
