@@ -167,7 +167,7 @@ Hydrogenic    & -4.0    & 0.0 & \\
 \\[-0.9em]
 \hline
 \end{tabularx}
-\caption{Energies calculated using the Gaussian fits of the hydrogenic orbitals, denoted HTO-nG (with n$=1,2,\dots,6$ representing the number of Gaussian primitives used for each orbital) for the \ce{He} atom with \emph{non-interacting} electrons. The \emph{exact} wave function is the hydrogenic Slater, giving $\sigma_\text{hydrogenic}=0$. Produced using \url{github.com/mortele/VMC} commit \inlinecc{a4a2fd7a8698a7fe5a0118b9e78786e118e52d67}. \label{tab:vmcgaussnonint}}
+\caption{Energies calculated using the Gaussian fits of the hydrogenic orbitals, denoted HTO-nG (with $\text{n}=1,2,\dots,6$ representing the number of Gaussian primitives used for each orbital) for the \ce{He} atom with \emph{non-interacting} electrons. The \emph{exact} wave function is the hydrogenic Slater, giving $\sigma_\text{hydrogenic}=0$. Produced using \url{github.com/mortele/VMC} commit \inlinecc{a4a2fd7a8698a7fe5a0118b9e78786e118e52d67}. \label{tab:vmcgaussnonint}}
 \end{table}
 
 We note that the implementation appears to work as it should. The next step is to include the 2s orbitals, and calculate the non-interacting energy for \ce{Be}. This is done in \tab{vmcgaussnonint2}. Evidently, the HTO-1G orbitals are qualitatively wrong, failing to capture the nodal structure of the 2s hydrogenic orbital with only a single primitive. With positive energy, the 1G \ce{Be} does not admit bound state solutions. 
@@ -309,11 +309,30 @@ STO    & -125.02  & 0.10   & \\
 \caption{Energies calculated using the Gaussian fits of the Slater type orbitals, STO-nG (with $\text{n}=1,2,\dots,6$ representing the number of Gaussian primitives used for each orbital) for the \ce{Ne} atom. A STO calculations is presented for comparison. Note that the $\alpha$ and $\beta$ parameters were not properly tuned to the variational minimum for this calculations. However, the key point is comparison of STO and STO-nG and in this regard the value of the energy is immaterial\textemdash the difference is what matters. Produced using \url{github.com/mortele/VMC} commit \inlinecc{a4a2fd7a8698a7fe5a0118b9e78786e118e52d67}. \label{tab:stone}}
 \end{table}
 
+The calculated variance is an order of magnitude worse than for the lighter atoms, and the convergence to the STO energy is eratic at best. The results are, however, passable. We are within about $\sim 1\%$ of the reference STO energy, but there is really no reason to use the less stable STO-nG basis sets in the VMC calculations. The reason for employing Gaussian orbitals in the first place was only for ease of integration in SCF methods. 
 
+\subsection{Cusp correction}
+Recall that these previous results were all ran with basis sets which by design mimic the STO orbitals. The cusp conditions are not met, but the local energy remains well-behaved for reasonably small values of the electron-nucleus distance. This all breaks down\textemdash however\textemdash when we consider e.g.\ the Pople family basis sets (see section \ref{poplebasis}). In such cases, handling the cusp problem explicitly post-HF calculations is the only way to obtain reasonable, low-variance results in a reasonable amount of (CPU-)time.
 
+\begin{SCfigure}
+\includegraphics[width=0.49\textwidth,trim=0  200 0 200, clip]{cuspdd.pdf}
+\caption{Example showing the double derivative of the STO-5G of \fig{cuspc}, compared to the double derivative of the corresponding STO. \label{fig:cuspdd}}
+\end{SCfigure}
 
+There are multiple ways to perform {\bf cusp correction} of the contracted Gaussian functions. One approach is to use the Jastrow factor, including in it a term proportional to
+\begin{align}
+J^\text{nuclear}(\R)\sim \exp\left[\sum_{i=1}^N \sum_{A=1}^M \frac{Z_Ar_{iA}}{2(1+\gamma r_{iA})}\right].
+\end{align}
+The $\gamma$ parameter is another variational parameter which needs to be optimized variationally, analogous to $\beta$. See e.g.\ \cite{Akramine,BUENDIA2006241,reynolds}. A different approach consists of modifying the orbitals of s-type symmetry directly, ensuring they satisfy the electron-nucleus cusp. Most proposed algorithms define a cut-off, inside which the s orbitals are replaced:
+\begin{align}
+\psi_s(\r)=\left\{ \mat{lcr}{
+    \text{Contracted Gaussian}  & \text{ for } & |\r|>r_\text{cutoff} \\
+    \text{Replacement function} & \text{ for } & |\r|\le r_\text{cutoff} \\
+}\right. 
+\end{align} 
+The method of replacement differs, with various researchers using quintic splines (Manolo and co-workers) or substitution by STOs (Manten and Lüchow), among other approaches \cite{manolo,manten}. An illustration of the idea is shown in \fig{cuspdd}, where replacement within some finite cutoff $r_\text{cutoff}$ yields a smooth second derivative à la the STO. 
 
-
+Performing any form of cusp correction is unfortunately outside the scope of the present work. This means we are consigned to work with Slater type orbitals for VMC in the main body of this thesis.
 
 
 %\url{http://aip.scitation.org/doi/pdf/10.1063/1.2890722}
@@ -324,7 +343,7 @@ STO    & -125.02  & 0.10   & \\
 
 
 \section{Blocking}
-
+A short example of the blocking procedure is shown in the following. We consider the \ce{Be} atom with an STO Slater-Jastrow wave function. 
 
 
 
