@@ -356,7 +356,7 @@ A short example of the blocking procedure is shown in the following. We consider
 
 As dictated by Flyvbjerg and Petersen, we interpret the (approximate) point at which the plateau starts to be an estimate of the correlation time $\tau$ \cite{blocking}. In this case, that appears to be around $b=1500$. The blocking estimate for the \emph{true} standard deviation thus becomes $\sigma(1500)=0.011$, and the energy can be presented as 
 \begin{align}
-E=-14.49E_h \pm 0.011 E_h.
+E=-14.494E_h \pm 0.011 E_h.
 \end{align} 
 
 Once the correlation length is known for a system, it is reasonable to assume the same correlation length holds for similar systems. For this reason, the actual blocking procedure needs only be performed a handful of times. When the correlation length is known for a particular system (or one closely related), the calculation of the blocking variance and standard deviations can be done on the fly directly in the \CC{}{ }code. In order to avoid having to perform blocking too many times, we use a modest \emph{over-estimate} of the correlation length $\tau$ in the present work. This over-estimate is then used for numerous more or less similar systems. This comes at the cost of essentially reporting \emph{under-estimates} of the real accuracy of our program.

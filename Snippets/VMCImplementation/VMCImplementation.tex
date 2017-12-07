@@ -89,7 +89,7 @@ Ne.runMetropolis    ((int) 1e7);
 \end{lstlisting}
 The penultimate input parameter of the \inlinecc{Atom} constructor defines the number of spin-up electrons, while the last parameter gives the number of spin-down electrons. As the total number of electrons is $9$, while the nucleus charge is $Z=10$, this defines a \ce{Ne+} ion. Since the hydrogenic Slater determinant forms the \emph{exact} wave function for non-interacting electrons, the energy $E=-187.5E_h$ is calculated with vanishing variance. 
 
-Cartesian Gaussian orbitals can be requested by calling \inlinecc{System::setOrbital} with a \inlinecc{SlaterTypeOrbital} object. The name of a basis file\textemdash output from the Hatree-Fock code described in detail in section \ref{HFI}, defining the chemical environment and the basis set itself\textemdash is given as input to the constructor of \inlinecc{SlaterTypeOrbital}. The basis file is the result of previously ran Hartree-Fock calculations, and defines the positions of any atoms present. This means there is no need to specify nucleonic positions when \inlinecc{SlaterTypeOrbital}s are used. An example calculation can be ran by the following  code:
+Cartesian Gaussian orbitals can be requested by calling \inlinecc{System::setOrbital} with a \inlinecc{SlaterTypeOrbital} object. The name of a basis file\textemdash output from the Hatree-Fock code described in detail in section \ref{HFI}, defining the chemical environment and the basis set itself\textemdash is given as input to the constructor of \inlinecc{SlaterTypeOrbital}. The basis file is the result of previously run Hartree-Fock calculations, and defines the positions of any atoms present. This means there is no need to specify nucleonic positions when \inlinecc{SlaterTypeOrbital}s are used. An example calculation can be ran by the following  code:
 \begin{lstlisting}[language={[std]c++}]
 string  basisFileName = "Be-STO-3G";
 System  Be;
@@ -150,7 +150,7 @@ where
 	\phi_{1\uparrow}(\r_2) & \phi_{2\uparrow}(\r_2) & \phi_{3\uparrow}(\r_2) & \dots  & \phi_{N/2\uparrow}(\r_2) \\
 	\phi_{1\uparrow}(\r_3) & \phi_{2\uparrow}(\r_3) & \phi_{3\uparrow}(\r_3) & \dots  & \phi_{N/2\uparrow}(\r_3) \\
 	\vdots 		 & \vdots 		& \vdots	   & \ddots & \vdots 	   \\ 
-	\phi_{1\uparrow}(\r_N) & \phi_{2\uparrow}(\r_N) & \phi_{3\uparrow}(\r_N) & \dots  & \phi_{N/2\uparrow}(\r_N)
+	\phi_{1\uparrow}(\r_{N/2}) & \phi_{2\uparrow}(\r_{N/2}) & \phi_{3\uparrow}(\r_{N/2}) & \dots  & \phi_{N/2\uparrow}(\r_{N/2})
 },
 \end{align}
 and a corresponding expression for $|D_\downarrow(\R)|$. Since we are always working with ratios of wave functions in the Metropolis-Hastings algorithm, the normalization factor of the determinant does not enter our equations and we can safely forget about it from now on.
@@ -280,7 +280,7 @@ D_{kj}^{-1}(\r_\text{new}) = \left\{ \mat{lccr}
 \end{align}
 where $D^{-1}_{kj}(\r_\text{new})$ corresponds to $(A+{\bf u}{\bf v}^T)^{-1}$ of \eq{VMCI6} and 
 \begin{align}
-R_\text{SD}=\frac{|D(\R_\text{new})|}{|D(\R_\text{old})|}=\sum_{e=1}^n D_{ie}(\r_\text{new})D^{-1}_{ei}(\r_\text{old})
+R_\text{SD}=\frac{|D(\R_\text{new})|}{|D(\R_\text{old})|}=\sum_{j=1}^n D_{ij}(\r_\text{new})D^{-1}_{ji}(\r_\text{old})
 \end{align}
 as per \eq{VMCI3}.
 
@@ -483,7 +483,7 @@ The correlation part of the VMC trial wave function is stored in the matrix \inl
 \begin{align}
 u_{ij}=\frac{a_{ij}r_{ij}}{1+\beta r_{ij}},
 \end{align}
-where $a_{ij}$ equals $\nicefrac{1}{2}$ ($\nicefrac{1}{4}$) for opposite (parallel) spins and $\beta$ is a variational parameter (c.f.\ section \ref{section:jastrow}). Only the upper diagonal part of the $u$ matrix needs to be filled, since the correlations are obviously symmetric relations, i.e.\ $u_{ij}=u_{ji}$. The same is true of $r_{ij}$, the values of which are stored in a matrix called \inlinecc{m_interElectronDistances}. The computation of the full $u$ matrix is done exactly once, at the very first Metropolis step. This is handled by the \inlinecc{SlaterWithJastrow::fillCorrelationMatrix} method:
+where $a_{ij}$ equals $\nicefrac{1}{2}$ ($\nicefrac{1}{4}$) for opposite (parallel) spins and $\beta$ is a variational parameter (c.f.\ section \ref{section:jastrow}). The inter-electronic distance is denoted $r_{ij}=|\r_i-\r_j|$. Only the upper diagonal part of the $u$ matrix needs to be filled, since the correlations are obviously symmetric relations, i.e.\ $u_{ij}=u_{ji}$. The same is true of $r_{ij}$, the values of which are stored in a matrix called \inlinecc{m_interElectronDistances}. The computation of the full $u$ matrix is done exactly once, at the very first Metropolis step. This is handled by the \inlinecc{SlaterWithJastrow::fillCorrelationMatrix} method:
 \begin{lstlisting}[language={[std]c++}]
 void SlaterWithJastrow::fillCorrelationMatrix() {
 	mat& u = m_correlationMatrix;
@@ -572,9 +572,9 @@ Because of the exponential nature of the Jastrow factor as a whole, extensive ca
 %
 &=\exp\left[\sum_{i=1}^N\sum_{j=i+1}^N \big\{u_{ij}(\r_{ij}^\text{new})-u_{ij}(\r_{ij}^\text{old})\big\}\right],
 \end{align}
-and $u_{ij}(\r_{ij}^\text{new})-u_{ij}(\r_{ij}^{\text{new}})$ obviously vanishes is $\r^\text{new}_i=\r_i^\text{old}$ and $\r^\text{new}_j=\r_j^\text{old}$. The only terms which survive the sum are the ones involving \inlinecc{m_changedElectron}, which we (for the moment) will call $k$ for ease of notation. We find that
+and $u_{ij}(\r_{ij}^\text{new})-u_{ij}(\r_{ij}^{\text{old}})$ obviously vanishes if $\r^\text{new}_i=\r_i^\text{old}$ and $\r^\text{new}_j=\r_j^\text{old}$. The only terms which survive the sum are the ones involving \inlinecc{m_changedElectron}, which we (for the moment) will call $k$ for ease of notation. We find that
 \begin{align}
-\frac{J(\R_\text{new})}{J(\R_\text{old})}&=\exp\left[\sum_{i=1}^N\sum_{j=i+1}^N \big\{u_{ij}(\r_{ij}^\text{new})-u_{ij}(\r_{ij}^\text{old})\big\}(\delta_{ik}+\delta{kj})\right] \nn\\
+\frac{J(\R_\text{new})}{J(\R_\text{old})}&=\exp\left[\sum_{i=1}^N\sum_{j=i+1}^N \big\{u_{ij}(\r_{ij}^\text{new})-u_{ij}(\r_{ij}^\text{old})\big\}(\delta_{ik}+\delta_{kj})\right] \nn\\
 %
 &= \exp\left[\sum_{i=1}^{k-1} \big\{u_{ik}(\r_{ik}^\text{new})-u_{ik}(\r_{ik}^\text{old})\big\}+\sum_{j=k+1}^N\big\{u_{kj}(\r_{kj}^\text{new})-u_{kj}(\r_{kj}^\text{old})\big\}\right].
 \end{align}
@@ -818,11 +818,11 @@ void SlaterWithJastrow::computeQuantumForce() {
     }
 }
 \end{lstlisting}
-Note carefully that the \inlinecc{m_energyCrossTerm} described earlier is computed here, as we have direct access to the fully computed Jastrow gradient, aswell as the gradient of the Slater determinant. Also computed is the $\nabla_kJ(\R)\cdot \nabla_kJ(\R)$ factor which was missing in the \inlinecc{computeJastrowLaplacian} method earlier.
+Note carefully that the \inlinecc{m_energyCrossTerm} described earlier is computed here, as we have direct access to the fully computed Jastrow gradient, as well as the gradient of the Slater determinant. Also computed is the $\nabla_kJ(\R)\cdot \nabla_kJ(\R)$ factor which was missing in the \inlinecc{computeJastrowLaplacian} method earlier.
 
 
 \subsection{The Orbital class \label{orbital}}
-The orbitals populating the Slater determinants can in principle be any square integrable $\mathbb{R}^3\mapsto\mathbb{C}$ function. The only neccessary conditions for adding new orbital types in the VMC program is that three methods are present: \inlinecc{evaluate}, computing the value; \inlinecc{computeDerivative}, which evaluates the derivative w.r.t.\ one of the Cartesian coordinates; and \inlinecc{computeLaplacian} which predictably evaluates the Laplacian at given coordinates. 
+The orbitals populating the Slater determinants can in principle be any linearly independent square integrable $\mathbb{R}^3\mapsto\mathbb{C}$ functions. The only neccessary conditions for adding new orbital types in the VMC program is that three methods are present: \inlinecc{evaluate}, computing the value; \inlinecc{computeDerivative}, which evaluates the derivative w.r.t.\ one of the Cartesian coordinates; and \inlinecc{computeLaplacian} which predictably evaluates the Laplacian at given coordinates. 
 
 A global ordering of the orbitals is assumed, and all three neccessary methods provide an index telling which specific orbital is to be evaluated / differentiated. As an example, if index $2$ is provided to the \inlinecc{HydrogenOrbital::evaluate} function, the following code is executed
 \begin{lstlisting}[language={[std]c++}]

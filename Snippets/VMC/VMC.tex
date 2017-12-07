@@ -132,7 +132,7 @@ Let now $P(X)$ be the probability distribution associated with the transition ma
 %
 \lim_{t\rightarrow \tau} \frac{1}{(t-\tau)} \int_\mathcal{X}\mathrm{d}Y\,(Y-X)^{3+k}\,W(Y;t|X;\tau)&=0,
 \end{align}
-for any non-negative integer $k=0,1,2,\dots$. These integrals are sometimes called \emph{Kramers-Moyal-expansions}. If we take the distribution to represent e.g.\ the position of a particle, the first condition constraints the mean velocity of the particle to be $A(X,\tau)$ \cite{gilks}. Similarily, the second condition describes the influence on the particle's position by some random force. The third condition essentially ensures the motion must be continous, in that $W(Y;t_1|X;t_0)$ must vanish for $Y\not=X$ if $t_1\not=t_0$ \cite{gardiner}\comment{p48}. We will denote these integrals themselves (sans the denominator and limit) by $\langle (Y-X)^n\rangle$.
+for any non-negative integer $k=0,1,2,\dots$. These integrals are sometimes called \emph{Kramers-Moyal-expansions}. If we take the distribution to represent e.g.\ the position of a particle, the first condition constrains the mean velocity of the particle to be $A(X,\tau)$ \cite{gilks}. Similarily, the second condition describes the influence on the particle's position by some random force. The third condition essentially ensures the motion must be continous, in that $W(Y;t_1|X;t_0)$ must vanish for $Y\not=X$ if $t_1\not=t_0$ \cite{gardiner}\comment{p48}. We will denote these integrals themselves (sans the denominator and limit) by $\langle (Y-X)^n\rangle$.
 
 We will now consider some arbitrary function $g(x)$ which vanishes along with it's first derivative on the edges of our configuration space, $g(X\rightarrow \pm\infty)\rightarrow 0$ and $g'(X\rightarrow \pm\infty)\rightarrow 0$. Taking the integral of $g(x)$ weighed by $W(Y;t|X;0)$ over the all possible configurations, and employing the Chapman-Kolmogorov relation, yiels
 \begin{align}
@@ -171,7 +171,7 @@ Let now $P(\R,t)$ be a probability distribution function subject to a drift forc
 \begin{align}
 \pder{P(\R,t)}{t} = \sum_{i=1}^{dN} D \pder{}{x_i}\left(\pder{}{x_i} -F_i(x_i)\right)P(\R,t). \label{eq:VMC11}
 \end{align}
-The constant (spatially and temporally constant) diffusion constant is here denoted by $D$ while lowercase $d$ indicates the number of spatial dimensions. Since we are interested in probability which converges to $P(\R,t)=P(\R)=|\Psi(\R)|^2$ (assuming for the moment that $\Psi(\R)$ is normalized), we look for the solution in the case where the left hand side of \eq{VMC11} vanishes. An obviously sufficient (but possibly not neccessary) condition for this equation to hold is if it holds for each individual term of the sum, such that 
+The diffusion constant is here denoted by $D$ while lowercase $d$ indicates the number of spatial dimensions. Since we are interested in the probability density which converges to $P(\R,t)=P(\R)=|\Psi(\R)|^2$ (assuming for the moment that $\Psi(\R)$ is normalized), we look for the solution in the case where the left hand side of \eq{VMC11} vanishes. An obviously sufficient (but possibly not neccessary) condition for this equation to hold is if it holds for each individual term of the sum, such that 
 \begin{align}
 \pder{^2P(\R)}{x_i^2}&= P(\R)\pder{F_i(x_i)}{x_i}+F_i(x_i)\pder{P(\R)}{x_i}.
 \end{align}
@@ -227,7 +227,7 @@ Whereas the Metropolis suggestion step described previously assigned equal proba
 \begin{align}
 x_i^\text{new} = x_i^\text{old} + D\delta t {\bf F}(x_i) + \chi. \label{eq:VMC15}
 \end{align}
-The random variable $\chi$ is as a Gaussian around zero with variance $2D\Delta t$. Without the velocity drift term, this is the stepping scheme for an isotropic Brownian random walk in configuration space. However, with the added quantum force, the walker is pushed in the direction of higher probability, meaning more significant areas of the configuration space are visited proportionally more often.
+The random variable $\chi$ is distributed as a Gaussian around zero with variance $2D\Delta t$. Without the velocity drift term, this is the stepping scheme for an isotropic Brownian random walk in configuration space. However, with the added quantum force, the walker is pushed in the direction of higher probability, meaning more significant areas of the configuration space are visited proportionally more often.
 
 Once a step has been suggested, the Metropolis test is performed. The full probability of accepting the step now has a non-vanishing contribution from $T(x_i^\text{new}\leftarrow x_i^\text{old})$: the ratio of the Green's functions of the Fokker-Planck equation. The acceptance probability is thus\textemdash according to \eq{VMC14}\textemdash the following \cite{assaraf}\comment{p296}
 \begin{align}
@@ -257,15 +257,15 @@ I\equiv \int_a^b\mathrm{d}x\, f(x) \approx \frac{b-a}{N}\sum_{i=1}^N
 \end{align}
 The set of values $\{X_i\}_{i=1}^N$ are independent, identically distributed random samples. In general, the distribution need not be uniform. For \emph{any} probability distribution function $P(x)$, we can obtain an estimate of $I$ by
 \begin{align}
-I=\int_a^b\mathrm{d}x\, f(x) \approx \frac{1}{N}\sum_{i=1}^N \frac{f(X_i)}{P(X_i)}. \label{eq:mci1}
+I=\int_a^b\mathrm{d}x\, f(x) \approx \frac{1}{N}\sum_{i=1}^N \frac{f(X_i)}{P(X_i)}, \label{eq:mci1}
 \end{align}
-Essentially, we are weighing the sum by how likely the value $X_i$ is to be picked, according to the probability distribution $P(x)$. If $P(x_1)=2P(x_2)$, then we weigh any sampling of $x_1$ only half as much as a corresponding sampling of the value $x_2$. 
+where the $X_i$s are distributed according to $P$. Essentially, we are weighing the sum by how likely the value $X_i$ is to be picked, according to the probability distribution $P(x)$. If $P(x_1)=2P(x_2)$, then we weigh any sampling of $x_1$ only half as much as a corresponding sampling of the value $x_2$. 
 
 The advantage of the latter approach is immediately obvious: Imagine attempting to compute an approximation to the integral
 \begin{align}
 I=\int_0^{100}\mathrm{d}x\, \mathrm{e}^{-x^2}x^2
 \end{align}
-using the uniform sampling technique. Heuristically, at least 95\% of sampled points will give an absolutely negligible contribution to the overall value of $I$. We may however, pick $P(x)=\mathrm{e}^{-x^2}$ and use \eq{mci1}. Using this scheme, every sampled point would have a meaningful impact on the average since any $x$ for which the integrand is negligible also now has a \emph{negligible} chance to be sampled. This approach is called {\bf importance sampling} and has two\textemdash already obvious\textemdash distinct advantages over the uniform or \emph{brute force} method of \eq{mci2}. First, no time is wasted computing integrand values for which the integral is essentially independent because $f(x)\sim0$. And secondly, for clever choices of $P(x)$, the computational load may be decreased because $g(x)\equiv f(x)/P(x)$ is a less computationally expensive quantity to sample. Furthermore, ideally fluctuations in $g(x)$ are considerably reduced. If we are e.g.\ able to sample our random points according to $f(x)$ itself, then $g(x)=1$ and a single sample is sufficient. In general, a distribution $P(x)$ \emph{close} to $f(x)$ will give reduced statistical fluctuations in the integral estimate \cite{hammond}\comment{p40}. The importance sampling scheme also opens up the possibility of extending to an infinite range of integration.
+using the uniform sampling technique. Heuristically, at least 95\% of sampled points will give an absolutely negligible contribution to the overall value of $I$. We may however, pick $P(x)=\mathrm{e}^{-x^2}$ and use \eq{mci1}. Using this scheme, every sampled point would have a meaningful impact on the average since any $x$ for which the integrand is negligible also now has a \emph{negligible} chance to be sampled. This approach is called {\bf importance sampling} and has two\textemdash already obvious\textemdash distinct advantages over the uniform or \emph{brute force} method of \eq{mci2}. First, no time is wasted computing integrand values for which the integral is essentially independent because $f(x)\sim0$. And secondly, for clever choices of $P(x)$, the computational load may be decreased because $g(x)\equiv f(x)/P(x)$ is a less computationally expensive quantity to sample. Furthermore, ideally fluctuations in $g(x)$ are considerably reduced. If we are e.g.\ able to sample our random points according to $f(x)$ itself, then $g(x)=1$ and a single sample is sufficient.\footnote{Assuming the integral is taken over the entire domain of $P$.} In general, a distribution $P(x)$ \emph{close} to $f(x)$ will give reduced statistical fluctuations in the integral estimate \cite{hammond}\comment{p40}. The importance sampling scheme also opens up the possibility of extending to an infinite range of integration.
 
 \subsection{Convergence properties of the Monte Carlo estimators}
 Taking a short step backwards, let now 
@@ -295,7 +295,7 @@ For \emph{uncorrelated} random variables, $\{Y_i\}_{i=1}^M$, the variance of the
 %
 &= \frac{1}{N}\sigma^2\left[\frac{f(X_i)}{P(X_i)}\right].
 \end{align}
-We note that the standard deviation in the mean $\sigma[\langle J^N\rangle]\rightarrow0$ as $\mathcal{O}(\sqrt{N})$. The same is true of the basic Monte Carlo estimator $\langle I^N\rangle$, but $\sigma^2[f(X_i)/P(X_i)]$ is likely much smaller than the corresponding $\sigma^2[f(X_i)]$. 
+We note that the standard deviation in the mean $\sigma[\langle J^N\rangle]\rightarrow0$ as $\mathcal{O}(\sqrt{N})$. The same is true of the basic Monte Carlo estimator $\langle I^N\rangle$, but $\sigma^2[f(X_i)/P(X_i)]$ is likely much smaller (for a good choice of $P$) than the corresponding $\sigma^2[f(X_i)]$. 
 
 %Distribution of the \emph{sample mean}: For random samples $\{Y_i\}_{i=1}^M$, each with mean $\mu$ and standard deviation $\sigma$. Then $E[\bar Y]=\mu$ and $V[\bar Y] = \sigma_{\bar Y}^2=\sigma^2/N$ \cite{devore}\comment{p291}.
 
@@ -334,7 +334,7 @@ Consider now this in light of \eq{mci1}, and note that for any trial wave functi
 \begin{align}
 E\big[\Psit\big]&= \langle \EL^M \rangle = \frac{1}{M}\sum_{i=1}^M\EL(\R_i).
 \end{align}
-In the language of the previous section, $f=\rho(\R)\EL(\R)$, $g=\EL(\R)$, and $P=\rho(\R)$ which is the normalized probability density. This means that if we can pick samples randomly from the probability density function $\sim|\Psit(\R)|^2/\int\mathrm{d}\R\,|\Psit(\R)|^2$, then we can simply evaluate the local energy and take the average. This will give us an estimate for the true variational energy, aswell as a measure of the stastical uncertainty from calculating the variance. 
+In the language of the previous section, $f=\rho(\R)\EL(\R)$, $g=\EL(\R)$, and $P=\rho(\R)$ which is the normalized probability density. This means that if we can pick samples randomly from the probability density function $\sim|\Psit(\R)|^2/\int\mathrm{d}\R\,|\Psit(\R)|^2$, then we can simply evaluate the local energy and take the average. This will give us an estimate for the true variational energy, as well as a measure of the stastical uncertainty from calculating the variance. 
 
 The Metropolis-Hastings (MH) algorithm of the previous section enables us to draw samples directly from $\rho(\R)$. Note carefully that since MH always works in terms of ratios, $\rho(\R)$ need strictly speaking not be normalized. We require simply a quantity proportional to $|\Psit(\R)|^2$. 
 
@@ -342,7 +342,7 @@ A relatively short \emph{burn-in} time is usually employed, wherein the first $K
 
 \newcommand{\err}{\text{err}_{\langle \EL\rangle}}
 \subsection{Uncertainty estimates and correlated sampling}
-A stochastic method such as quantum Monte Carlo is useless without an estimate of the precision of the result. The quantity normally used to gauge this is the \emph{estimated standard error} of the mean, $\err$. The standard error is the standard deviation of the mean,
+A stochastic method such as quantum Monte Carlo is useless without an estimate of the precision of the result. The quantity normally used to gauge this is the \emph{estimated standard error} of the mean, $\err$. The standard error is the standard deviation of the mean (for un-correlated samples),
 \begin{align}
 \err = \sigma_{\langle\EL\rangle} = \frac{\sigma}{\sqrt{n}},
 \end{align}
@@ -374,7 +374,7 @@ In order to account for the auto-correlation of the Markov chain samples, we sta
 \end{align}
 with  
 \begin{align}
-\text{Cov}(X_i,X_j) = \frac{1}{N^2}\sum_{i=1}^N\sum_{j=1}^N(x_i-\langle x\rangle)(x_j-\langle x\rangle) = \frac{1}{N}\text{Cov}(x).
+\frac{1}{N^2}\sum_{i=1}^N\sum_{j=1}^N\text{Cov}(X_i,X_j) = \frac{1}{N^2}\sum_{i=1}^N\sum_{j=1}^N(x_i-\langle x\rangle)(x_j-\langle x\rangle) = \frac{1}{N}\text{Cov}(x).
 \end{align}
 A proper estimate for the standard error of the mean can now be written in terms of the \emph{sample covariance}, $\text{Cov}(x)$, as \cite{hjorth-jensen}\comment{slides, 52}
 \begin{align}
@@ -434,7 +434,7 @@ where $\EL^i$ denotes the $i$-th sample of the local energy. Calculating $\tau$ 
  \item[(4)] The blocking estimate of the true standard deviation is then taken to be $\sigma(b^*)$.
 \end{itemize}
 \end{shadeframe}
-Since the standard deviation with block size $b=k$ contains $k/(k+1)$ as many samples as the corresponding deviation with block size $b=k+1$, the expected change in the standard deviation is on the order of $\sim \sqrt{(k+1)/k}$. However, if the samples are correlated with $\tau<k$, then increasing the block size will sharply increase the calculated standard deviation. As $k\gtrsim\tau$, this effect vanishes and leaves only the $\sqrt{(k+1)/k}$ order change. The resulting plot has a sharp increase for low $k$ and then a characteristic plateu around $k=\tau$. 
+Since the standard deviation with block size $b=k$ contains $k/(k+1)$ as many samples as the corresponding deviation with block size $b=k+1$, the expected change in the standard deviation is on the order of $\sim \sqrt{(k+1)/k}$. However, if the samples are correlated with $\tau<k$, then increasing the block size will sharply increase the calculated standard deviation. As $\tau\gtrsim k$, this effect vanishes and leaves only the $\sqrt{(k+1)/k}$ order change. The resulting plot has a sharp increase for low $k$ and then a characteristic plateu around $k=\tau$. 
 
 
 
