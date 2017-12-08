@@ -1,0 +1,113 @@
+\documentclass[../../master.tex]{subfiles}
+
+\begin{document}
+\chapter{Implementation: Artificial Neural Networks \label{NNimplementation}}
+The following is a description of the implementation of the artificial neural network (ANN) framework described in chapter \ref{NN}. The main body of the implementation consists of around $1\,500$ lines of object oriented Python code. The structure of the neural networks (NN) and the training procedure is implemented by us, but the underlying back-propagation (by automatic differentiation\footnote{\emph{Automatic differentiation} denotes the process of analytically evaluating the derivative of an arbitrary computer program w.r.t.\ any variable in that program. It exploits the fact that any code\textemdash regardless of how complicated\textemdash at the end of the day only applies a series of elementary operations to a set of variables. Since the derivative of such elementary operations (addition, subtraction, multiplication, sines, exponentiation, etc.) are all known analytically, repeated application of the chain rule can in principle give the closed form analytical derivative of \emph{any} computer code. Please note \emph{very carefully} that this differs fundamentally from an ordinary numerical (finite difference) derivative approximation.}) and parameter optimization is handled by the TensorFlow library \cite{tensorflow}. Our code consists of around 10 classes, but a generic user need only interact with a single Python source file. The program is designed to be run from the command line where numerous command line arguments dictate which computation is run and how the output is handled/visualized.
+
+The NN framework is essentially used as a general curve fitting procedure, capable of "parameter free" fitting of (in principle) any real mapping $f:\mathbb{R}^M\mapsto \mathbb{R}^N$. Apart from possibly some examples of pathologically badly-behaved functions, the NN machinery can find a least squares\footnote{The precise meaning of \emph{least squares} in this context is made clear in chapter \ref{NN}.} fit to any $f$. Whereas ordinary curve fitting algorithms require a parametrized ansatz, the ANN approach is completely general. 
+
+Given a functional form (with or without added random noise), the developed code is capable of finding an approximation to the noise-less underlying function. It is also possible to provide the program with a file consisting of data points and have the code compute a parametrization of the data points based on one or more inputs. For example, a set of energies originating from \emph{ab initio} QM calculations,
+\begin{align}
+E_{ab\text{ }initio}^i=E_{ab\text{ }initio}(r^i_{12},r^i_{13},r^i_{23},\dots,\theta^i_{123},\theta^i_{134},\theta^i_{124},\dots).
+\end{align}
+The superscript $i$ signifies the discrete sampling\textemdash the energy is only calculated quantum mechanically at a finite set of $N$ configurations\textemdash with given inter-nucleus separations $r_{ij}$ and nucleus-nucleus-nucleus angles $\theta_{ijk}$. Feeding the ANN with the discrete nucleonic configurations (distances and angles) and the corresponding \emph{ab initio} energies, the network can \emph{learn} the underlying patterns and provide an continous interpolation 
+\begin{align}
+E_\text{NN}=E_\text{NN}(r_{12},r_{13},r_{23},\dots,\theta_{123},\theta_{134},\theta_{124},\dots).
+\end{align}
+
+We will start off our description by presenting examples of the usage of the code, before we delve deeper into the specific implementation. 
+
+\section{Introductory examples \label{nnimpintro}}
+The ANN code is controlled primarily from the command line, and interaction with the source directly is only neccessary for \emph{advanced use}. Querying the program with a \inlinecc{--help} option gives an overview of the usage, i.e.\
+\begin{lstlisting}
+(tensorflow)$ python tfpotential.py --help
+\end{lstlisting}
+The \inlinecc{(tensorflow)} denotes an active (possibly virtual) environment which has TensorFlow and all required libraries in the appropriate Python paths. As a rule, it is generally beneficient to install TensorFlow in a virtual environment (to avoid interfering with the system default Python binaries) using e.g.\ Anaconda package system \cite{anaconda}. 
+
+By default\textemdash if not otherwise specified\textemdash a Lennard-Jones (LJ) functional form is used as an example. The code admits a single positional argument, namely the number of training \emph{epochs} to go through. For example, the following command line statement will run training over $200$ epochs on a default LJ data set, and (once finished) visualize the NN output, the training progress, and the approximation error:
+\begin{lstlisting}
+(tensorflow)$ python tfpotential.py 200 --plotall
+\end{lstlisting}
+
+The structure of the network (number of layers and the amount of neurons per hidden layer) can be specified with the \inlinecc{--size} option. Additionally, training with a data set from e.g.\ \emph{ab initio} QM calculations can be done by specifying the name of a file containing said data. For long training processes, it is convenient to be able to save the NN state. This enables pausing and resuming the training, and is handled in the code by the \inlinecc{--save} and \inlinecc{--load} key-words. The following example runs 1000 training epochs on a data set from the file \inlinecc{QMData.dat}, saving the network structure and state to facilitate subsequent reloading for more training: 
+\begin{lstlisting}
+(tensorflow)$ python tfpotential.py 1000 --size 3 10 --file QMData.dat --save
+\end{lstlisting}
+A network size of 3 hidden layers\textemdash each consisting of 10 neurons\textemdash is used, and an example of the \emph{on the fly} output of the program is shown in \fig{nnexample}.
+
+\begin{figure}[p]
+\begin{lstlisting}
+Initializing network:
+ => layers    3
+ => neurons   10
+ => type      sigmoid
+ 
+Training network:
+ => epochs         1000
+ => function       QMData.dat
+ => data set size  10000
+ => batch size     200
+ => test set size  1000
+ 
+==============================================================================
+                       Cost/                          Test Cost/
+Epoch      Cost        DataSize         Test Cost     TestSize
+------------------------------------------------------------------------------
+  0       294984.9     2.949849         6296.4092     6.2964092           
+  1       5946.0332    0.059460332      5746.3628     5.7463628           
+  2       5909.0933    0.059090933      5743.9268     5.7439268           
+  3       5906.6206    0.059066206      5741.6689     5.7416689           
+  4       5903.2309    0.059032309      5736.8623     5.7368623           
+  5       5899.0264    0.058990264      5733.3242     5.7333242  saved: ckpt-0         
+  6       5893.5371    0.058935371      5725.332      5.725332            
+  7       5885.2447    0.058852447      5716.1626     5.7161626           
+  8       5875.6524    0.058756524      5704.4277     5.7044277           
+  9       5861.1823    0.058611823      5689.1689     5.6891689           
+  10      5843.8268    0.058438268      5668.082      5.668082   saved: ckpt-1
+  11      5822.3592    0.058223592      5647.6074     5.6476074           
+  12      5791.2043    0.057912043      5612.1699     5.6121699           
+  13      5751.5597    0.057515597      5563.3501     5.5633501          
+    
+                                  ...                                      
+          
+  995     13.405828    0.00013405828    17.932564     0.017932564         
+  996     13.568553    0.00013568553    17.441454     0.017441454         
+  997     13.552082    0.00013552082    17.314411     0.017314411         
+  998     13.498887    0.00013498887    17.568069     0.017568069         
+  999     13.575483    0.00013575483    17.655457     0.017655457  
+============================================================================== 
+  \end{lstlisting}
+\caption{Output produced by the example run of the NN program shown in section \ref{nnimpintro}. Saving of the network state is done \emph{at most} every 5 epochs, but only if the current cost function computed for the test set attains a minimum. If other states with lower values of this cost function have already been saved as a previous checkpoint, the current one is not saved. The output has been lightly edited to make it fit (a column showing the elapsed time per epoch is removed, and some non-UTF8 characters have been replaced with similar UTF8 characters, among other things). \label{fig:nnexample}}
+\end{figure}
+
+\section{Overview of select classes}
+\subsection{The NeuralNetwork class}
+The actual structure and evaluation of the NN is done in the \inlineclass{NeuralNetwork} class. 
+
+\begin{lstlisting}[
+language=Python,
+classoffset=4,
+morekeywords={NeuralNetwork},
+keywordstyle=\color{blue},
+classoffset=1,
+morekeywords={self},
+keywordstyle=\color{red},
+classoffset=0]
+class NeuralNetwork :
+	def __init__(self, n) :
+		self.n = n
+
+	def __call__(self, x) :
+		return x**3ss
+\end{lstlisting}
+
+
+
+
+
+
+
+
+
+
+\end{document}

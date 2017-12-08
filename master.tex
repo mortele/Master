@@ -175,6 +175,8 @@
 \fi
 
 \newcommand{\inlinecc}[1]{\lstinline[language={[std]c++}]{#1}}
+\newcommand{\inlinemember}[1]{\lstinline[language={Python},classoffset={4}, morekeywords={#1}, keywordstyle=\color{listingsmembercolor}, classoffset={0}]{#1}}
+\newcommand{\inlineclass}[1]{\lstinline[language={Python},classoffset={4}, morekeywords={#1}, keywordstyle=\color{listingsclasscolor}, classoffset={0}]{#1}}
 
 
 % Convenient shorthand notation ---------------------------------------------- %
@@ -234,7 +236,7 @@
 
 
 \author{Morten Ledum}
-\title{Im trapped in a title, please send help}
+\title{A quantum Monte Carlo approach to multi-scale modelling using artificial neural networks}
 \date{December 2017}
 
 \makeatletter
@@ -366,10 +368,12 @@ The thesis ends with part four, containing conclusions and prospect for future w
 \subfile{Snippets/Hartree-Fock/Hartree-Fock}
 \subfile{Snippets/DFT/DFT}
 \subfile{Snippets/VMC/VMC}
+\subfile{Snippets/NN/NN}
 
 \part{Implementation and results}
 \subfile{Snippets/HFImplementation/HFImplementation}
 \subfile{Snippets/VMCImplementation/VMCImplementation}
+\subfile{Snippets/NNImplementation/NNImplementation}
 \subfile{Snippets/Hartree-FockValidation/Hartree-FockValidation}
 \subfile{Snippets/VMCValidation/VMCValidation}
 
@@ -397,6 +401,6 @@ Push the whole machinery through more thorough testing at the MD level
 
 
 
-\printbibliography
-%\printbibliography[heading=bibintoc]
+%\printbibliography
+\printbibliography[heading=bibintoc]
 \end{document}
