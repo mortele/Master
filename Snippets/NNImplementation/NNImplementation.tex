@@ -318,7 +318,7 @@ classoffset=0,
 morekeywords={with,None}]
 self.optimizer  = self.adam.minimize(self.cost)
 \end{lstlisting}
-and \emph{evaluating} it constitute an update of the NN weights according to the gradients w.r.t.\ the cost function (see chapter \ref{NN} for a brief description of the back-propagation algorithm). 
+and \emph{evaluating} it constitutes an update of the NN weights according to the gradients w.r.t.\ the cost function (see chapter \ref{NN} for a brief description of the back-propagation algorithm). 
 
 In total the \inlineclass{trainNetwork} function takes the following (abridged) form:
 \begin{lstlisting}[
@@ -367,7 +367,54 @@ def trainNetwork(self, numberOfEpochs) :
 \end{lstlisting}
 The \inlinecc{DataGenerator} class is used to provide the training and validation data sets, either from a generating functional form (e.g.\ a Lennard-Jones form) or from a file containing e.g.\ \emph{ab initio} QM data.
 
+\subsubsection{Online learning and order randomization}
+The training scheme used in the current work is an \emph{online leaning} method. Online learning describes a way of feeding inputs through the neural network and is usually contrasted with the \emph{batch learning}. In the batch learning scheme, the entire data set is pushed through the NN in one fel swoop at every epoch. The weights and biases are then updated according to the gradient w.r.t.\ the cost function \emph{of the entire data set}. In order to facilitate data sets which are too big for simultaneous evaluation in the network, online methods feed only a part of the data set through before updating the parameters. If each online batch is size $M$, and the total data set is $N$ samples, then each epoch consists of evaluating $M/N$ mini-batches with subsequent parameter update. 
 
+Crucially, the training data is reordered in a random manner before each training epoch begins. If this is not done\textemdash and especially if the training samples are heavily correlated such as e.g.\ training point $i$ is given by $f(x_i)$ for $x_i=x_0+\mathit{\Delta}x$\textemdash then it is concievable that the model becomes \emph{stuck in place}. As each mini-batch only trains the NN in very constrained range of inputs with heavily homogenous function values, the model has no way of optimizing in the \emph{global} sense, i.e.\ for the entire data set. 
+
+
+\subsection{The TFPotential and the DataGenerator classes}
+Lastly, let us briefly discuss the \inlineclass{TFPotential} and \inlineclass{DataGenerator} classes. The former class acts as the interface between the user and the ANN machinery, being the class which is used to start calculations. Calling the \inlinecc{tfpotential.py} file evaluates  
+\begin{lstlisting}[
+language=Python,
+classoffset=4, % CLASSES
+morekeywords={NeuralNetwork,initializeWeight,layer,initializeBias,fullNetwork, parseTypeString,constructNetwork,train},
+keywordstyle=\color{listingsclasscolor},
+classoffset=5, % MEMBER VARIABLES
+morekeywords={self},
+keywordstyle=\color{listingsmembercolor},
+classoffset=6, % KEY WORDS
+morekeywords={__call__,__init__},
+keywordstyle=\color{listingskeywordcolor},
+classoffset=0,
+morekeywords={with,None}]
+if __name__ == "__main__" :
+    tfpot = TFPotential()
+    tfpot.train(tfpot.argumentParser().epochs)
+\end{lstlisting}
+which creates a \inlineclass{TFPotential} class instance and then calls the \inlineclass{train} method
+\begin{lstlisting}[
+language=Python,
+classoffset=4, % CLASSES
+morekeywords={NeuralNetwork,initializeWeight,layer,initializeBias,fullNetwork, parseTypeString,constructNetwork,train,trainNetwork},
+keywordstyle=\color{listingsclasscolor},
+classoffset=5, % MEMBER VARIABLES
+morekeywords={self},
+keywordstyle=\color{listingsmembercolor},
+classoffset=6, % KEY WORDS
+morekeywords={__call__,__init__},
+keywordstyle=\color{listingskeywordcolor},
+classoffset=0,
+morekeywords={with,None}]
+    def train(self, epochs=-1) :
+        numberOfEpochs = self.numberOfEpochs if epochs == -1 else epochs
+        self.numberOfEpochs = numberOfEpochs
+        self.networkTrainer.trainNetwork(numberOfEpochs)
+        self.sess = self.networkTrainer.sess
+\end{lstlisting}
+which sets up and facilitates the training. In order to help with setting the correct parameters asked for by the user, the \inlineclass{ArgumentParser} class is used to handle command line \inlinecc{--argument} and \inlinecc{value} pairs. 
+
+The data generation (or \emph{data organization} in the case of QM training data) is handled by the \inlineclass{DataGenerator} class, who's primary job is to ensure the training data is structured correctly to be fed through the network. Since The default behaviour\textemdash with the default LJ functional form\textemdash is to create a NumPy \inlinecc{linspace} between two cutoffs, using a number of points specified by the user. Note that since we shuffle the training data around prior to every single training epoch, there is no inherent problem with such a heavily spatially correlated data set. 
 
 
 
