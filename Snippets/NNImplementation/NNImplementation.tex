@@ -22,7 +22,7 @@ The ANN code is controlled primarily from the command line, and interaction with
 \begin{lstlisting}
 (tensorflow)$ python tfpotential.py --help
 \end{lstlisting}
-The \inlinecc{(tensorflow)} denotes an active (possibly virtual) environment which has TensorFlow and all required libraries in the appropriate Python paths. As a rule, it is generally beneficient to install TensorFlow in a virtual environment (to avoid interfering with the system default Python binaries) using e.g.\ Anaconda package system \cite{anaconda}. 
+The \inlinecc{(tensorflow)} denotes an active (possibly virtual) environment which has TensorFlow (TF) and all required libraries in the appropriate Python paths. As a rule, it is generally beneficient to install TensorFlow in a virtual environment (to avoid interfering with the system default Python binaries) using e.g.\ Anaconda package system \cite{anaconda}. 
 
 By default\textemdash if not otherwise specified\textemdash a Lennard-Jones (LJ) functional form is used as an example. The code admits a single positional argument, namely the number of training \emph{epochs} to go through. For example, the following command line statement will run training over $200$ epochs on a default LJ data set, and (once finished) visualize the NN output, the training progress, and the approximation error:
 \begin{lstlisting}
@@ -233,7 +233,7 @@ The training of the Network is handled entirely by the \inlineclass{NetworkTrain
 \end{align}
 is used as the cost function \cite{adam}. Recall that for an input vector ${\bf x}$, the NN output is denoted $\hat {\bf y}$ while the true result is ${\bf y}$. The $\ell^2$ norm cost function is thus simply the square root squared difference between the true result and the network output. The $\ell^2$ space\textemdash briefly mentioned in section \ref{math}\textemdash is the space of \emph{square summable sequences}, essentially a special case of the $\mathcal{L}^2$ space (see e.g.\ Rynne and Youngson \cite{rynne}). 
 
-The \inlineclass{NetworkTrainer} constructor defines two \emph{placeholders}, which are later assigned to TensorFlow variables. In addition, the network is assembled and cost function and optimizer is set up.
+The \inlineclass{NetworkTrainer} constructor defines two \emph{placeholders}, which are later assigned to TF variables. In addition, the network is assembled and cost function and optimizer is set up.
 \begin{lstlisting}[
 language=Python,
 classoffset=4, % CLASSES
@@ -264,12 +264,108 @@ def __init__(self, system, saver) :
 \end{lstlisting}
 The \inlinecc{system} parameter is an instance of the \inlineclass{TFPotential} class, which acts as a driver for the program, glueing the different pieces together. This is the only class the user needs interact with for basic usage of the NN machinery. 
 
-Initialization of the TensorFlow session and the optimization takes place in the \inlineclass{trainNetwork} method
+Initialization of the TensorFlow session and the optimization takes place in the \inlineclass{trainNetwork} method.
+The statements 
+\begin{lstlisting}[
+language=Python,
+classoffset=4, % CLASSES
+morekeywords={NeuralNetwork,initializeWeight,layer,initializeBias,fullNetwork, parseTypeString,constructNetwork},
+keywordstyle=\color{listingsclasscolor},
+classoffset=5, % MEMBER VARIABLES
+morekeywords={self},
+keywordstyle=\color{listingsmembercolor},
+classoffset=6, % KEY WORDS
+morekeywords={__call__,__init__},
+keywordstyle=\color{listingskeywordcolor},
+classoffset=0,
+morekeywords={with,None}]
+self.sess = tf.Session()
+self.sess.run(tf.global_variables_initializer())
+\end{lstlisting}
+initializes variables to TF structures, essentially constructing the computational graph. The input variables\textemdash usually NumPy (see e.g. Langtangen \cite{primer}) arrays\textemdash are converted to TensorFlow \emph{tensors}. These are only explicitly evaluated and differentiated (up to the required order, depending on the graph) when the TF \inlinecc{run} method is called on them. An example of this is the evaluation of the optimizer and cost function in conjunction with the training step. This is done by 
+\begin{lstlisting}[
+language=Python,
+classoffset=4, % CLASSES
+morekeywords={NeuralNetwork,initializeWeight,layer,initializeBias,fullNetwork, parseTypeString,constructNetwork},
+keywordstyle=\color{listingsclasscolor},
+classoffset=5, % MEMBER VARIABLES
+morekeywords={self},
+keywordstyle=\color{listingsmembercolor},
+classoffset=6, % KEY WORDS
+morekeywords={__call__,__init__},
+keywordstyle=\color{listingskeywordcolor},
+classoffset=0,
+morekeywords={with,None}]
+self.sess = tf.Session()
+self.sess.run(tf.global_variables_initializer())
+bOpt, bCost = self.sess.run([self.optimizer, self.cost], 
+                                        feed_dict={ self.x: xBatch, 
+                                                    self.y: yBatch})
+\end{lstlisting}
+The \inlinecc{feed_dict} feeds NumPy arrays into the placeholder variables \lstinline[language={Python},classoffset={4}, morekeywords={self}, keywordstyle=\color{listingsmembercolor}, classoffset={0}]{self.x} and \lstinline[language={Python},classoffset={4}, morekeywords={self}, keywordstyle=\color{listingsmembercolor}, classoffset={0}]{self.y}. The cost function is then evaluated in the TF graph, alongside \lstinline[language={Python},classoffset={4}, morekeywords={self}, keywordstyle=\color{listingsmembercolor}, classoffset={0}]{self.optimizer}. Recall that the latter variable was defined as 
+\begin{lstlisting}[
+language=Python,
+classoffset=4, % CLASSES
+morekeywords={NeuralNetwork,initializeWeight,layer,initializeBias,fullNetwork, parseTypeString,constructNetwork},
+keywordstyle=\color{listingsclasscolor},
+classoffset=5, % MEMBER VARIABLES
+morekeywords={self},
+keywordstyle=\color{listingsmembercolor},
+classoffset=6, % KEY WORDS
+morekeywords={__call__,__init__},
+keywordstyle=\color{listingskeywordcolor},
+classoffset=0,
+morekeywords={with,None}]
+self.optimizer  = self.adam.minimize(self.cost)
+\end{lstlisting}
+and \emph{evaluating} it constitute an update of the NN weights according to the gradients w.r.t.\ the cost function (see chapter \ref{NN} for a brief description of the back-propagation algorithm). 
 
+In total the \inlineclass{trainNetwork} function takes the following (abridged) form:
+\begin{lstlisting}[
+language=Python,
+classoffset=4, % CLASSES
+morekeywords={NeuralNetwork,initializeWeight,layer,initializeBias,fullNetwork, parseTypeString,constructNetwork,trainNetwork},
+keywordstyle=\color{listingsclasscolor},
+classoffset=5, % MEMBER VARIABLES
+morekeywords={self},
+keywordstyle=\color{listingsmembercolor},
+classoffset=6, % KEY WORDS
+morekeywords={__call__,__init__},
+keywordstyle=\color{listingskeywordcolor},
+classoffset=0,
+morekeywords={with,None}]
+def trainNetwork(self, numberOfEpochs) :
+    self.sess = tf.Session()
+    self.sess.run(tf.global_variables_initializer())
+    # ...
+    xEpoch, yEpoch, xTest, yTest = self.system.dataGenerator.generateData \
+                                                          (self.system.dataSize,
+                                                           self.system.testSize)
+    # ...
+    for epoch in xrange(numberOfEpochs) :
+        indices = np.random.choice(dataSize, dataSize, replace=False)
+        xEpoch = xEpoch[indices]
+        yEpoch = yEpoch[indices]      
 
+        self.epochCost = 0
+        for i in xrange(dataSize / batchSize) :
+            startIndex  = i*batchSize
+            endIndex    = startIndex + batchSize
+            xBatch      = xEpoch[startIndex:endIndex]
+            yBatch      = yEpoch[startIndex:endIndex]
+            bOpt, bCost = self.sess.run([self.optimizer, self.cost], 
+                                                  feed_dict={ self.x: xBatch, 
+                                                              self.y: yBatch})
+            self.epochCost += bCost
 
-
-
+        tCost = -1
+        if epoch % self.system.testInterval == 0 :
+            tOpt, tCost = self.sess.run([self.testCost, self.cost], 
+                                                  feed_dict={ self.x: xTest, 
+                                                              self.y: yTest})
+    #...
+\end{lstlisting}
+The \inlinecc{DataGenerator} class is used to provide the training and validation data sets, either from a generating functional form (e.g.\ a Lennard-Jones form) or from a file containing e.g.\ \emph{ab initio} QM data.
 
 
 
