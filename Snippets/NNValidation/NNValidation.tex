@@ -4,11 +4,21 @@
 
 \chapter{Neural Network validation tests \label{NNvalidation}}
 \section{Single variable curve fit}
-The natural place to start the testing of our Neural Network potential fit scheme is with a simple function of a single variable, $f:\mathbb{R}\rightarrow\mathbb{R}$. As an initial test, the specific functional form is of little importance. However\textemdash in the spirit of the present contex\textemdash we choose a Lennard-Jones parameterization,
+The natural place to start the testing of our Neural Network potential fit scheme is with a simple function of a single variable, $f:\mathbb{R}\rightarrow\mathbb{R}$. As an initial test, the specific functional form is of little importance. However\textemdash in the spirit of the present contex\textemdash we choose a Lennard-Jones (LJ) parameterization,
 \begin{align}
 V_\text{LJ}(r) = \frac{1}{r^{6}}-\frac{1}{r^{12}}.
 \end{align}
-For the moment we forget about the normalization, and the scaling of the distances by the usual $\sigma$ parameter. 
+For the moment we forget about the normalization, and the scaling of the distances by the usual $\sigma$ parameter. Using a simple network structure of a single hidden layer consisting of 10 neurons, we train for $10^3$ with a data set consisting of $10^6$ samples of the LJ potential for $0.9\le r\le 1.6$. The resulting network output and training details are shown in \fig{ljtrain}. We note the network output and the training data coincide\textemdash approximately\textemdash perfectly after 1000 epochs of training, with the average squared difference between the validation points and the true potential is on the order of $~10^{-7}$. 
+
+\begin{figure}
+\centering
+\includegraphics[width=0.49\textwidth,trim=0  200 0 200, clip]{ljtrain1.pdf}
+\includegraphics[width=0.49\textwidth,trim=0  200 0 200, clip]{ljtrain2.pdf}
+\includegraphics[width=0.49\textwidth,trim=0  200 0 200, clip]{ljtrain3.pdf}
+\includegraphics[width=0.49\textwidth,trim=0  200 0 200, clip]{ljtrain4.pdf}
+\includegraphics[width=0.79\textwidth,trim=0  200 0 200, clip]{ljtrain.pdf}
+\caption{Samples showing the training of an ANN on samplings of the Lennard-Jones potential between $0.9\le r \le 1.6$. The evolution of the network output with increasing epochs is shown (top) in addition to the cost as a function of epoch (bottom).  \label{fig:ljtrain}}
+\end{figure}
 
 
 \section{Approximating noisy data \label{noisesec}}
