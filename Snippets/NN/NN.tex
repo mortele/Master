@@ -2,10 +2,81 @@
 
 \begin{document}
 \chapter{Artificial Neural Networks \label{NN}}
-The following is a \emph{brief} introduction to the theory underlying the construction and training of artificial neural networks (ANNs). For a more comprehensive review of the subject, the reader is encouraged to survey relevant chapters from the recent master theses of Stende and Treider \cite{stende,treider}. 
+The following is a \emph{brief} introduction to the theory underlying the construction and training of artificial neural networks (ANNs). For a more comprehensive review of the subject, the reader is encouraged to survey relevant chapters from the recent master theses of Stende and Treider \cite{stende,treider}. This introduction follows closely the introduction of Raff and co-workers \cite{raff}. 
+
+Artificial neural networks can be created in numerous, but we will focus exclusively on the most common architecture, namely \emph{multilayer perceptrons} (MLP). The MLP neural networks are built from \emph{layers} of connected \emph{neurons}. In the artificial network, an input value (possibly a vector) is fed into the network model and then propagated through the layers, being processed through each neuron in turn. We will deal only with \emph{feed forward} ANNs, meaning information always flows through the net in one direction only\textemdash essentially there are no loops. The entire ANN produces an output value (possibly a vector), which means we can think of it as a complicated function $\mathbb{R}^n\mapsto \mathbb{R}^m$. As we will see, it is possible to write down a closed form expression for this function and it is\textemdash crucially\textemdash possible to devise an efficient algorithm for calculating the gradient of the entire function w.r.t.\ any of the internal parameters.
+
+\section{Artifical neurons}
+A neuron is simply a model function for propagating information through the network. Inspired by biological neurons, the artificial neuron "fires" if it is stimulated by a sufficiently strong signal. The artificial neuron recieves a vector of input values ${\bf p}$. If the neuron is part of the very first hidden layer (this will be expanded upon shortly), the the input is simply the input value(s) to the NN. If one or more layers preceded the current one, ${\bf p}$ is a vector of outputs from the neurons in the previous layer.
 
 
-Raff s. 51: "NN (and other non-linear black box techniques) cannot be expected to \emph{extrapolate} accurately."
+\begin{figure}
+\begin{centering}
+\begin{tikzpicture}[
+node distance = 5mm and 18mm,
+  start chain = going below,
+  arro/.style = {-Latex},
+bloque/.style = {text width=4ex, inner sep=2pt, align=right, on chain},
+                        ]
+% inputs
+\foreach \i [count=\j] in {p_{1}, p_{2}, p_{3}, {\vdots}, p_{N}}
+    \node[bloque] (in-\j) {$\i$};
+% output
+\node (out) [circle, draw, minimum size=6mm,
+      %label=\textsc{$\displaystyle\sum_{i=1}^N$},
+      right=of $(in-3)!0.5!(in-3)$]  {$\displaystyle\sum_{i=1}^Nw_ip_i$};
+% conections
+\foreach \i in {1,...,3}
+    \draw[arro] (in-\i) -- (out);
+\draw[arro] (in-5) -- (out);
+% output
+\node (output) [circle, draw, minimum size=6mm,right=of out]   
+		{$f\left[{\bf w}^T{\bf p} + b\right]$};
+%\coordinate[right=of out] (output);
+\draw[arro] (out) -- (output);
+% layer labels
+\node[above=of in-1.center]     {Input};
+\node[below=of in-4 -| out]     (bias) [circle,draw,minimum size=6mm]
+										{$b$};
+\draw[arro] (bias) -- (output);
+\node[above=of in-1 -| output]  {Activation};
+\node[above=of in-1 -| out]  {Sum};
+\node[right=of output] (final) {$\tilde p$};
+\node[above=of in-1 -| final]  {Output};
+\draw[arro] (output) -- (final);
+\end{tikzpicture}
+\caption{A model neuron, a constituent part of the artificial neural network model. The input from the previous layer ${\bf p}$ multiplied by corresponding weights ${\bf w}$ and summed. Then the bias $b$ is added, and the activation function $f$ is applied to the resulting ${\bf w}^T{\bf p}+b$. The output $\tilde p$ goes on to become input for neurons in the next layer. \label{fig:neuron}}
+\end{centering}
+\end{figure}
+The neuron is connected to the previous layers' neurons, and the strength of the connection is represented by a vector of weights, ${\bf w}$. Let us now consider a neuron which we will label by the index $k$. The output from neuron $i$ (of the preceding layer), $p_i$, is multiplied by the weight corresponding to the $i$\----$k$ connection, $w_i$. The combined weight vector multiplied by the input vector gives part of the total activation of the neuron, 
+\begin{align}
+\sum_{i=1}^Nw_ip_i = {\bf w}^T{\bf p}.
+\end{align}
+The remaining part is known as the bias, $b_k$. This is a single real number. There is one for each neuron, and it acts as modifier making the neuron more or less likely to fire independently of the input. 
+
+The total input is passed to an activation (or transfer) function, which transforms it in some specified way, yielding the neuron \emph{output} $\hat p_k$. This in turn becomes input for the neurons in subsequent layers. 
+
+Various different activation functions $f$ are used for different purposes. The function may be linear or non-linear, but should vanish for small inputs and \emph{saturate} for large inputs. A popular example, the sigmoid, takes the form 
+\begin{align}
+f(x) = \frac{1}{1+\mathrm{e}^{-x}}.
+\end{align}
+An example of the sigmoid is shown in \fig{sigmoid}. Numerous alternative transfer functions are in popular use, including the hyperbolic tangent $\tanh$, the inverse tangent $\tan^{-1}$, the rectified and exponential linear units (ReLU and ELU), Gaussians, and identity functions $f(x)=x$.
+
+In total, the action of a single neuron can be written
+\begin{align}
+\text{input}\ \rightarrow f\left({\bf w}^T{\bf p}+b\right) = \tilde p \ \rightarrow \ \text{output}.
+\end{align}
+A schematic representation of the single neuron connected to the previous and acting as input for the next layers is shown in \fig{neuron}. 
+
+\begin{SCfigure}
+\centering
+\includegraphics[width=0.49\textwidth, trim=0 200 0 200, clip]{sigmoid.pdf}
+\caption{Example of a \emph{sigmoid} function, used as a non-linear activation function for artificial neural networks.\label{fig:sigmoid}}
+\end{SCfigure}
+
+
+
+%Raff s. 51: "NN (and other non-linear black box techniques) cannot be expected to \emph{extrapolate} accurately."
 
 
 
