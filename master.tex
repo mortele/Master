@@ -286,10 +286,10 @@ Secondly, a method for parameterizing the Born-Oppenheimer energy hypersurfaces\
 \tableofcontents
 
 \chapter{Introduction}
-After being deveolped and pioneered in conjunction with nuclear physics during World War II, computer modelling and numerical experiments have become ubiquitous in the natural sciences. The list of areas in which simulations have been used to produce significant new results encompass now pretty much all of them [citation needed]. Today computer simulations play as natural a part of the hard sciences as laboratory experiments and theory. In most cases all three are used in order to glean new scientific insight. ((examples here?))
+After being deveolped and pioneered around the middle of the last century, computer modelling and numerical experiments have become ubiquitous in the natural sciences. The list of areas in which simulations have been used to produce significant new results encompass now pretty much all of them. Today computer simulations play as natural a part of the hard sciences as laboratory experiments and theory. In most cases all three are used in order to glean new scientific insight. Without massive scale computational efforts, the existence of e.g.\ the Higgs boson and gravitational waves would still be undetermined.
 
 %In particular, the advent of computers simulations have had a profound impact on researchers ability to 
-The advent of computer simulations during the last several decades have in particular made it possible to study moderately sized quantum mechanical systems from first principles. As our ability to solve\textemdash in closed form\textemdash the governing equations of quantum mechanics (QM) vanishes extremely quickly as the number of constituent particles exceed just a few, numerics are used to augment the proverbial \emph{pen and paper}. It is striking that the underlying theory for all of chemistry and most of physics have been known for almost a century but the problem preventing us from essentially \emph{solving} chemistry is almost purely computational: the equations resulting from the exact application of this theoretical framework are way too difficult to solve.
+The advent of computer simulations during the last several decades have in particular made it possible to study moderately sized quantum mechanical systems from first principles. Our ability to solve\textemdash in closed form\textemdash the governing equations of quantum mechanics (QM) vanishes extremely quickly as the number of constituent particles exceed just a few. Because of this, numerics are used to augment the proverbial \emph{pen and paper}. It is nevertheless striking that the underlying theory for all of chemistry and most of physics have been known for almost a century but the problem preventing us from essentially \emph{solving} chemistry is almost purely computational: the equations resulting from the exact application of this theoretical framework are way too difficult to solve.
 
 Any approximative scheme which aims to solve the many-body Schrödinger equation from scratch subject to some (more or less) well-defined simplifications is called an \emph{ab initio} method. Working from first principles the aim of such algorithms is to extract information from a theoretical QM system in a reasonable amount of time. In order to accomplish this, a number of complicating intricacies need to be disregarded. The magnitude of the simplifications\textemdash essentially the number and importance of complicating factors dropped\textemdash determine both the efficacy and the efficiency of the method: More simplifications made allow solutions to be found for larger systems (albeit less precise solutions), whereas extremely precise solutions can be found for small systems if very few simplifications are employed.
 
@@ -317,7 +317,7 @@ system it was not designed for may very well yield qualitatively wrong results.
 In the spirit of multiscale modelling, developing "parameter free" MD schemes is very desirable. Foregoing the complicating, human labour intensive, and intrinsicly difficult step of emipirical potential fitting, the method of Behler and Parrinello use instead machine learning \cite{behlerparrinello}. This and related models recently developed exploit the unbiased predictive power of \emph{ab initio} QM simulations to parameterize the effective potential automatically by use of artificial neural networks (ANN) \cite{shen}. In this way human intervention is  shunned and the accuracy of the MD simulation is no longer fundamentally limited by the imagination and physical intuition of the experimenter. Despite being typically computationally more expensive than the traditionally parameterized effective potentials, ANNs still offer \emph{orders of magnitude} better performance than \emph{ab initio} or even hybrid models \cite{ratcliff,behler}.
 
 \section{Machine learning and artificial neural networks}
-
+The term artificial intelligence refers to a 
 
 
 \section{Goals}
@@ -386,6 +386,15 @@ The thesis ends with part four, containing conclusions and prospect for future w
 
 
 \section{Prospects for future work}
+The comprehensive nature of the this thesis means we have only just scratched the surface of possibilities. The possible extensions of the present work fall naturally into two groups: \emph{improving} or \emph{extending}. 
+
+Work involved in the former category would entail optimizing and stream-lining the developed QM calculation code in order to facilitate applications on heavier systems. Currently, the Hartree-Fock program is limited to about $~100$ total basis functions per calculation with \emph{reasonable} speed. The quantum Monte Carlo code\textemdash being an inherently slower scheme\textemdash is currently limited to only a small handful of first and second row atoms per calculation. Only light profiling and optimization has been performed for the present work, leaving a large body of possible computational improvements open. 
+
+In addition to simple optimization, there are numerous ways in which small assumptions and simplifications can be employed to drastically speed up \emph{ab initio} calculations. Techniques for Hartree-Fock involve e.g.\ integral pre-screening, density fitting, early density contraction, or multipole techniques for handling longer range interactions, among many others. For VMC, possbilities involve for example using a more sophisticated optimization algorithm, including pseudo-potential replacement of core electrons,  
+
+
+Expand : augment current code 
+
 Improve HF calculation speed: Density fitting, etc.
 Improve DFT accuracy: GGA, Meta stuff, etc. 
 OR improve DFT speed by handling coulomb without performing all J integrals (something something poisson solver)
