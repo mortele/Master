@@ -10,7 +10,7 @@ V_\text{LJ}(r) = \frac{1}{r^{6}}-\frac{1}{r^{12}}.
 \end{align}
 For the moment we forget about the normalization, and the scaling of the distances by the usual $\sigma$ parameter. Using a simple network structure of a single hidden layer consisting of 10 neurons, we train for $10^3$ with a data set consisting of $10^6$ samples of the LJ potential for $0.9\le r\le 1.6$. The resulting network output and training details are shown in \fig{ljtrain}. We note the network output and the training data coincide\textemdash approximately\textemdash perfectly after 1000 epochs of training, with the average squared difference between the validation points and the true potential is on the order of $~10^{-7}$. 
 
-From the bottom graph of \fig{ljtrain}, it is clear that an overall minimum has not yet been reached: the cost is still steadily decreasing (albeit slowly, note the logarithmic $y$-axis scaling). 
+From the bottom graph of \fig{ljtrain}, it is clear that an overall minimum has not yet been reached: the cost is still steadily decreasing (albeit slowly). 
 
 \begin{figure}
 \centering
@@ -39,7 +39,13 @@ The $N(\mu,\sigma)$ denotes a random Gaussian of mean $\mu$ and standard deviati
 
 For the training we use a neural network consisting of a single layer of 20 neutrons. A selection of training snapshots are shown in \fig{noise2}. Also shown is the magnitude of the cost function plotted versus the epoch number. In order to validate the training, we use a separate set of data points\textemdash which the NN is never trained on\textemdash to check the state of the training. Since we are interested in a network solution independent of the noise, only capturing the underlying shape, we use a validation set with the same structure but with \emph{different} noise. For simplicity, we use the data set shown in red in \fig{noise1}. We note that the cost functions relative to both data sets fall off in mostly the same fashion, with an apparent slight difference in the fully trained state. 
 
-Crucially, we see no signs of \emph{over-training}, which would cause the NN output to begin to follow the structure of the training data \emph{noise}. Over-training can be seen\textemdash if it happens\textemdash from the contiuing fall of the cost function relative to the training data, with a simultaneous \emph{increase} in the cost function relative to the validation set. This is not seen in our model. We note that apparently the randomization of the order of the training input, aswell as the online learning scheme efficiently counteracts the over-training phenomenon in the current model.
+\begin{SCfigure}[\sidecaptionrelwidth][!ht]
+\centering
+\includegraphics[width=0.49\textwidth,trim=0  200 0 200, clip]{sw.pdf}
+\caption{The radial part of the SW molecular dynamics potential, used as an example data set for multi-variable potential fitting. The set contains combinations of $r_1$ and $r_2$ values for $0.8<r<a=1.8$. \label{fig:sw}}
+\end{SCfigure}
+
+Crucially, we see no signs of \emph{over-training}, which would cause the NN output to begin to follow the structure of the training data \emph{noise}. Over-training can be seen from the contiuing fall of the cost function relative to the training data, with a simultaneous \emph{increase} in the cost function relative to the validation set. We note that the randomization of the order of the training input, aswell as the online learning scheme efficiently counteracts the over-training phenomenon in the current model.
 \begin{figure}
 \centering
 \includegraphics[width=0.49\textwidth,trim=0  200 0 200, clip]{noisetrain11.pdf}
@@ -51,11 +57,7 @@ Crucially, we see no signs of \emph{over-training}, which would cause the NN out
 \caption{Training snapshots for the noisy data test of section \ref{noisesec}. The training set is shown in blue, while the NN output is shown in red. The epoch number\textemdash denoting the length of the training\textemdash is inset for each graph. The bottom right plot shows the evolution of the cost function\textemdash$\Vert {\bf y}-\hat {\bf y}\Vert_2$\textemdash as a function of the epoch number for the training data and the separate validation set.\label{fig:noise2}}
 \end{figure}
 
-\begin{SCfigure}
-\centering
-\includegraphics[width=0.49\textwidth,trim=0  200 0 200, clip]{sw.pdf}
-\caption{The radial part of the SW molecular dynamics potential, used as an example data set for multi-variable potential fitting. The set contains combinations of $r_1$ and $r_2$ values for $0.8<r<a=1.8$. \label{fig:sw}}
-\end{SCfigure}
+
 \renewcommand{\r}{{\bf r}}
 \section{Multi-variable fitting}
 So far we have tried single-variable functions only. In the following, we explore the performance of our ANN model as a multi-variable curve fitting tool. We choose\textemdash entirely arbitrarily\textemdash a functional form based on the Stillinger-Weber (SW) molecular dynamics potential, originally developed to model \ce{Si} interacting atoms \cite{stillinger}. We consider configurations of three \ce{Si} atoms, indexed by $i$, $j$, and $k$. For simplicity, we use only the radial component, holding the $\theta_{ijk}$ angle constant at $\pi/2$. The radial part of the SW potential (in units of the $\varepsilon$ parameter) takes the form between 
@@ -82,6 +84,7 @@ The training data set is shown in \fig{sw}. We use a grid of $r_{ij}$ and $r_{ik
 \caption{Example network trained to approximate the radial SW potential shown in \fig{sw}. The absolute error w.r.t.\ the training data (top) and the network output post training (bottom left) is shown, as well as the evolution of the cost as a function of epoch number (bottom right). We note that the functional form of the output from the network is indistinguishable from the training set shown in \fig{sw}. The approximation error is on the order of $\sim0.005\varepsilon$ for the interior points, but increases \emph{some} towards the edges of the training set. Note that the validation cost closely follows the training cost, indicating no over-training is happening.\label{fig:swtrain}}
 \end{figure}
 
+\newpage
 \section{Training on \emph{ab initio} data}
 Out first foray into the use of \emph{ab initio} data will be a case study of the required amount of data. Since QM calculations are exceedingly expensive from a computational perspective, it is interesting to explore how many calculations we \emph{need} to perform in order to have enough data to train a ANN adequately. For this test we employ the \ce{H2+} data set\textemdash  presented in section \ref{hfvalid}\textemdash at the 6-311++G** level. 
 
@@ -116,10 +119,17 @@ This ensures we are still training on a representative subset of the full data s
 \includegraphics[width=0.49\textwidth,trim=0  200 0 200, clip]{sizetest1.pdf}
 \includegraphics[width=0.49\textwidth,trim=0  200 0 200, clip]{sizetest2.pdf}
 \includegraphics[width=0.49\textwidth,trim=0  200 0 200, clip]{sizecost.pdf}
-\caption{Overview of the effect of small sample sizes on the ANN training process. \label{fig:sizes}}
+\includegraphics[width=0.49\textwidth,trim=0  200 0 200, clip]{sizecost2.pdf}
+\caption{Overview of the effect of small sample sizes on the ANN training process. The trained functional form, along with the training data is shown in the top left, with a magnified inset around the minimum shown top right. Further, the final minimum of the cost function for each data set size (bottom left), and the \emph{minimum attained so far} is shown as a function of the epoch time (bottom right).\label{fig:sizes}}
 \end{figure}
 
+From the visualizations of \fig{sizes}, it is clear that handling small data sizes is something our model handles in stride. While the larger sizes perform better on the whole, the statistical nature of the initialization and training process seems to introduce a significant variance in the resulting network quality. We note that in general, the sizes $\ge200$ all achieve comparable performance w.r.t.\ the total cost function, with the only outlier being the NN trained on the smallest data set. This fact that none of the cost function graphs appear to have plateaued completely indicates two things: Primarily, $10^4$ epochs may not be suffcient training time for small data sets. Secondly, comparing the results of the bottom right hand plot with the top right hand one, shows that a small cost function value is not neccesarily synonymous with being able to reproduce critical parts of the functional form.
 
+The "so far" minimum\textemdash shown in the bottom right hand side of \fig{sizes}\textemdash is defined at epoch $\#t$ as 
+\begin{align}
+\min(\text{cost})\text{ so far} \equiv \min\{\text{cost}_k:k\le t\},
+\end{align}
+i.e.\ at step $t$ the minimum so far is the minimum across all steps prior to (and including) $t$. 
 \end{document} 
 
 
