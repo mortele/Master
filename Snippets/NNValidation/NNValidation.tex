@@ -10,6 +10,8 @@ V_\text{LJ}(r) = \frac{1}{r^{6}}-\frac{1}{r^{12}}.
 \end{align}
 For the moment we forget about the normalization, and the scaling of the distances by the usual $\sigma$ parameter. Using a simple network structure of a single hidden layer consisting of 10 neurons, we train for $10^3$ with a data set consisting of $10^6$ samples of the LJ potential for $0.9\le r\le 1.6$. The resulting network output and training details are shown in \fig{ljtrain}. We note the network output and the training data coincide\textemdash approximately\textemdash perfectly after 1000 epochs of training, with the average squared difference between the validation points and the true potential is on the order of $~10^{-7}$. 
 
+From the bottom graph of \fig{ljtrain}, it is clear that an overall minimum has not yet been reached: the cost is still steadily decreasing (albeit slowly, note the logarithmic $y$-axis scaling). 
+
 \begin{figure}
 \centering
 \includegraphics[width=0.49\textwidth,trim=0  200 0 200, clip]{ljtrain1.pdf}
@@ -49,7 +51,11 @@ Crucially, we see no signs of \emph{over-training}, which would cause the NN out
 \caption{Training snapshots for the noisy data test of section \ref{noisesec}. The training set is shown in blue, while the NN output is shown in red. The epoch number\textemdash denoting the length of the training\textemdash is inset for each graph. The bottom right plot shows the evolution of the cost function\textemdash$\Vert {\bf y}-\hat {\bf y}\Vert_2$\textemdash as a function of the epoch number for the training data and the separate validation set.\label{fig:noise2}}
 \end{figure}
 
-
+\begin{SCfigure}
+\centering
+\includegraphics[width=0.49\textwidth,trim=0  200 0 200, clip]{sw.pdf}
+\caption{The radial part of the SW molecular dynamics potential, used as an example data set for multi-variable potential fitting. The set contains combinations of $r_1$ and $r_2$ values for $0.8<r<a=1.8$. \label{fig:sw}}
+\end{SCfigure}
 \renewcommand{\r}{{\bf r}}
 \section{Multi-variable fitting}
 So far we have tried single-variable functions only. In the following, we explore the performance of our ANN model as a multi-variable curve fitting tool. We choose\textemdash entirely arbitrarily\textemdash a functional form based on the Stillinger-Weber (SW) molecular dynamics potential, originally developed to model \ce{Si} interacting atoms \cite{stillinger}. We consider configurations of three \ce{Si} atoms, indexed by $i$, $j$, and $k$. For simplicity, we use only the radial component, holding the $\theta_{ijk}$ angle constant at $\pi/2$. The radial part of the SW potential (in units of the $\varepsilon$ parameter) takes the form between 
@@ -66,12 +72,6 @@ with
 \end{align}
 We use the parameters $A=7.049556277$ and $B=0.6022245584$ according to Stiller and Webers original suggestions, with the distance scaling $a=1.8$. 
 
-\begin{SCfigure}
-\centering
-\includegraphics[width=0.49\textwidth,trim=0  200 0 200, clip]{sw.pdf}
-\caption{The radial part of the SW molecular dynamics potential, used as an example data set for multi-variable potential fitting. The set contains combinations of $r_1$ and $r_2$ values for $0.8<r<a=1.8$. \label{fig:sw}}
-\end{SCfigure}
-
 The training data set is shown in \fig{sw}. We use a grid of $r_{ij}$ and $r_{ik}$ values with $0.8\le r\le a$. For the training, we set up a NN with three layers of 20 neurons each. We allow the training to run a set of $10^6$ samples of the potential $V(r_1,r_2)$ for a total of $10^4$ epochs. The training is visualized in \fig{swtrain}, from which we note that the resulting network output is indistinguishable from the training set of \fig{sw}. From the cost evolution we conclude that the ANN model we implement is able to also approximate multi-dimensional data sets satisfactorily.  
 
 \begin{figure}
@@ -83,11 +83,44 @@ The training data set is shown in \fig{sw}. We use a grid of $r_{ij}$ and $r_{ik
 \end{figure}
 
 \section{Training on \emph{ab initio} data}
+Out first foray into the use of \emph{ab initio} data will be a case study of the required amount of data. Since QM calculations are exceedingly expensive from a computational perspective, it is interesting to explore how many calculations we \emph{need} to perform in order to have enough data to train a ANN adequately. For this test we employ the \ce{H2+} data set\textemdash  presented in section \ref{hfvalid}\textemdash at the 6-311++G** level. 
+
+In order to explore the training behaviour of the NN on small data sets, we train different networks using only parts of the complete data set, but retain\textemdash crucially\textemdash the complete set for validation. In \fig{smallsets} we present data from training runs using $N=50,75,100,\dots,475,500$ total data points. The removal of training pairs is done by excluding a given number of data points at random:
+\begin{lstlisting}[
+language=Python,
+classoffset=4, % CLASSES
+morekeywords={NeuralNetwork,initializeWeight,layer,initializeBias,fullNetwork, parseTypeString,constructNetwork,train,trainNetwork},
+keywordstyle=\color{listingsclasscolor},
+classoffset=5, % MEMBER VARIABLES
+morekeywords={self},
+keywordstyle=\color{listingsmembercolor},
+classoffset=6, % KEY WORDS
+morekeywords={__call__,__init__},
+keywordstyle=\color{listingskeywordcolor},
+classoffset=0,
+morekeywords={with,None}]
+xData = np.asarray(inputFileData).reshape([dataSize, self.inputs])
+if N < dataSize :
+		# If the requested size is smaller than the total data size, we prune
+		# the set at random.
+		toRemove = dataSize - N
+		toRemove = np.random.choice.(	np.arange(dataSize), 
+																	toRemove, 
+																	replace=False)
+		xData = np.delete(xData, toRemove)
+\end{lstlisting}
+This ensures we are still training on a representative subset of the full data set. 
+
+\begin{figure}
+\centering
+\includegraphics[width=0.49\textwidth,trim=0  200 0 200, clip]{sizetest1.pdf}
+\includegraphics[width=0.49\textwidth,trim=0  200 0 200, clip]{sizetest2.pdf}
+\includegraphics[width=0.49\textwidth,trim=0  200 0 200, clip]{sizecost.pdf}
+\caption{Overview of the effect of small sample sizes on the ANN training process. \label{fig:sizes}}
+\end{figure}
 
 
-
-
-\end{document}
+\end{document} 
 
 
 
