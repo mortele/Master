@@ -170,8 +170,97 @@ It may seem like we have made no progress at all: We started off with an unknown
 \section{The Kohn-Sham equations}
 In the same way Roothan and Hall introduced orbitals to the Hartree-Fock formalism \ref{HF}, we now introduce a set of spin-orbitals in the DFT scheme. The single determinantal wave function is constructed from $N$ orthonormal spin-orbitals, $\{\psi_i(\r)\}_{i=1}^N$, where we have absorbed the spin quantum number into the label $i$. In the restricted case, this means that $i$ and $i+1$ are spatially pair-wise identical, with differing spin index. The energy functional can now be written in terms of the orbitals as 
 \begin{align}
-E[\{\psi_i\}] = \sum_{i=1}^N %\langle \phi_i | -\frac{\nabla^2_i}{2} | \phi_i\rangle 
+E[\rho,\psi] = T_s[\psi]+J[\rho] + E_\text{xc}[\rho] + \int\mathrm{d}^3\r\, v(\r),
 \end{align}
+with
+\begin{align}
+J[\rho]&= \int\int \mathrm{d}^3\r_1\mathrm{d}^3\r_2\, \frac{\rho(\r_1)\rho(\r_2)}{|\r_1-\r_2|} \nn\\ &= \sum_{i=1}^N\sum_{j=1}^N \int\int \mathrm{d}^3\r_1\mathrm{d}^3\r_2\, \frac{|\psi_i(\r_1)|^2|\psi_j(\r_2)|^2}{|\r_1-\r_2|},
+\end{align}
+and
+\begin{align}
+T_s[\psi] = -\frac{1}{2}\sum_{i=1}^N \int\mathrm{d}^3\r\, \psi_i^*(\r)\nabla^2 \psi_i(\r).
+\end{align}
+Minimizing this functional\textemdash analogous to the Hartree-Fock minimization procedure of chapter \ref{HF}\textemdash yields the Kohn-Sham orbital equations \cite{martin}
+\begin{align}
+\Bigg[\underbrace{-\frac{\nabla^2}{2} - v(\r) + \int\mathrm{d}^3\r'\, \frac{\rho(\r')}{|\r'-\r|}+\frac{\delta E_\text{xc}[\rho]}{\delta \rho(\r)}}_{\displaystyle\equiv \hat F^\text{KS}}  \Bigg]\psi_i(\r) = \sum_{j=1}^N \varepsilon_{ij}\psi_j(\r), \label{eq:orbks}
+\end{align}
+where $\varepsilon$ is once again a matrix of Lagrange multipliers. Expanding the Kohn-Sham orbitals in a known basis of atomic orbitals $\{\varphi_k(\r)\}_{k=1}^L$, applying a unitary transformation diagonalizing the Kohn-Sham operator $\hat F^\text{KS}$, and writing \eq{orbks} in weak form (c.f.\ section \ref{rheq}) gives the {\bf Kohn-Sham equations}
+\begin{align}
+\sum_{k=1}^L C_{ki}\hat F^\text{KS} \varphi_k(\r) = \varepsilon_i\sum_{k=1}^L C_{ki}\varphi_k(\r),
+\end{align}
+or in matrix representation
+\begin{align}
+F^\text{KS}C=\bm{\varepsilon}SC.
+\end{align}
+
+In the restricted case, the matrix elements $F^\text{KS}_{pq}$ are given by
+\begin{align}
+F^\text{KS}_{pq} = \langle \varphi_p|\hat h|\varphi_q\rangle + 2\sum_{rs}D_{rs}\langle pq|\hat w|rs\rangle +\int\mathrm{d}^3\r\, \varphi_p(\r)\varphi_q(\r)v_\text{xc}(\r),
+\end{align}
+where $\langle \,\cdot\,|\,\cdot\,\rangle$ denotes integration over \emph{spatial} coordinates only and the exchange-correlation \emph{potential} is defined as the functional derivative (see appendix \ref{functionals}) of the exchange-correlation energy 
+\begin{align}
+v_\text{xc}(\r) \equiv \frac{\delta E_\text{xc}[\rho]}{\delta \rho(\r)}. 
+\end{align}
+
+
+
+
+\section{Local density approximation}
+The efficacy of the DFT scheme now depends sorely on the quality of the basis set $\{\varphi_k\}_{k=1}^L$, and more importantly the form of the exchange-correlation energy functional. Since we do not know the exact form, we are forced to parameterize approximations to it. This can be done in various ways, the simplest of which\textemdash the local density approximation (LDA)\textemdash is the only one we will discuss in this thesis. The LDA is based on the exchange-correlation energy of the uniform electron gas as per the original suggestion of Kohn and Sham \cite{kohnsham,kvaal}. It is usually written down in terms of the exchange-correlation energy per particle, $\epsilon_\text{xc}$,
+\begin{align}
+E_\text{xc}^\text{LDA}[\rho] = \int\mathrm{d}^3\r\, \rho(\r)\epsilon_\text{xc}\big[\rho(\r)\big].
+\end{align}
+The exchange part was shown by Dirac to be \cite{dirac1930note}
+\begin{align}
+E^\text{LDA}_\text{x}[\rho] = -\frac{3}{4}\left(\frac{3}{\pi}\right)^{\nicefrac{1}{3}}\int\mathrm{d}^3\r\, \rho^{\nicefrac{4}{3}}.
+\end{align}
+For the correlation part, however, no such simple expression exists. Despite this difficulty, highly accurate quantum Monte Carlo calculations on the correlation energy of the free electron gas were performed in 1980 by Ceperley and Alder \cite{ceperley1980ground} and these were subsequently parameterized in several different ways by Vosko, Wilk, and Nussair (VWN) \cite{vwn}. This resulted in functional forms usable in practical DFT calculations. In the present work we use the VWN5 parameterization (c.f.\ the original paper), which depends on the \emph{electron gas parameter},
+\begin{align}
+r_s &\equiv \left( \frac{3}{4\pi \rho(\r))} \right)^{\nicefrac{1}{3}},
+\end{align}
+and the \emph{spin polarization}
+\begin{align}
+\xi(\r) &\equiv \frac{\rho_\uparrow(\r) - \rho_\downarrow(\r)}{\rho_\uparrow(\r) + \rho_\downarrow(\r)}.
+\end{align}
+The gas parameter is simply a rescaling of the density, while the spin polarization represents the relative difference in spin-up and spin-down densities at $\r$. If $\xi$ is large, Vosko and co-workers suggest using the "ferromagnetic" exchange 
+\begin{align}
+\epsilon_\text{x}^\text{F}(r_s) &= - 3(2^{\nicefrac{1}{3}}) \left( \frac{9}{32\pi^2} \right)^{\nicefrac{1}{3}} \frac{1}{r_s},
+\end{align}
+while for $\xi=0$, the "paramagnetic"
+\begin{align}
+\epsilon_\text{x}^\text{P}(r_s) &= - 3 \left( \frac{9}{32\pi^2} \right)^{\nicefrac{1}{3}} \frac{1}{r_s}
+\end{align}
+is used. In total, the polarized exchange part of $E_\text{xc}$ takes the form
+\begin{align}
+\epsilon_\text{x}(r_s,\xi) = \epsilon_\text{x}^\text{P}(r_s) + \big[\epsilon_\text{x}^\text{F}(r_s) - \epsilon_\text{x}^\text{P}(r_s) \big] f(\xi),
+\end{align}
+with 
+\begin{align}
+f(\xi) \equiv \frac{(1+\xi)^{\nicefrac{4}{3}} + (1-\xi)^{\nicefrac{4}{3}} -2}{2(2^{\nicefrac{1}{3}} - 1)}.
+\end{align}
+
+A similar expression is used for the correlation part, with
+\begin{align}
+\epsilon_\text{c}^\text{P}(r_s) + \big[\epsilon_\text{c}^\text{F}(r_s) - \epsilon_\text{c}^\text{P}(r_s) \big] f(\xi).
+\end{align}
+The $\epsilon_\text{c}$ terms are parametrized by \cite{yangparr}\comment{p275}
+\begin{align}
+\epsilon_\text{c}(r_s) &= \frac{A}{2}\left\{ \ln\left(\frac{x}{X(x)}\right) + \frac{2b}{Q}\tan^{-1}\left(\frac{Q}{2x+b}\right) \right.\nn\\
+& \ \ \ \ \ \ \ \left.- \frac{bx_0}{X(x_0)} \left[\ln\left(\frac{(x-x_0)^2}{X(x)} \right) + \frac{2(b+2x_0)}{Q}\tan^{-1}\left(\frac{Q}{2x-b} \right) \right]  \right\}, \label{eq:corre}
+\end{align}
+with 
+\begin{align}
+x &\equiv \sqrt{r_s}, \nn\\
+%
+X(x) &\equiv x^2+bx+c, \nn\\
+%
+Q &\equiv \sqrt{4c-b^2}. \nn
+\end{align}
+For $\xi=0$ we have $A=0.0621814$, $x_0=-0.409286$, $b=13.0720$, and $c=42.7198$, while for $\xi\not=0$ the parameters change, but the functional form of \eq{corre} remains the same.
+
+
+
+
 
 
 
@@ -380,51 +469,7 @@ In short, the scheme proposed by Becke maps the problem of integrating across th
 
 
 
-\section{Local density approximation}
-\subsection{VWN-LDA}
-((YangAndParr, pp275)) ((atomic reference, \url{DFTdata/atomdata/node4.html})) Parametrize the exchange correlation terms: After Vosko, Wilk, and Nusair \cite{vwn}
 
-\textbf{Exchange term}:
-\begin{align}
-\varepsilon_\text{x} (r_s,\xi) = \varepsilon_\text{x}^P(r_s) + \left[\varepsilon_\text{x}^P(r_s) - \varepsilon_\text{x}^F(r_s) \right] f(\xi),
-\end{align}
-with 
-\begin{align}
-r_s &\equiv \left( \frac{3}{4\pi \rho(\r))} \right)^{\nicefrac{1}{3}}, \ \ \ \leftarrow \text{ electron gas parameter} \\
-%
-\xi &\equiv \frac{\rho_\uparrow(\r) - \rho_\downarrow(\r)}{\rho_\uparrow(\r) + \rho_\downarrow(\r)} \ \ \ \leftarrow \text{ spin polarization}.
-\end{align}
-
-\begin{align}
-\varepsilon_\text{x}^P(r_s) &= - 3 \left( \frac{9}{32\pi^2} \right)^{\nicefrac{1}{3}} \frac{1}{r_s}, \\
-%
-\varepsilon_\text{x}^F(r_s) &= - 3(2^{\nicefrac{1}{3}}) \left( \frac{9}{32\pi^2} \right)^{\nicefrac{1}{3}} \frac{1}{r_s},
-\end{align}
-and
-\begin{align}
-f(\xi) = \frac{(1+\xi)^{\nicefrac{4}{3}} + (1-\xi)^{\nicefrac{4}{3}} -2}{2(2^{\nicefrac{1}{3}} - 1)}.
-\end{align}
-
-In the limit of no spin-polarization (restricted), $\varepsilon_\text{x}$ takes the value
-\begin{align}
-\varepsilon_\text{x}^{\xi=0}(r_s)= -\frac{3}{2}\left(\frac{3 \rho(\r)}{\pi}\right)^{\nicefrac{1}{3}} \ \ \ \ \ \ \ \text{possibly missing a factor } \frac{1}{2} \text{?}
-\end{align}
-
-\textbf{Correlation term}:
-\begin{align}
-\varepsilon_\text{c}(r_s) &= \frac{A}{2}\left\{ \ln\left(\frac{x}{X(x)}\right) + \frac{2b}{Q}\tan^{-1}\left(\frac{Q}{2x+b}\right) \right.\nn\\
-& \ \ \ \ \ \ \ \left.- \frac{bx_0}{X(x_0)} \left[\ln\left(\frac{(x-x_0)^2}{X(x)} \right) + \frac{2(b+2x_0)}{Q}\tan^{-1}\left(\frac{Q}{2x-b} \right) \right]  \right\},
-\end{align}
-with 
-\begin{align}
-x &\equiv \sqrt{r_s}, \\
-%
-X(x) &\equiv x^2+bx+c, \\
-%
-Q &\equiv \sqrt{4c-b^2}.
-\end{align}
-
-For $\xi=0$ we have $A=0.0621814$, $x_0=-0.409286$, $b=13.0720$, and $c=42.7198$.
 
 
 %\printbibliography

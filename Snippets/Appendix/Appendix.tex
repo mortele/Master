@@ -209,7 +209,7 @@ The space of linear transformations from $X$ to $\mathbb{F}$, with $X$ being som
 
 In the following, we take $f\in\mathcal{H}^*$ to be a linear functional on $\mathcal{H}$ and $x\in\mathcal{H}$ to be a function in the Hilbert space itself. It can be shown that for any such $x$ there exists a \emph{unique} $y\in\mathcal{H}$ such that $f[x]=f_y[x]=\langle x|y\rangle$, where the functional $f_y[\cdot]\equiv\langle \cdot|y\rangle$ \cite{rynne,mcdonald}\comment{p123,p472}. This is known as the Riesz representation theorem or sometimes the Riesz-Fréchet theorem. Essentially, this means that we can associate the dual space of $\mathcal{H}$ with the space itself since there is a correspondance between the functionals and the elements of the space itself. This is more succintly stated as Hilbert spaces are \emph{self-dual}, and it is this property that justifies the use of Dirac bra-ket notation since we are guaranteed that any ket has a unique corresponding bra which is its Hermitian conjugate.
 
-\subsection*{Functional differentials and derivatives}
+\subsection*{Functional differentials and derivatives \label{app:functionls}}
 The differential of a functional $F[f]$ is the part of the difference $F[f+\delta f]-F[f]$ that depends linearly on $\delta f$, where $\delta f$ is an infinitesimal variation of the argument function $f$ \cite{yangparr}\comment{246}. Since we need to account for the continous variation of $F$ over the infinitesimal range $[f,f+\delta f]$ we take the integral
 \begin{align}
 \delta F[f] = \int \frac{\delta F[f]}{\delta f(x)}\delta f(x)\dx,
