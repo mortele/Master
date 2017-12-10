@@ -323,7 +323,15 @@ system it was not designed for may very well yield qualitatively wrong results.
 In the spirit of multiscale modelling, developing "parameter free" MD schemes is very desirable. Foregoing the complicating, human labour intensive, and intrinsicly difficult step of emipirical potential fitting, the method of Behler and Parrinello use instead machine learning \cite{behlerparrinello}. This and related models recently developed exploit the unbiased predictive power of \emph{ab initio} QM simulations to parameterize the effective potential automatically by use of artificial neural networks (ANN) \cite{shen}. In this way human intervention is  shunned and the accuracy of the MD simulation is no longer fundamentally limited by the imagination and physical intuition of the experimenter. Despite being typically computationally more expensive than the traditionally parameterized effective potentials, ANNs still offer \emph{orders of magnitude} better performance than \emph{ab initio} or even hybrid models \cite{ratcliff,behler}.
 
 \section{Machine learning and artificial neural networks}
-The term artificial intelligence refers to a 
+The term artificial intelligence (AI) describes machines which humans percieve as \emph{smart}. Narrow AI, machines focused sorely on a singular task and often achieving super-human performance, are found everywhere in the 21st century. It is remarkable that for example your phone can soundly beat you at the game of chess without breaking a sweat\footnote{If you happen to be a world-class chess player, substitute phone$\leftrightharpoons$laptop}. A computer's ability to beat the best chess players in the world was once a huge breakthrough in the field of AI, but it is easy to just think of this as a computer applying an algorithm to find the correct moves. As the father of the term artificial intelligence\textemdash American computer scientist John McCarthy\textemdash put it \cite{vardi2012artificial}
+\begin{shadequote}[r]{J. McCarthy}
+As soon as it works, no one calls it AI any more.
+\end{shadequote}
+
+While a computer beating a human at chess is impressive, it traditionally does so by sheer brute force calculational power. A human programmed search algorithm traverses vast trees of possible moves, evaluating each position using a human programmed evaluation function to try and find the optimal one. A different approach is taken in \emph{machine learning} (ML). As a subdiscipline of AI, the field of machine learning is focused on creating computers which automatically learn and improve their behaviour through experience \cite{Jordan255}. Very recently, researchers at Google Deep Mind were able to create a program which learns by playing itself \cite{1712.01815}. With the only input being the rules of the game and the conditions for victory, the AlphaZero algorithm was able to beat one of the world's top traditional (\emph{brute force}) chess engines\textemdash Stockfish\textemdash with less than 24 hours of reinforcement training \cite{stockfish}. 
+
+The previous example showcases beautifully the fundamental problem inherent in the former approach: the efficacy of the algorithm is fundamentally limited by the human programmers ability to 
+
 
 
 \section{Goals}
