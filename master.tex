@@ -257,7 +257,7 @@ Secondly, a general function approximation scheme is implemented using artificia
 
 The ANN may then be used as a force field in molecular dynamics (MD) simulations\textemdash in place of ordinary parametrized effective MD potentials\textemdash thereby successfully bridging the quantum mechanical and the microscopic regimes. Whereas traditional MD potentials require hand crafting and tuning of a parametrized functional form, the present work implements a \emph{multiscale modelling} approach in which essentially no human intervention is needed. Such "parameter-free" multiscale modelling is preferable for obvious reasons: the results should be fundamentally independent of the human experimenter's ability to \emph{guess} an appropriate functional form.
 
-Lastly: Showcasing the full usage of the computational framework developed, we present a simple\textemdash proof of concept\textemdash MD simulation using the ANN potential for \ce{H2} in the gas state using LAMMPS.
+Lastly: Showcasing the full usage of the computational framework developed, we present a simple\textemdash proof of concept\textemdash MD simulation using an ANN trained to approximate a PES. 
 
 %Secondly, a method for parameterizing the Born-Oppenheimer energy hypersurfaces\textemdash obtained by \emph{ab initio} calculations\textemdash with artificial neural networks (ANN) is presented. The ANN calcuations are done using TensorFlow, and the resulting analytical inter-atomic potentials may be used directly in molecular dynamics simulations. We present a simple\textemdash proof of concept\textemdash MD simulation using the ANN potential for \ce{H2} in the gas state using LAMMPS.
 \end{abstract}
@@ -396,11 +396,18 @@ The thesis ends with part four, containing conclusions and prospect for future w
 \subfile{Snippets/HFImplementation/HFImplementation}
 \subfile{Snippets/VMCImplementation/VMCImplementation}
 \subfile{Snippets/NNImplementation/NNImplementation}
+\chapter{Implementation and validation: Density Functional Theory\label{DFTT}}
+In order to retain \emph{some} semblance of brevity in the present work, further description of the DFT implementation is omitted. In following, we will rigorously test and use only two different \emph{ab initio}, namely the HF and VMC frameworks. The developed DFT code\textemdash much of which derives from the HF program described in the previous chapter\textemdash is in a functional state and available on \inlinecc{github.com/mortele/HartreeFock} under a branch called \inlinecc{DFT}. 
+
+The DFT program is essentially ready for inclusion in the multiscale modelling framework we are developing, but lacks the proper testing done on the remaining two QM methods in this thesis. Thus a natural extension of the present work entails rigorous testing and comparison of the DFT code with the other two algorithms. We expand on this in the closing remarks of chapter \ref{future}.
+
+The theory section on DFT is intentionally left in the thesis\textemdash as a chapter in part II\textemdash and we hope it can provide a helpful introduction to implementation specific details. We find it especially likey that the accessible introduction to numerical grid based integration techniques used extensively in practical DFT calculations will prove useful to any reader wishing to implement their own density functional scheme from scratch.
+
 \subfile{Snippets/Hartree-FockValidation/Hartree-FockValidation}
 \subfile{Snippets/VMCValidation/VMCValidation}
 \subfile{Snippets/NNValidation/NNValidation}
 
-\part{Conclusions and future work}
+\part{Conclusions and future work \label{future}}
 \section{Conclusions}
 In this thesis we have demonstrated the feasibility of performing multiscale simulations\textemdash by bridging first principles quantum mechanics and machine learning\textemdash and implemented a general computational framework in which such simulations can be run. Crucially, our framework is (nearly) parameter-free in the sense that the resulting simulations depend very weakly on any parameter directly put into the 
 
