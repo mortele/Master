@@ -179,18 +179,35 @@ Here, we have taken the each layer to consist of $M$ neurons. The scalar $x_1$ d
 \section{Training the ANN}
 Knowing that ANNs can be universal approximators is not helpful unless we can find a systematic way of obtaining suitable parameters to approximate any given function $g(x)$. This is where \emph{training} comes in. In section \ref{AI} we defined machine learning as the science of creating computers capable of learning from experience. Teaching a NN to approximate a function is conceptually simple, and involves only three steps:
 \begin{shadeframe}
-Assume input $x$ and \emph{correct} corresponding output $y$ is known.
+Assume input $x$ and corresponding \emph{correct} output $y$ is known.
 \begin{itemize}
-	\item[(1)] Compute output $\hat y=\text{NN}(x)$ of the artificial neural network, and evaluate the \emph{cost} function, typically $C(\hat y)\equiv \Vert y-\hat y\Vert_2$. 
+	\item[(1)] Compute output $\text{NN}(x)=\hat y$ of the artificial neural network, and evaluate the \emph{cost} function, typically $C(\hat y)\equiv \Vert y-\hat y\Vert_2$. 
 	\item[(2)] Compute the gradient of $C(\hat y)$ w.r.t.\ all the parameters of the network, $w_{ij}^k$ and $b^k_j$.  
 	\item[(3)] Adjust the parameters according to the gradients, yielding a better estimate $\hat y$ of the true output value $y$. 
 	\item[(4)] Repeat (1)\textemdash(4).
 \end{itemize}
 \end{shadeframe}
+The training scheme is known as \emph{supervised learning}, because the NN is continually presented with $x$, $y$ pairs, i.e.\ an input and an expected output. The cost (or objective or loss) function determines how happy the network is with it's own performance. A common choice for the cost function is the $\ell^2$ norm, essentially the root squared difference,
+\begin{align}
+C(\hat \y) = \Vert \y-\hat \y\Vert_2= \sqrt{\sum_{i=1}^{N_\text{O}}(y_i-\hat y_i)^2}. \label{eq:cost}
+\end{align}
+In general, the output of the neural network is a vector of values, $\y$, and the cost function is taken across all outputs. In \eq{cost}, the network produces $N_\text{O}$ outputs for each input (which itself may be a vector). 
 
+Step (3) is easy to understand, but complex in practice. In order to update the network weights and biases, a measure of the expected change in the total output is needed. Otherwise, any change would just be done at random\footnote{This is a possible approach, yielding a class of \emph{genetic} optimization algorithms. We will not discuss such schemes in the present work.}. This means we need to compute the set of derivatives 
+\begin{align}
+g_{ij}^k \equiv \pder{C(\hat \y)}{w_{ij}^k}, \ \ \ \text{ and } \ \ \ h_i^k\equiv \pder{C(\hat \y)}{b^k_i}.
+\end{align}
+The most common algorithm for computing these derivatives is the {\bf backpropagation} algorithm \cite{backprop}. The method works by first pushing an input through the ANN, and computing the derivatives of the cost function w.r.t.\ the last layer weights and biases. The network is then traversed backwards, and the gradient w.r.t.\ all neuron parameters is found by repeated application of the chain rule. An explicit statement of the algorithm is found in any book on neural networks, see e.g.\ Raff and co-workers \cite{raff}.
 
+The final step in the training algorithm constitutes updating the weights according to the computed gradient. Possibly the simplest scheme for updating the weights is to just blindly follow the direction of the negative gradient, moving some set step length $\mathit{\Delta}w$ and $\mathit{\Delta}b$. This is known as \emph{gradient descent}, or \emph{steepest descent}. Since the gradient represents the direction in the parameter-hyperspace giving the fastest decrease in $C(\hat \y)$, this will in principle lead to a minimum. However, modern ANN methods use more sophisticated optimization schemes. 
 
+Whereas the gradient descent is a \emph{first order} optimization algorithm\textemdash depending only on the first derivative (gradient)\textemdash it is possible to devise higher order methods taking advantage of the information contained in e.g.\ the second derivative (Hessian matrix). Often, the second order schemes require calculation and inversion of the Hessian. This is true of for example Newton's method, which minimizes $C(\hat \y)$ by finding the roots of 
+\begin{align}
+\nabla C(\hat \y)=0. 
+\end{align}
+If the Hessian is too expensive to compute directly, it may be possible to estimate it in a computationally more feasible manner. This leads to a class of optimization algorithms known as Quasi-Newton methods, see e.g.\ the algorithm of Barzilai and Borwein \cite{BARZILAIBORWEIN}.
 
+A popular approach in modern ANN codes is using gradient descent based methods which automaticall adjust the training rate (the stepping size) for each parameter individually. The Adagrad and Adadelta methods are both examples of such methods, which also attempt to fine-tune the learning rate by considering a decaying backlog of stored squared gradient values \cite{opti}. The algorithm we will use in the present work is called Adam (derived from [but not an acronym for] \emph{adaptive moment estimation}), which stores exponentially decaying averages of both gradients and squared gradients in order to find optimal step sizes \cite{adam}. For an accessible introduction to the specifics of the Adam optimizer, see e.g.\ the recent Master thesis of Stende \cite{stende}.
 
 
 
