@@ -34,9 +34,9 @@ Before venturing into the land of quantum mechanics (QM), it is useful to first 
 
 Hamilton's classical mechanics formalism revolves centrally around the Hamiltonian function (hereafter just refered to as \emph{the Hamiltonian}), $\H$. In order to define this function, it is necessary to first choose a set of canonical coordinates, $\q_i$ and $\p_i$. Generalized coordinate and momenta pairs are said to be canonical if they satisfy the Poisson bracket\footnote{The Poisson bracket of two functions, $f$ and $g$, w.r.t. the canonical coordinate pair $p$ and $q$, is defined as \cite{goldstein}\comment{p388}$$\{f,g\}=\pder{f}{q}\pder{g}{p}-\pder{f}{p}\pder{g}{q}.$$} $\{q_i,p_j\}=\delta_{ij}$. Examples of such canonical pairs include e.g. the cartesian position and the respective linear momentum, or the polar position and the angular momentum.
 
-The \emph{phase space} of a system is the space of all possible states of the system. A system of $n$ degrees of freedom will have a cooresponding $2n$ dimensional phase space.\footnote{Although we are free to choose a set of generalized coordinates larger than the number of degrees of freedom, such a set will always be reducible to a smaller set of \emph{strictly independent} coordinates with size exactly equal to the number of degrees of freedom. Consider e.g. a point particle constrained to move along the suface of a unit sphere. We may use the three cartesian coordinates to describe the motion, however the system only has two degrees of freedom due to the constraint $x^2+y^2+z^2=r^2$, so the three are not \emph{independent}. It will thus inevitably be more convenient to use e.g. the polar and azimuthal angles, $\theta$ and $\phi$.} A point in phase space, $\xi=(\q,\p)$, specify the generalized coordinates and their respective conjugate momenta and is sufficient to uniqely determine the state of the system as a whole.
+The \emph{phase space} of a system is the space of all possible states of the system. A system of $n$ degrees of freedom will have a cooresponding $2n$ dimensional phase space.\footnote{Although we are free to choose a set of generalized coordinates larger than the number of degrees of freedom, such a set will always be reducible to a smaller set of \emph{strictly independent} coordinates with size exactly equal to the number of degrees of freedom. Consider e.g. a point particle constrained to move along the suface of a unit sphere. We may use the three cartesian coordinates to describe the motion, however the system only has two degrees of freedom due to the constraint $x^2+y^2+z^2=r^2$, so the three are not \emph{independent}. It will thus inevitably be more convenient to use e.g. the polar and azimuthal angles, $\theta$ and $\phi$.} A point in phase space, $\xi=(\q,\p)$, specify the generalized coordinates and their respective conjugate momenta and is sufficient to uniquely determine the state of the system as a whole.
 
-Together with a choice of cannonical coordinates and the resulting phase space, the Hamiltonian encodes all information about a classical dynamical system. From the Hamiltonian, we can find the equations of motion in terms of the chosen coordinates by applying the Hamilton equations,
+Together with a choice of canonical coordinates and the resulting phase space, the Hamiltonian encodes all information about a classical dynamical system. From the Hamiltonian, we can find the equations of motion in terms of the chosen coordinates by applying the Hamilton equations,
 \begin{align}
 \der{\p_i}{t} = -\pder{\H}{\q_i} \ \ \ \text{and} \ \ \ \der{\q_i}{t} = \pder{\H}{\p_i}. \label{eq:QM1}
 \end{align}
@@ -53,7 +53,7 @@ An important (to us at least) special case of classical Hamiltonian dymanics is 
 \end{align}
 
 \section{Canonical (first) quantization}
-In order to go from a classical description to a quantum mechanical (QM) one, the procedure known as canonical quantization is employed. This is sometimes refered to as \emph{first quantization}, to distinguish it from \emph{second quantization}. Second quantization is a QM framework used to study many-particle systems (which we will largely ignore in the present work).
+In order to go from a classical description to a quantum mechanical (QM) one, the procedure known as canonical quantization is employed. This is sometimes refered to as \emph{first quantization}, to distinguish it from \emph{second quantization}. Second quantization is a QM framework used to study many-particle systems.
 
 \subsection{Short mathematical interlude \label{math}}
 Under canonical quantization, the state of a system is no longer described by a \emph{point in phase space}, but rather by \emph{a state vector}. The enclosing vector space is a Hilbert space over $\C$, and almost always chosen as the space of square integrable functions\footnote{For any $f\in \mathcal{L}^2$, the integral $\int_{-\infty}^{\infty} |f(x)|^2\dx$ must be finite.}, $\mathcal{L}^2$. More precisely, the vector space in question is the Sobolev space $H^1$ over $\C$, essentially the subspace of $\mathcal{L}^2$ for which the first derivatives are also square integrable. For a mathematically rigorous definition of Sobolev spaces, see e.g. \cite{brezis}\comment{p202}.
@@ -62,13 +62,13 @@ Abstract vectors in our Hilbert spaces are denoted using Dirac's bra-ket notatio
 
 In a finite dimensional space, we may employ an orthonormal basis and express the general vectors in terms of this basis. We can always represent the basis vectors as ordinary $\mathbb{R}^n$ column vectors\footnote{Since the mapping $f:\mathcal{H}\rightarrow \mathbb{R}^n$ defined by $f(|\phi\rangle)=f(c_1|v_1\rangle+c_2|v_2\rangle+\dots+c_n|v_n\rangle) = (c_1,c_2,\dots,c_n)^T$ (with the set $\{|v_i\rangle\}_{i=1}^n$ being a basis for $\mathcal{H}$) is a linear, injective map \emph{onto} $\R^n$ and thus define an isomorphism between $\mathcal{H}$ and $\mathbb{R}^n$.}, $|e_1\rangle=(1,0,\dots,0)^T$, $|e_2\rangle=(0,1,0,\dots,0)^T$, $\dots$. In this case, bra-vectors are simply row vectors with the bra-ket composition understood to be matrix multiplication. It is important to note that \emph{any} vector in such a space can be represented in terms of this basis, $|\psi\rangle = \sum_{i=1}^n c_i |e_1\rangle$ and employing this we may compute any inner product $\langle \psi | \phi\rangle$ as a series of matrix multiplications of the unit colum/row vectors.
 
-When we are not fortunate enought to be able to work in a finite dimensional subspace of $\mathcal{L}^2$, we will assume that the infinite space is \emph{separable}. This means there exists a countably infinite set $D=\{|e_i\rangle\}_{i=1}^\infty$ of orthonormal functions which form a basis for $\mathcal{H}$ \cite{fys4110}\comment{p9}. In more mathematical terms, we say that $D$ is a countable \emph{dense} subset of $\mathcal H$, the closure of which span $\mathcal{H}$. The existence of such a set is (perhaps anti-intuitively)  not at all obvious. Although we are guaranteed that \emph{any} Hilbert space (not neccessarily finite dimensional) contains at least one orthonormal sequence, so we can write for any $|\psi\rangle \in \mathcal H$: $|\psi\rangle = \sum_{i=1}^\infty \langle \psi|e_i\rangle |e_i\rangle$. However, we are in no way guaranteed that this converges in $\mathcal{H}$ and if it does, we are in no way guaranteed that it converges to $|\psi\rangle\in \mathcal H$ \cite{rynne}\comment{p73}. As it turns out, the assumption that $\mathcal H$ be separable is exactly the neccessary and sufficient condition for this sum to behave like we are used to in the finite dimensional case. Perhaps the most important consequence of separability is that we can \emph{realize unity} in terms of this basis, that is the following equation holds \cite{hassani}\comment{p148}$$\sum_i |e_i\rangle \langle e_i|=\mathds{1}.$$ This is sometimes called the \emph{Parseval relation} \cite{rynne}\comment{p81}.
+When we are not fortunate enough to be able to work in a finite dimensional subspace of $\mathcal{L}^2$, we will assume that the infinite space is \emph{separable}. This means there exists a countably infinite set $D=\{|e_i\rangle\}_{i=1}^\infty$ of orthonormal functions which form a basis for $\mathcal{H}$ \cite{fys4110}\comment{p9}. In more mathematical terms, we say that $D$ is a countable \emph{dense} subset of $\mathcal H$, the closure of which span $\mathcal{H}$. The existence of such a set is (perhaps anti-intuitively)  not at all obvious. Although we are guaranteed that \emph{any} Hilbert space (not neccessarily finite dimensional) contains at least one orthonormal sequence, so we can write for any $|\psi\rangle \in \mathcal H$: $|\psi\rangle = \sum_{i=1}^\infty \langle \psi|e_i\rangle |e_i\rangle$. However, we are in no way guaranteed that this converges in $\mathcal{H}$ and if it does, we are in no way guaranteed that it converges to $|\psi\rangle\in \mathcal H$ \cite{rynne}\comment{p73}. As it turns out, the assumption that $\mathcal H$ be separable is exactly the necessary and sufficient condition for this sum to behave like we are used to in the finite dimensional case. Perhaps the most important consequence of separability is that we can \emph{realize unity} in terms of this basis, that is the following equation holds \cite{hassani}\comment{p148}$$\sum_i |e_i\rangle \langle e_i|=\mathds{1}.$$ This is sometimes called the \emph{Parseval relation} \cite{rynne}\comment{p81}.
 
 The orthonormal basis is sometimes called a \emph{complete orthonormal sequence} \cite{rynne}\comment{p78}{ } which causes confusion: when physicists talk about completeness they are talking about the existence of such a basis set and the resulting validity of $\sum_i^\infty |e_i\rangle\langle e_i|=\mathds{1}$ (sometimes called the completeness relation). However, when mathematicians talk about completeness, they are almost always refering to the fact that any Cauchy sequence in $\mathcal{H}$ converges \emph{in} $\mathcal{H}$.
 
-We note that for a infinite dimensional, separable Hilbert space, there exists an isomorphism between $\mathcal H$ and $\ell^2$, the Hilbert space of \emph{square summable sequences}. 
+We note that for an infinite dimensional, separable Hilbert space, there exists an isomorphism between $\mathcal H$ and $\ell^2$, the Hilbert space of \emph{square summable sequences}. 
 
-In the following, we will take $|\psi\rangle$ to denote an abstract state vector. Expanding any such vector in terms of the the basis of position-eigenstates (basically just an enumeration of all possible positions available to the system) yields what we will call the \emph{wave function}: $\psi(x)=\sum_i|x_i\rangle  \langle x_i | \psi \rangle = \sum_i c_i |x_i\rangle$, with $c_i\equiv \langle x_i|\psi\rangle$.
+In the following, we will take $|\psi\rangle$ to denote an abstract state vector. Expanding any such vector in terms of  the basis of position-eigenstates (basically just an enumeration of all possible positions available to the system) yields what we will call the \emph{wave function}: $\psi(x)=\sum_i|x_i\rangle  \langle x_i | \psi \rangle = \sum_i c_i |x_i\rangle$, with $c_i\equiv \langle x_i|\psi\rangle$.
 
 \subsubsection{From dynamical variables to operators}
 The classical observables, the generalized coordinates and conjugate momenta, are promoted to \emph{operators} acting on state vectors in the aforementioned Hilbert space. Working in the position basis, the position \emph{operator} becomes a simple multiplication operator: $\hat x \psi = x\psi$. The momentum operator becomes a differential operator, $\hat p \psi= -i\hbar (\partial \psi / \partial  x)$. In addition, the old Possion brackets for classical mechanics are promoted to \emph{commutator relations},
@@ -80,7 +80,7 @@ This means the fundamental Poisson bracket, $\{q_i,p_j\}=\delta_{ij}$, is enforc
 \left\{ q_i, p_j \right\}=\delta_{ij} \ \ \ \rightarrow \ \ \ \left[ \hat x_i, \hat p_j \right] = i\hbar \delta_{ij}.
 \end{align}
 
-It is striking to consider that the preceding three steps is all that is needed to take us from the classical Hamilton equations of motion, and to the Heisenberg equations of motion in the Heisenberg picture of quantum mechanics\footnote{The Heisenberg picture is a formulation of quantum mechanics in which the state vectors are all constant, but the operators evolve in time according to the Heisenberg equation of motion (the Heiseberg picture analogue to the Schrödinger equation).}. Indeed the classical \eq{QM2} \emph{directly} yields the quantum equation of motion by promoting the classical observables to operators, $q,p\rightarrow\hat x,\hat p$, and the Poisson brackets to commutator relations, $\{f,g\}\rightarrow -i/\hbar[\hat f,\hat g]$, as\footnote{Assuming no \emph{explicit} time dependence. If any such depenence is present, we need to add a $\partial A/\partial t$ term to the right hand side of both the classical and quantum equations.}
+It is striking to consider that the preceding three steps is all that is needed to take us from the classical Hamilton equations of motion, and to the Heisenberg equations of motion in the Heisenberg picture of quantum mechanics\footnote{The Heisenberg picture is a formulation of quantum mechanics in which the state vectors are all constant, but the operators evolve in time according to the Heisenberg equation of motion (the Heiseberg picture analogue to the Schrödinger equation).}. Indeed the classical \eq{QM2} \emph{directly} yields the quantum equation of motion by promoting the classical observables to operators, $q,p\rightarrow\hat x,\hat p$, and the Poisson brackets to commutator relations, $\{f,g\}\rightarrow -i/\hbar[\hat f,\hat g]$, as\footnote{Assuming no \emph{explicit} time dependence. If any such dependence is present, we need to add a $\partial A/\partial t$ term to the right hand side of both the classical and quantum equations.}
 \begin{align}
 \der{A}{t} = \left\{A, \H\right\} \ \ \ \rightarrow \ \ \ \der{A}{t} = \frac{1}{i\hbar} \left[\hat A, \hat H\right] \label{eq:QM3}.
 \end{align}
@@ -92,7 +92,7 @@ Taking the expectation value (relative to some quantum state vector) of the Heis
 As usual, we will denote by $\langle \cdot| \cdot\rangle$ the integral $\mathcal{L}^2$ inner product, while $\langle \cdot \rangle=\langle \psi | \cdot | \psi\rangle$ will denote the expectation value. 
 
 \section{Schrödinger picture}
-The straight forward application of cannonical quantization, starting from Hamiltonian classical mechanics, landed us in the Heisenberg picture of quantum mechanics. This is the formulation of quantum theory in which the operators carry the time dependence, with state vectors being constant in time with the equation governing the evolution being the Heisenberg equation, \eq{QM3}. This is the quantum mechanics formalism that behaves the most like classical mechanics does; classically, the observables themselves, $q$ and $p$ (and derived quantities), evolve in time (the phase space point moves along a trajectory according to the Hamilton equations of motion).
+The straight forward application of canonical quantization, starting from Hamiltonian classical mechanics, landed us in the Heisenberg picture of quantum mechanics. This is the formulation of quantum theory in which the operators carry the time dependence, with state vectors being constant in time with the equation governing the evolution being the Heisenberg equation, \eq{QM3}. This is the quantum mechanics formalism that behaves the most like classical mechanics does; classically, the observables themselves, $q$ and $p$ (and derived quantities), evolve in time (the phase space point moves along a trajectory according to the Hamilton equations of motion).
 
 But there is another, more familiar, formulation of quantum mechanics in which the operators are constant in time but the state vectors carry the time dependence. This is called the Schrödinger picture, with the corresponding equation of motion being the \emph{Schrödinger equation}. 
 
@@ -162,7 +162,7 @@ As illustrated above, the problem of computing the time evolution of a state whe
 which is called the time independent Schrödinger equation (TISE). This is the spatial result of the separation of variables we used to derive the TDSE \cite{griffiths}\comment{p26}. 
 
 \subsubsection{Canonical quantization as a semi-classical model of quantum mechanics}
-In short, first (or canonical) quantization describes an attempt to construct a mathematical formulation of a quantum mechanical system emergent from the classical description. It is important to note however that this is essentially a semi-classical formulation in that the surrounding environment is treated classicaly. E.g.\ the first quantized formulation of $N$ electrons confined in a harmonic oscillator treats the external oscillator potential in a classical manner\textemdash despite the fact that this potential inevitbly arises from some \emph{quantum} effect. 
+In short, first (or canonical) quantization describes an attempt to construct a mathematical formulation of a quantum mechanical system emergent from the classical description. It is important to note however that this is essentially a semi-classical formulation in that the surrounding environment is treated classicaly. For example the first quantized formulation of $N$ electrons confined in a harmonic oscillator treats the external oscillator potential in a classical manner\textemdash despite the fact that this potential inevitbly arises from some \emph{quantum} effect. 
 
 A general assumption is that the surrounding system is \emph{large} enough to be accurately described by a classical treatment. 
 
@@ -198,12 +198,12 @@ Since the Hamiltonian is the fundamental quantity which governs the dynamics of 
 \begin{align}
 \hat H_\text{free} &= -\frac{\hbar^2}{2m}\pder{}{x},
 \end{align}
-a straight forward to application of the operator promotion scheme for $p\rightarrow \hat p=-i\hbar(\partial /\partial x)$. For a particle of mass $m$ moving in a position dependent potential $V(x)$, the Hamiltonian takes the form 
+after a straight forward to application of the operator promotion scheme for $p\rightarrow \hat p=-i\hbar(\partial /\partial x)$. For a particle of mass $m$ moving in a position dependent potential $V(x)$, the Hamiltonian takes the form 
 \begin{align}
 \hat H = -\frac{\hbar^2}{2m}\pder{}{x} + V(x).
 \end{align}
 
-In the present work, we will be focused on systems of interacting electrons in the presence of one or more positively charged nuclei. Under first quantization, the classical Hamiltonian of $N$ particles of mass $m_e$ moving in an external potential  changes from that shown in \eq{QM4}. The total kinetic energy of all $N$ electrons with masses $m_e$ becomes
+In the present work, we will focus on systems of interacting electrons in the presence of one or more positively charged nuclei. Under first quantization, the classical Hamiltonian of $N$ particles of mass $m_e$ moving in an external potential  changes from that shown in \eq{QM4}. The total kinetic energy of all $N$ electrons with masses $m_e$ becomes
 \begin{align}
 \hat T = \sum_{i=1}^N -\frac{\hbar^2}{2m_e}\nabla^2_i,
 \end{align}
@@ -241,7 +241,7 @@ We may also consider the charged nuclei moving (in the frame of refence of an el
 \begin{align}
 {\bf \mu}_e=-\frac{e}{m_e}{\bf S},
 \end{align}
-with ${\bf S}$ being the electron's spin angular momentum. The magnetic field strenght set up by the (apparent) motion of the nucleus (relative to the electron) is
+with ${\bf S}$ being the electron's spin angular momentum. The magnetic field strenght set up by the (apparen't) motion of the nucleus (relative to the electron) is
 \begin{align}
 {\bf B}=\frac{Zk_ee}{mc^2r^3}{\bf L},
 \end{align}
@@ -249,7 +249,7 @@ with ${\bf L}$ being the electron's orbital angular momentum. The correction to 
 \begin{align}
 H_\text{spin-orbit} = \frac{Zk_ee^2}{2m_e^2c^2r^3}{\bf S}\cdot {\bf L}.
 \end{align}
-Combining both effects gives what is know as the \emph{fine structure}. 
+Combining both effects gives what is known as the \emph{fine structure}. 
 
 There is an additional relativistic effect which is derived by expanding the Dirac equation Hamiltonian in powers of $mc^2$ and taking the non-relativistic limit. This is called the Darwin term, and for a central potential it can be written as \cite{mahan}\comment{p382}
 \begin{align}
@@ -362,7 +362,7 @@ Let us now consider for a moment how much effect this intentional oversight will
 \hline
 \hline
 \\[-0.9em] 
-           & {\bf Atomic} & {\bf supression} \\
+           & {\bf Atomic} & {\bf suppression} \\
 {\bf Atom} & {\bf number} & {\bf ratio} \\
 \\[-0.9em]
 \hline
@@ -378,16 +378,16 @@ Let us now consider for a moment how much effect this intentional oversight will
 \\[-0.9em]
 \hline
 \end{tabularx}
-\caption{Values of the Born-Oppenheimer supression ratio, $S=(m_e/m_A)^{\nicefrac{1}{4}}$ for various different atomic systems. Note the \emph{very} slow scaling of quarter power, despite the widely differing masses. \label{tab:QM2}}
+\caption{Values of the Born-Oppenheimer suppression ratio, $S=(m_e/m_A)^{\nicefrac{1}{4}}$ for various different atomic systems. Note the \emph{very} slow scaling of quarter power, despite the widely differing masses. \label{tab:QM2}}
 \end{SCtable}
 
 The ratio 
 \begin{align}
 S\equiv \frac{b_0}{a_0} = \frac{\left(\frac{\hbar^2}{e^2m_A^{\nicefrac{1}{4}}m_e^{\nicefrac{3}{4}}}\right)}{\left(\frac{\hbar^2}{m_ee^2}\right)}=\left(\frac{m_e}{m_A}\right)^{\nicefrac{1}{4}}
 \end{align}
-depends on the mass ratio to the one quarter power. Despite the almost three order of magnitude difference in the electron and proton masses, the low exponent means this \emph{supression ratio} worryingly large values for small atoms. The $S$ ratio is calculated for a few atoms of differing sizes in \tab{QM2}. 
+depends on the mass ratio to the one quarter power. Despite the almost three order of magnitude difference in the electron and proton masses, the low exponent means this \emph{suppression ratio} worryingly large values for small atoms. The $S$ ratio is calculated for a few atoms of differing sizes in \tab{QM2}. 
 
-However, Born-Oppenheimer works because vibrational energies of atoms arent large enough to excite electrons across electronic energy levels. The vibrational energies are smaller than the electronic ones roughly by a factor of $\sqrt{m_e/m_A}$. Even larger is the discrepancy between typical electronic energy scales and those of molecular rotational energies, which carry an additional factor of $\sqrt{m_e/m_A}$ meaning they are an overall factor of $m_e/m_A$ smaller \cite{weinberg}\comment{p197}.
+However, Born-Oppenheimer works because vibrational energies of atoms aren't large enough to excite electrons across electronic energy levels. The vibrational energies are smaller than the electronic ones roughly by a factor of $\sqrt{m_e/m_A}$. Even larger is the discrepancy between typical electronic energy scales and those of molecular rotational energies, which carry an additional factor of $\sqrt{m_e/m_A}$ meaning they are an overall factor of $m_e/m_A$ smaller \cite{weinberg}\comment{p197}.
 
 
 
@@ -398,7 +398,7 @@ However, Born-Oppenheimer works because vibrational energies of atoms arent larg
 
 
 \section{Anti-symmetry and the Pauli principle \label{pauli}}
-Let us now consider a system of $N$ \emph{indistinguishable} particles, i.e. particles that are fundamentally identical as to make telling them apart from each other is impossible. If our theory is to handle such a system with any logical consistency, we must require our wave function (and thus also the observables we derive from it) to be \emph{permutation invariant} (up to a phase factor, which does not affect the physics [as per the postulates of QM]). If we cannot tell the particles apart, it does not make sense to say particle one is \emph{here}, while particle two is \emph{over there}\textemdash essentially we need our theory to account for both cases simultaneously. We may do this by constructing a wave function that is non-commital as to which particle is where \cite{griffiths}\comment{p204}.
+Let us now consider a system of $N$ \emph{indistinguishable} particles, i.e. particles that are fundamentally identical as to make telling them apart from each other is impossible. If our theory is to handle such a system with any logical consistency, we must require our wave function (and thus also the observables we derive from it) to be \emph{permutation invariant} (up to a phase factor, which does not affect the physics [as per the postulates of QM]). If we cannot tell the particles apart, it does not make sense to say particle one is \emph{here}, while particle two is \emph{over there}\textemdash essentially we need our theory to account for both cases simultaneously. We may do this by constructing a wave function that is non-committal as to which particle is where \cite{griffiths}\comment{p204}.
 
 Following Kvaal we may define this mathematically by defining $\sigma\in S_N$, a permutation of the indices in a set of $N$ such indices \cite{kvaal}\comment{p8}. $S_N$ here denotes the symmetric group of degree $N$.\footnote{The symmetric group on a finite set $M$ is a mathematical group, and consists of all possible permutations of the elements of the set $M$. Mathematically, these permutations are bijections from $M$ onto $M$ itself. There are $N!$ unique permutations in the group, including the identity permutation (which just leaves the set un-changed).} We must demand that $|\Psi|^2$ be permutation invariant, that is
 \begin{align}
@@ -417,7 +417,7 @@ Thus we can formulate particle indistinguishability in terms of $\hat P_\sigma$ 
 \subsection{Slater determinants \label{section:slater}}
 A one-electron system is described by a one-body Hamiltonian operator, $\hat h$. This one-body Hamiltonian is a differential operator w.r.t. the coordinates of this one electron (kinetic energy operator), and possibly contains an external potential. It's spectrum forms a set of single-particle wave functions, $\phi_i(\r)$. According to the postulates of QM, this set is complete in the sense that it spans the enclosing Hilbert space. We will denote the $\phi_i$s by spatial \emph{orbitals}. 
 
-In order to completely specify the quantum state of an electron, it is neccessary to also specify it's spin state. The electron being a spin-$1/2$ particle, it admits only two distrinct spin projections: Spin up, $\chi(\uparrow)$, and spin down, $\chi(\downarrow)$ \cite{griffiths}\comment{p173}. The wave function of the electron, completely specifying all of it's properties is the product of a spatial orbital and a spin function\textemdash a {\bf spin-orbital}\textemdash$\psi_i(\r,\sigma)=\phi(\r)\chi(\sigma)$, with $\sigma$ labelling the spin-projection. Mathematically, we may consider the original Hilbert space of the spatial orbitals to be extended (in the cartesian product sense) with a simple two-dimensional Hilbert space of spin-states. Thus strictly speaking we should be writing the spin-orbitals as direct products, $\phi_i(\r)\otimes \chi(\sigma)$, but we will ommit this notation for the entirety of the present work and let simple juxtapositioning represent this product.
+In order to completely specify the quantum state of an electron, it is necessary to also specify its spin state. The electron being a spin-$1/2$ particle, it admits only two distrinct spin projections: Spin up, $\chi(\uparrow)$, and spin down, $\chi(\downarrow)$ \cite{griffiths}\comment{p173}. The wave function of the electron, completely specifying all of it's properties is the product of a spatial orbital and a spin function\textemdash a {\bf spin-orbital}\textemdash$\psi_i(\r,\sigma)=\phi(\r)\chi(\sigma)$, with $\sigma$ labelling the spin-projection. Mathematically, we may consider the original Hilbert space of the spatial orbitals to be extended (in the cartesian product sense) with a simple two-dimensional Hilbert space of spin-states. Thus strictly speaking we should be writing the spin-orbitals as direct products, $\phi_i(\r)\otimes \chi(\sigma)$, but we will omit this notation for the entirety of the present work and let simple juxtapositioning represent this product.
 
 Assume now that a many-electron quantum system is described by a Hamiltonian of the form
 \begin{align}
@@ -427,24 +427,24 @@ where the operators $\hat h_i$ act only on the coordinates of particle $i$. It i
 \begin{align}
 \Psi(\R,\bm{\sigma}) = \psi_a(\r_1,\sigma_1)\psi_b(\r_2,\sigma_2)\cdots \psi_c(\r_N,\sigma_N)
 \end{align}
-\emph{is} an eigenfunction of $\hat H$: it is known as a \emph{Hatree product} \cite{szabo}\comment{p48}. The vector of spin labels, $\bm{\sigma}=\{\sigma_1,\sigma_2,\dots,\sigma_N\}$, here denotes the collection of all spin projections in the same way $\R$ denotes the collection of all electronic coordinates. However, the Hartree product does not have the correct (anti-)symmetry. In particular, the product assigns to specific electrons (labelled $1,2,3,\dots,N$) specific quantum states (labelled $\psi_a,\psi_b,\dots$). In accordance with Pauli, we may anti-symmetrize the Hartree product by considering every possible permutation of the electron labels, \cite{kvaal}
+\emph{is} an eigenfunction of $\hat H$: it is known as a \emph{Hartree product} \cite{szabo}\comment{p48}. The vector of spin labels, $\bm{\sigma}=\{\sigma_1,\sigma_2,\dots,\sigma_N\}$, here denotes the collection of all spin projections in the same way $\R$ denotes the collection of all electronic coordinates. However, the Hartree product does not have the correct (anti-)symmetry. In particular, the product assigns to specific electrons (labelled $1,2,3,\dots,N$) specific quantum states (labelled $\psi_a,\psi_b,\dots$). In accordance with Pauli, we may anti-symmetrize the Hartree product by considering every possible permutation of the electron labels, \cite{kvaal}
 \begin{align}
 \Psi(\R,\bm{\sigma}) = \frac{1}{\sqrt{N!}}\sum_{\gamma \in S_N}(-1)^{|\gamma|} \hat P_\gamma \psi_a(\r_1,\sigma_1)\psi_b(\r_2,\sigma_2)\cdots \psi_c(\r_N,\sigma_N). \label{eq:slater}
 \end{align}
-The $|\gamma|$ factor denotes the total number of transpositions in $\hat P_\gamma$, and $(-1)^{|\gamma|}$ is the sign of the permutation. The normalization is neccessary in order to ensure $\langle \Psi|\Psi\rangle =1$, as there are $N!$ total possible permutations we must consider. \eq{slater} is known as a {\bf Slater determinant}, and is more commonly written as \cite{slater}
+The $|\gamma|$ factor denotes the total number of transpositions in $\hat P_\gamma$, and $(-1)^{|\gamma|}$ is the sign of the permutation. The normalization is necessary in order to ensure $\langle \Psi|\Psi\rangle =1$, as there are $N!$ total possible permutations we must consider. \eq{slater} is known as a {\bf Slater determinant}, and is more commonly written as \cite{slater}
 \begin{align}
 \Psi(\R,\bm{\sigma}) = \frac{1}{\sqrt{N!}}\vmat{ccccc}{
-  \psi_1(\r_1) & \psi_2(\r_1) & \psi_3(\r_1) & \dots  & \psi_N(\r_1) \\
-  \psi_1(\r_2) & \psi_2(\r_2) & \psi_3(\r_2) & \dots  & \psi_N(\r_2) \\
-  \psi_1(\r_3) & \psi_2(\r_3) & \psi_3(\r_3) & \dots  & \psi_N(\r_3) \\
+  \psi_1(\r_1,\sigma_1) & \psi_2(\r_1,\sigma_1) & \psi_3(\r_1,\sigma_1) & \dots  & \psi_N(\r_1,\sigma_1) \\
+  \psi_1(\r_2,\sigma_2) & \psi_2(\r_2,\sigma_2) & \psi_3(\r_2,\sigma_2) & \dots  & \psi_N(\r_2,\sigma_2) \\
+  \psi_1(\r_3,\sigma_3) & \psi_2(\r_3,\sigma_3) & \psi_3(\r_3,\sigma_3) & \dots  & \psi_N(\r_3,\sigma_3) \\
   \vdots     & \vdots     & \vdots     & \ddots & \vdots     \\ 
-  \psi_1(\r_N) & \psi_2(\r_N) & \psi_3(\r_N) & \dots  & \psi_N(\r_N)
+  \psi_1(\r_N,\sigma_N) & \psi_2(\r_N,\sigma_N) & \psi_3(\r_N,\sigma_N) & \dots  & \psi_N(\r_N,\sigma_N)
 }.
 \end{align}
 
-We could of course have allowed the permutations to operate on the spin-orbital labels instead of the electron labels, leading to analogous expressions. It is important however that it act on only electron labels \emph{or} orbital labels, since acting on both simultaneously leaves the product entirely unchanged \cite{thijssen}\comment{p53}.
+We could of course have allowed the permutations to operate on the spin-orbital labels instead of the electron labels, leading to analogous expressions. It is important however that it acts on only electron labels \emph{or} orbital labels, since acting on both simultaneously leaves the product entirely unchanged \cite{thijssen}\comment{p53}.
 
-Before moving on, let us note some key properties of the Slater determinant. Interchanging two electrons give rise to an overall minus sign, since this corresponds to interchanging two rows of the determinant \cite{lay}\comment{p169}. Some authors choose to represent the Slater determinant with rows corresponding to orbitals, and columns representing electron labels. The two representations are equal, since the determinant is invariant under tranposition \cite{hassani}\comment{p94}. The Hatree products form a basis for the full $\mathcal{L}^2$ Hilbert space of the $N$-electron system, and the Slater determinants span the sub-space of anti-symmetric functions in the same space \cite{kvaal}\comment{p13}. This means we can represent \emph{any} square integrable, normalized, anti-symmetric function of $N$ electronic coordinates as a sum over Slaters,
+Before moving on, let us note some key properties of the Slater determinant. Interchanging two electrons gives rise to an overall minus sign, since this corresponds to interchanging two rows of the determinant \cite{lay}\comment{p169}. Some authors choose to represent the Slater determinant with rows corresponding to orbitals, and columns representing electron labels. The two representations are equal, since the determinant is invariant under transposition \cite{hassani}\comment{p94}. The Hartree products form a basis for the full $\mathcal{L}^2$ Hilbert space of the $N$-electron system, and the Slater determinants span the sub-space of anti-symmetric functions in the same space \cite{kvaal}\comment{p13}. This means we can represent \emph{any} square integrable, normalized, anti-symmetric function of $N$ electronic coordinates as a sum over Slater determinants,
 \begin{align}
 f(\R,\bm{\sigma}) = \sum_{i=1}^\infty c_i \Psi_i(\R,\bm{\sigma}).
 \end{align}
@@ -460,7 +460,7 @@ The Slater determinant is normalized whenever the spin-orbitals are normalized. 
 & \ \ \  \ \ \ \ \ \  \ \ \  \ \ \ \int\mathrm{d}\x_N \psi_{i_N}^*(\r_N,\sigma_N)\psi_{j_N}(\r_N,\sigma_N) \nn\\
 & = \delta_{i_1j_1}\delta_{i_2j_2}\cdots \delta_{i_Nj_N}. \label{eq:slater2}
 \end{align}
-The $\x$ coordinate here denotes the collection of spatial and spin coordinates for each electron, $\x=\{\r,\sigma\}$, and position in the string of orbitals\textemdash $|\psi_1\psi_2\dots\psi_N\rangle$\textemdash determines which electron occupies which state. E.g.\ in the state $|\psi_i\psi_j\psi_k\rangle$, spin-orbital $i$ is evaluated at the coordinates of electron one, the $j$ orbital at electron two, and the $k$ orbital at the coordinates of electron three. The last equality follows from the spin-orbitals being orthonormal. In terms of the total Slater, this means\footnote{Using for the moment a permutation operator acting on the orbital indices as opposed to the prior permutations which acted on the electron indices.}
+The $\x$ coordinate here denotes the collection of spatial and spin coordinates for each electron, $\x=\{\r,\sigma\}$, and position in the string of orbitals\textemdash $|\psi_1\psi_2\dots\psi_N\rangle$\textemdash determines which electron occupies which state. For example in the state $|\psi_i\psi_j\psi_k\rangle$, spin-orbital $i$ is evaluated at the coordinates of electron one, the $j$ orbital at electron two, and the $k$ orbital at the coordinates of electron three. The last equality follows from the spin-orbitals being orthonormal. In terms of the total Slater, this means\footnote{Using for the moment a permutation operator acting on the orbital indices as opposed to the prior permutations which acted on the electron indices.}
 \begin{align}
 \langle \Psi(\R,\bm\sigma)|\Psi(\R,\bm\sigma)\rangle &= \left\langle \frac{1}{\sqrt{N!}}\sum_{\gamma_1 \in S_N}(-1)^{|\gamma_1|} \hat P_{\gamma_1} \psi_{a_1}\psi_{a_2}\cdots \psi_{a_N} \right| \nn\\
 & \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \  \left.\frac{1}{\sqrt{N!}}\sum_{\gamma_2 \in S_N}(-1)^{|\gamma_2|} \hat P_{\gamma_2} \psi_{b_1}\psi_{b_2}\cdots \psi_{b_N}\right\rangle \nn\\
@@ -528,7 +528,7 @@ The axiomatic formulation of QM was set up by British physicist P. Dirac and Hun
 
 
 \section{The variational principle \label{variational}}
-For a given Hamiltonian, calculating the expectation value of $\langle \Psi | \hat H | \Psi\rangle$ (for \emph{any} $\Psi\in\mathcal{L}_2$) gives an upper bound on the ground state energy. Following Griffiths, a simple proof goes as follows: Since the spectrum of $\hat H$ spans\footnote{Asumming \emph{crucially} that the Hamiltonian is hermitian \cite{griffiths}\comment{p293}. This is not the case for e.g. the similarity transformed $\bar H$ used in coupled cluster theory, predictably leading to all kinds of difficulties.} all of $\mathcal{L}_2$. We assume also that the eigenstates are orthonormalized. This means that \emph{any} normalized $\Psi$ we choose can be expressed in terms of the eigenstates of $\hat H$,
+For a given Hamiltonian, calculating the expectation value of $\langle \Psi | \hat H | \Psi\rangle$ (for \emph{any} $\Psi\in\mathcal{L}_2$) gives an upper bound on the ground state energy. Following Griffiths, a simple proof goes as follows: Since the spectrum of $\hat H$ spans\footnote{Asumming \emph{crucially} that the Hamiltonian is hermitian \cite{griffiths}\comment{p293}. This is not the case for e.g. the similarity transformed $\bar H$ used in coupled cluster theory, predictably leading to all kinds of difficulties. We assume also that the eigenstates are orthonormalized.} all of $\mathcal{L}_2$. This means that \emph{any} normalized $\Psi$ we choose can be expressed in terms of the eigenstates of $\hat H$,
 \begin{align}
 \Psi = \sum_{n=0}^\infty c_n \Phi_n, \ \ \text{ where } \ \ \hat H \Phi_n = E_n \Phi_n.
 \end{align}

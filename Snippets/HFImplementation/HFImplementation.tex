@@ -6,7 +6,7 @@ The following is a description of the implementation of the Hartree-Fock framewo
 
 The code is object oriented and completely general in that it can compute an approximation to the energy of any molecular configuration possible. Although it will of course be unfeasibly slow in doing so for large systems where the basis size far exceeds $10^2$. As noted in section \ref{section:gaussianorbitals}, the mathematically more tractable Cartesian Gaussian basis functions are used in place of the physically more realistic Slater type orbitals. It is in principle tuneable to any desired precision\textemdash bounded from below by the Hartree-Fock limit (see section \ref{HFlimit})\textemdash by employing larger and larger basis sets. All basis sets used in the current work are taken from the \emph{Basis Set Exchange} \cite{basissetexchange}. The specific basis sets used are described in section \ref{basissetsused}.
 
-The code consists of two mostly disjoint parts. The bulk of the program consists of code neccessary to solve\textemdash in analytic fashion\textemdash one-, and two-electron integrals in terms of Gaussian orbitals. The second and more succinct part deals with setting up and solving the Roothan-Hall (Pople-Nesbet) equations. 
+The code consists of two mostly disjoint parts. The bulk of the program consists of code necessary to solve\textemdash in analytic fashion\textemdash one-, and two-electron integrals in terms of Gaussian orbitals. The second and more succinct part deals with setting up and solving the Roothan-Hall (Pople-Nesbet) equations. 
 
 
 The code base has been rigorously tested for first and second row atoms, with Gaussian orbitals up to and including f type, but expanding to heavier atoms and higher angular momentum basis functions is in principle straightforward. A number of basis sets are available, and adding new ones is made easy by the accompanying python script \inlinecc{basisFileParser.py}. It parses Gaussian basis set files in the Turbomole format, \inlinecc{.tm}, and outputs \CC{}  code ready for use in the Hartree-Fock program \cite{TURBOMOLE}. 
@@ -235,7 +235,7 @@ T_{ij}&=-\frac{1}{2}\left\langle g_{i}^\alpha(x_\alpha;A_x)\bigg| \pder{^2}{x^2}
 %
 &= -\frac{1}{2}\left\langle g_{i}^\alpha(x_\alpha;A_x) \bigg| 4\beta^2 g_{j+2}^\beta - 2\beta (2j+1)g_{j}^\beta + j(j-1)g_{j-2}^\beta   \right\rangle,
 \end{align}
-where we have supressed the arguments on $g_{j}^\beta(x_\beta;B_x)$. Since the other two terms are independent of $x$, the \emph{full} kinetic integral can be written in terms of the overlap integrals as
+where we have suppressed the arguments on $g_{j}^\beta(x_\beta;B_x)$. Since the other two terms are independent of $x$, the \emph{full} kinetic integral can be written in terms of the overlap integrals as
 \begin{align}
 T_{IJ}&= -\frac{1}{2}\left\langle g_{ijk}^\alpha(\r_\alpha;{\bf A})\bigg| \pder{^2}{x^2}+\pder{^2}{y^2}+\pder{^2}{z^2} \bigg|g_{lmn}^\beta(\r_\beta;{\bf B})\right\rangle \nn\\
 %

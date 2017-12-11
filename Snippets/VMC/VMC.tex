@@ -29,7 +29,7 @@ Given the state $X_i$, the step to the next configuration\textemdash the state $
 P^{(i)}(Y|X_i|X_{i-1}|\dots|X_0) = W(Y;i+1|X_{i};i)W(X_{i};i|X_{i-1};i-1)\dots W(X_1;1|X_0;0).
 \end{align}
 
-In order for the Markov chain to be of much use to us, we need to demand that given \emph{any} starting point, after sufficient time has passed the chain must gradually "forget" about its initial value. In other words, $P^{(i)}(\,\cdot\,|X_0)$ must converge to some \emph{unique stationary} distribution independent of $X_0$ for large $i$ \cite{gilks}\comment{p5}. Neccessary and sufficient conditions for this to hold will be derived shortly.
+In order for the Markov chain to be of much use to us, we need to demand that given \emph{any} starting point, after sufficient time has passed the chain must gradually "forget" about its initial value. In other words, $P^{(i)}(\,\cdot\,|X_0)$ must converge to some \emph{unique stationary} distribution independent of $X_0$ for large $i$ \cite{gilks}\comment{p5}. necessary and sufficient conditions for this to hold will be derived shortly.
 
 \subsubsection{Markov chain as a random walk}
 We can visualize the evolution of the Markov chain as a \emph{walker}, taking steps around in the configuration space according to the stepping probability. The attributes of the walker define completely the state of the system, $X$, which in the present work is the coordinate configuration of all electrons $\R=\{\r_1,\r_2,\dots,\r_N\}$. Standing at position $X$ in the configuration space, the probability of the walker of stepping to configuration $Y$ in the next step is then given by the stepping probability $W(Y|X)$. 
@@ -48,7 +48,7 @@ W(Z;i+2|X;i) &= \sum_{Y\in\mathcal{X}}W(Z;i+2|Y;i+1)W(Y;i+1|X;i), \ \ \text{ or}
 % 
 W(Z;i+2|X;i) &= \int_{\mathcal{X}}\mathrm{d}Y\,W(Z;i+2|Y;i+1)W(Y;i+1|X;i). \label{eq:VMC3}
 \end{align}
-This is also sometimes known as the Einstein–Smoluchowski–Kolmogorov–Chapman or the Chapman-Einstein-Enskog-Kolmogorov relation \cite{chaichian,hjorth-jensen}\comment{p21}\comment{p401}.\footnote{Or apparently pretty much \emph{any} combination of two or more of the names Chapman, Kolmogorov Einstein, Smoluchowski, and Enskog; depending on who you ask.} 
+This is also sometimes known as the Einstein–Smoluchowski–Kolmogorov–Chapman or the Chapman-Einstein-Enskog-Kolmogorov relation \cite{chaichian,hjorth-jensen}\comment{p21}\comment{p401}.\footnote{Or apparen'tly pretty much \emph{any} combination of two or more of the names Chapman, Kolmogorov Einstein, Smoluchowski, and Enskog; depending on who you ask.} 
 
 In the following, we drop the temporal $i$-indices on the stepping probability which we assume to not depend on the \emph{Markov time}. In addition, without any loss of generality, we split it into two parts: a proposal probability and a corresponding acceptance probability. We write thus
 \begin{align}
@@ -83,7 +83,7 @@ W^{(n)}(Y|X)=W(Y|Z_n)W(Z_n|Z_{n-1})\dots W(Z_1|X)\not=0,
 \end{align}
 where the $W$-superscript denotes the number of steps taken. In short, ergodicity ensures we can reach any configuration in finite time, regardless of starting point.
 
-It turns out that detailed balance and ergodicity are exactly sufficient\footnote{Although not neccessary: detailed balance is more stringent demand than needed \cite{assaraf}\comment{p293}.} for the conditions stated at the end of section \ref{markov} to hold, i.e. the asymptotical distribution after a large number $M$ of Markov steps converges to a unique distribution independently of starting configuration \cite{wood}.
+It turns out that detailed balance and ergodicity are exactly sufficient\footnote{Although not necessary: detailed balance is more stringent demand than needed \cite{assaraf}\comment{p293}.} for the conditions stated at the end of section \ref{markov} to hold, i.e. the asymptotical distribution after a large number $M$ of Markov steps converges to a unique distribution independently of starting configuration \cite{wood}.
 
 \subsubsection{Connecting stepping probability with the asymptotic probability density}
 Having shown that under certain conditions, the asymptotic probability density resulting from the Markov chain is unique, it is now time to ask how we can construct the stepping probability in a way which produces the desired $P(X)$. It is exactly this the Metropolis algorithm achieves. The stepping probability $W(Y|X)$ associated with the known probability density $P(X)$ is in general unknown, and often too complicated to even easily write down \cite{hjorth-jensen}\comment{p400}. However, according to Metropolis and co-workers, we can use a uniform suggestion probability $T$ and accept any suggested step with the probability 
@@ -171,7 +171,7 @@ Let now $P(\R,t)$ be a probability distribution function subject to a drift forc
 \begin{align}
 \pder{P(\R,t)}{t} = \sum_{i=1}^{dN} D \pder{}{x_i}\left(\pder{}{x_i} -F_i(x_i)\right)P(\R,t). \label{eq:VMC11}
 \end{align}
-The diffusion constant is here denoted by $D$ while lowercase $d$ indicates the number of spatial dimensions. Since we are interested in the probability density which converges to $P(\R,t)=P(\R)=|\Psi(\R)|^2$ (assuming for the moment that $\Psi(\R)$ is normalized), we look for the solution in the case where the left hand side of \eq{VMC11} vanishes. An obviously sufficient (but possibly not neccessary) condition for this equation to hold is if it holds for each individual term of the sum, such that 
+The diffusion constant is here denoted by $D$ while lowercase $d$ indicates the number of spatial dimensions. Since we are interested in the probability density which converges to $P(\R,t)=P(\R)=|\Psi(\R)|^2$ (assuming for the moment that $\Psi(\R)$ is normalized), we look for the solution in the case where the left hand side of \eq{VMC11} vanishes. An obviously sufficient (but possibly not necessary) condition for this equation to hold is if it holds for each individual term of the sum, such that 
 \begin{align}
 \pder{^2P(\R)}{x_i^2}&= P(\R)\pder{F_i(x_i)}{x_i}+F_i(x_i)\pder{P(\R)}{x_i}.
 \end{align}
