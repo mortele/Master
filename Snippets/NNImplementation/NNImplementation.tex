@@ -10,7 +10,7 @@ Given a functional form (with or without added random noise), the developed code
 \begin{align}
 E_{ab\text{ }initio}^i=E_{ab\text{ }initio}(r^i_{12},r^i_{13},r^i_{23},\dots,\theta^i_{123},\theta^i_{134},\theta^i_{124},\dots).
 \end{align}
-The superscript $i$ signifies the discrete sampling\textemdash the energy is only calculated quantum mechanically at a finite set of $N$ configurations\textemdash with given inter-nucleus separations $r_{ij}$ and nucleus-nucleus-nucleus angles $\theta_{ijk}$. Feeding the ANN with the discrete nucleonic configurations (distances and angles) and the corresponding \emph{ab initio} energies, the network can \emph{learn} the underlying patterns and provide an continous interpolation 
+The superscript $i$ signifies the discrete sampling\textemdash the energy is only calculated quantum mechanically at a finite set of $N$ configurations\textemdash with given inter-nucleus separations $r_{ij}$ and nucleus-nucleus-nucleus angles $\theta_{ijk}$. Feeding the ANN with the discrete nucleonic configurations (distances and angles) and the corresponding \emph{ab initio} energies, the network can \emph{learn} the underlying patterns and provide an continuous interpolation 
 \begin{align}
 E_\text{NN}=E_\text{NN}(r_{12},r_{13},r_{23},\dots,\theta_{123},\theta_{134},\theta_{124},\dots).
 \end{align}
