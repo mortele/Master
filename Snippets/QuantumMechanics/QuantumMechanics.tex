@@ -12,6 +12,7 @@
 \newcommand{\psit}{\left|\psi(t)\right\rangle}
 
 \chapter{Quantum Mechanics}
+Throughout this thesis we express all quantities in \emph{Hartree atomic units}, unless we explicitly say otherwise. The atomic units arise from enforcing $e=\hbar=4\pi\varepsilon_0=m_e=1$, and they provide the \emph{natural} units for working with quantum many-body problems. See appendix \ref{units}.
 %Shankar kap. 4: Postulatess
 %Leinaas FYS4110 lecture notes kap. 1
 %Goldstein, Poole,Safko: Classical Mechanics
@@ -174,7 +175,7 @@ A general assumption is that the surrounding system is \emph{large} enough to be
 %\end{align}
 %where $\Psi(\R;t)$ denotes the \emph{wave function} corresponding to the state in %question. The distinction will be made clear in section \ref{postulates}. 
 
-%Following (FYS4110 lecture notes), we may formulate this in terms of a \emph{time %evolution operator}, $\mathcal{U}(t_1,t_0)$, that relates the wave function at time $t_0$% to the one at a later time $t_1$. For a Hamiltonian with no \emph{explicit} time %dependence, the TDSE is separable and admits a formal solution in terms of the the time %evolution operator as
+%Following (FYS4110 lecture notes), we may formulate this in terms of a \emph{time %evolution operator}, $\mathcal{U}(t_1,t_0)$, that relates the wave function at time $t_0$% to the one at a later time $t_1$. For a Hamiltonian with no \emph{explicit} time %dependence, the TDSE is separable and admits a formal solution in terms of the time %evolution operator as
 %\begin{align}
 %\Psi(\R;t) = \mathcal{U}(t,t_0) \Psi(\R;t_0) = e^{-it\hat H /\hbar} \Psi(\R).
 %\end{align}
@@ -352,7 +353,7 @@ Since $\hat T$ involves a differential operator, we need to consider the operati
  \left[\hat H_\text{nucleonic} + E_\text{electronic}(\R_A) \right] \Phi(\R_A) &\approx E_\text{Total} \Phi(\R_A).
 \end{align}
 
-Let us now consider for a moment how much effect this intentional oversight will have on the total energy of the system. Again we turn to dimensional analysis in order to get a rough estimate. For the electronic wave function, we take the characteristic length to be the only combination of $\hbar$, $m_e$, $k_e$, and $e$ with units of distance. This is the Bohr radius, $a_0=\hbar^2/m_ee^2$. For the vibrational nucleonic motion however, the characteristic length is taken to be $b_0 \equiv \hbar^2/e^2m_A^{\nicefrac{1}{4}}m_e^{\nicefrac{3}{4}}$ \cite{weinberg}\comment{p196}. Differentiation w.r.t. $\R_A$ will then yield appreciable change in $\Psi(\R)$ if the change is on the order of $a_0$, but differentiation of $\Phi(\R_A)$ will cause it to change appreciably if the the variations in $\R_A$ are on the order of $b_0$. It is thus the ratio $a_0$ to $b_0$ which determines how good of an approximation the Born-Oppenheimer scheme is. As $b_0$ depends, albeit weakly, on the typical nucleonic mass, this changes depending on the molecular system in question. 
+Let us now consider for a moment how much effect this intentional oversight will have on the total energy of the system. Again we turn to dimensional analysis in order to get a rough estimate. For the electronic wave function, we take the characteristic length to be the only combination of $\hbar$, $m_e$, $k_e$, and $e$ with units of distance. This is the Bohr radius, $a_0=\hbar^2/m_ee^2$. For the vibrational nucleonic motion however, the characteristic length is taken to be $b_0 \equiv \hbar^2/e^2m_A^{\nicefrac{1}{4}}m_e^{\nicefrac{3}{4}}$ \cite{weinberg}\comment{p196}. Differentiation w.r.t. $\R_A$ will then yield appreciable change in $\Psi(\R)$ if the change is on the order of $a_0$, but differentiation of $\Phi(\R_A)$ will cause it to change appreciably if the variations in $\R_A$ are on the order of $b_0$. It is thus the ratio $a_0$ to $b_0$ which determines how good of an approximation the Born-Oppenheimer scheme is. As $b_0$ depends, albeit weakly, on the typical nucleonic mass, this changes depending on the molecular system in question. 
 
 \newcolumntype{Y}{>{\raggedleft\arraybackslash}X}
 \begin{SCtable}

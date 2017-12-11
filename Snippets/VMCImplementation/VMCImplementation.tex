@@ -137,7 +137,7 @@ where $\phi_{k\uparrow}(\r)=\phi_{k}(\r)\chi(\uparrow)=\pphi_{2k-1}(\r)$ and $\p
 \begin{align}
 E_\text{T} = \frac{\langle\Psi_\text{T}|\hat H|\Psi_\text{T}\rangle}{\langle\Psi_\text{T}|\Psi_\text{T}\rangle},
 \end{align}
-is invariant under a splitting of the determinant. We can split the Slater in two factors: one representing the spatial orbitals for the spin-up electrons, and one representing the corresponding orbitals for the spin-down electrons. Even though the new wave function is no longer\emph{anti-symmetric} w.r.t.\ interchange of two electrons of opposite spin, the expectation value\textemdash all we care about\textemdash remains the same, with the added benefit of reducing computational cost \cite{hjorth-jensen}\comment{p520}.
+is invariant under a splitting of the determinant. We can split the Slater determinant in two factors: one representing the spatial orbitals for the spin-up electrons, and one representing the corresponding orbitals for the spin-down electrons. Even though the new wave function is no longer \emph{anti-symmetric} w.r.t.\ interchange of two electrons of opposite spin, the expectation value\textemdash all we care about\textemdash remains the same, with the added benefit of reducing computational cost \cite{hjorth-jensen}\comment{p520}.
 
 The full split-determinant trial wave function takes the form
 \begin{align}
@@ -164,7 +164,7 @@ We may of course directly evaluate the determinant at every Monte Carlo step. Af
 \begin{align}
 R=\left[\frac{|D_\uparrow(\R_\text{new})||D_\downarrow(\R_\text{new})|}{|D_\uparrow(\R_\text{old})||D_\downarrow(\R_\text{old})|}\right] \left.\frac{J(\R_\text{new})}{J(\R_\text{old})} \right.\equiv R_\text{SD}R_\text{J}. \label{eq:VMCI1}
 \end{align}
-From this it is immediately obvious that if the new coordinate set $\R_\text{new}$ differs from the old $\R_\text{old}$ for \emph{only a single electron} of spin $\uparrow$ ($\downarrow$) then the spin-down (spin-up) determinants falls out of \eq{VMCI1}. In other words: moving only one electron at the time the ostensibly halves the required computation cost associated with $R_\text{SD}$. This of course comes at the cost of correlation\textemdash subsequent samples are less correlated if we simultaneously move multiple electrons\textemdash a complication which we will return to shortly.
+From this it is immediately obvious that if the new coordinate set $\R_\text{new}$ differs from the old $\R_\text{old}$ for \emph{only a single electron} of spin $\uparrow$ ($\downarrow$) then the spin-down (spin-up) determinants falls out of \eq{VMCI1}. In other words: moving only one electron at the time ostensibly halves the required computation cost associated with $R_\text{SD}$. This of course comes at the cost of correlation\textemdash subsequent samples are less correlated if we simultaneously move multiple electrons\textemdash a complication which we will return to shortly.
 
 Even after the splitting however, the direct evaluation of our determinants still requires $\mathcal{O}(N^3)$ operations, albeit with a pre-factor $1/8$ compared to the original full determinant. It turns out that we can do better.
 
@@ -172,7 +172,7 @@ Consider the terms of the Slater \emph{matrix}: $D_{ij}(\r)\equiv \phi_j(\r_i)$.
 \begin{align}
 |D|=\sum_{j=1}^N D_{ij}C_{ij},
 \end{align}
-where $C_{ij}$ is the $i,j$ \emph{cofactor} of $D$, i.e.\ the determinant of the sub-matrix with row $i$ and column $j$ removed multiplied by $(-1)^{i+j}$ \cite{lay}\comment{p165}. The determinant of the sub-matrix is called the $i,j$ \emph{minor} of $D$. By using \emph{Cramer's rule}\footnote{Cramer's rule states that for any inertible $n\times n$ matrix $A$ and ${\bf b}\in \mathbb{R}^n$, the unique solution $\x$ of the matrix-vector equation $A\x={\bf b}$ has entries 
+where $C_{ij}$ is the $i,j$ \emph{cofactor} of $D$, i.e.\ the determinant of the sub-matrix with row $i$ and column $j$ removed multiplied by $(-1)^{i+j}$ \cite{lay}\comment{p165}. The determinant of the sub-matrix is called the $i,j$ \emph{minor} of $D$. By using \emph{Cramer's rule}\footnote{Cramer's rule states that for any invertible $n\times n$ matrix $A$ and ${\bf b}\in \mathbb{R}^n$, the unique solution $\x$ of the matrix-vector equation $A\x={\bf b}$ has entries 
 \begin{align}
 x_i=\frac{|A_i({\bf b})|}{|A|}, \ \ \ \text{ where } \ \ i=1,2,\dots,n,
 \end{align}
@@ -187,7 +187,7 @@ The \emph{adjugate} matrix\footnote{Sometimes, rather confusingly, called the \e
 
 As only one electron is moved at each Monte Carlo step, only a single row of the Slater matrix changes at each cycle. Recall that the $i,j$ cofactors are determinants of the sub-matrix resulting from removing column $i$ and row $j$ from $D$. This means that as row $i$ of $D$ is changed, the $i$-th column of the adjugate remains unchanged. In short, $C_{ij}(\r_\text{new})=\text{adj}D_{ij}(\r_\text{old})=C_{ji}(\r_\text{old})$ \cite{hjorth-jensen}\comment{p521}.
 
-By definition, the Slater matrix and it's inverse must satisfy 
+By definition, the Slater matrix and its inverse must satisfy 
 \begin{align}
 \sum_{k=1}^N D_{ik}D^{-1}_{kj}=\delta_{ij},
 \end{align}
@@ -220,7 +220,7 @@ void SlaterWithJastrow::computeSlaterRatio() {
     m_Rsd = sum;
 }
 \end{lstlisting}
-The \inlinecc{m_changedElectron} is communicated to the \inlinecc{WaveFunction} by the \inlinecc{Metropolis} class as it suggets a step, and \inlinecc{m_spinChanged}\textemdash the spin of the moved electron\textemdash is subsequently found. Depending on this spin projection, we index into either \inlinecc{m_slaterUp} or \inlinecc{m_slaterDown} according to the \emph{spin index} of the moved electron. All electrons have a unique global indentifying index $k$, but they also have a local place in the spin-up (spin-down) determinant: This is what we denote by the spin-index.
+The \inlinecc{m_changedElectron} is communicated to the \inlinecc{WaveFunction} by the \inlinecc{Metropolis} class as it suggets a step, and \inlinecc{m_spinChanged}\textemdash the spin of the moved electron\textemdash is subsequently found. Depending on this spin projection, we index into either \inlinecc{m_slaterUp} or \inlinecc{m_slaterDown} according to the \emph{spin index} of the moved electron. All electrons have a unique global identifying index $k$, but they also have a local place in the spin-up (spin-down) determinant: This is what we denote by the spin-index.
 
 The \inlinecc{m_orbital} variable holds an instance of the class corresponding to the spin-orbitals which populate the Slater determinant. We give an outline of the \inlinecc{Orbital} in section \ref{orbital}.
 
@@ -265,11 +265,11 @@ Substituting finally \eq{VMCI5} into the previous expression for ${\bf x}$ gives
 &= \bigg(\underbrace{A^{-1} - \frac{A^{-1}{\bf u}{\bf v}^TA^{-1}}{1+{\bf v}^TA^{-1}{\bf u}}}_{\displaystyle (A+{\bf u}{\bf v}^T)^{-1}}\bigg){\bf y}. \label{eq:VMCI6}
 \end{align}
 
-In terms of the matrix entires, we have
+In terms of the matrix entries, we have
 \begin{align}
 \left(A + {\bf u}{\bf v}^T\right)^{-1}_{kj}=A^{-1}_{kj}-\frac{A^{-1}_{ki}\left({\bf u}{\bf v}^T\right)_{il}A^{-1}_{lj}}{1+\lambda},
 \end{align}
-where $\lambda\equiv 1+{\bf v}^TA^{-1}{\bf u}$. The index $i$ of the recently displaced electron dictate which row of ${\bf u}{\bf v}^T$ takes non-zero values. Inserting $v_a=\mathit{\Delta}\phi_a(\r_i)$, $A^{-1}_{bc}=D^{-1}_{bc}(\r^\text{old})$, and $u_d=\delta_{id}$, Hammond finds \cite{hammond}\comment{p277}
+where $\lambda\equiv 1+{\bf v}^TA^{-1}{\bf u}$. The index $i$ of the recently displaced electron dictates which row of ${\bf u}{\bf v}^T$ takes non-zero values. Inserting $v_a=\mathit{\Delta}\phi_a(\r_i)$, $A^{-1}_{bc}=D^{-1}_{bc}(\r^\text{old})$, and $u_d=\delta_{id}$, Hammond finds \cite{hammond}\comment{p277}
 \begin{align}
 D_{kj}^{-1}(\r_\text{new}) = \left\{ \mat{lccr}
 {

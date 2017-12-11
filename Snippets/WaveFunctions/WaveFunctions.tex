@@ -469,7 +469,7 @@ Before we go on, we will state some properties of the Gaussians which will be cr
 \begin{align}
 g^\alpha_{ijk}(\r)=g^\alpha_i(x)g^\alpha_j(y)g^\alpha_k(z),
 \end{align}
-where $g_i^\alpha(x)\equiv x^i\mathrm{e}^{-\alpha x^2}$ and similarly for $y$ and $z$ \cite{taylor}\comment{p792}. Please note that this is \emph{not} true for either of the hydrogenic, Slater type, or spherical harmonic Gaussians\footnote{The spherical harmonic Gaussian primitives account for the angular dependency in the wave function by appending to the Gaussian function spherical harmonics $Y^m_l(\theta,\phi)$.}. The \emph{Gaussian components} adhere to the the simple recurrence relation 
+where $g_i^\alpha(x)\equiv x^i\mathrm{e}^{-\alpha x^2}$ and similarly for $y$ and $z$ \cite{taylor}\comment{p792}. Please note that this is \emph{not} true for either of the hydrogenic, Slater type, or spherical harmonic Gaussians\footnote{The spherical harmonic Gaussian primitives account for the angular dependency in the wave function by appending to the Gaussian function spherical harmonics $Y^m_l(\theta,\phi)$.}. The \emph{Gaussian components} adhere to the simple recurrence relation 
 \begin{align}
 xg_i^\alpha(x)=g_{i+1}^\alpha(x), \label{eq:recurrence1}
 \end{align}
@@ -481,7 +481,7 @@ and from this it is immideately clear that differentiation w.r.t.\ $x$ yields \c
 Note that we have briefly re-inserted the $\r_A$ back into the primitive at this point because of the explicit dependence on the nucleonic position. 
 
 \renewcommand{\P}{{\bf P}}
-\subsubsection{Hermite Gaussians}
+\subsubsection{Hermite Gaussians \label{hermitegauss}}
 The Cartesian Gaussians can be written in terms of {\bf Hermite Gaussians}\textemdash products of exponentials and Hermite polynomials\footnote{The Hermite polynomials are a family of orthogonal real-valued polynomials, solutions of the Hermite differential equation \cite{hochstadt}
 \begin{align}
 \pder{^2H_n(x)}{x^2}-\der{H_n(x)}{x}+nH_n(x)=0.
@@ -534,7 +534,7 @@ where $p\equiv\alpha + \beta$, $x_{AB}\equiv A_x-B_x$, $\mu\equiv \alpha \beta /
 
 The product of Cartesian Gaussian primitives is known as an {\bf overlap distribution}, \cite{integrals}\comment{p10}
 \begin{align}
-\Omega_{ij}(x)\equiv g_i^\alpha(x;A_x)g_j^\beta(x;B_x)= K_{AB}x_A^ix_B^j \mathrm{e}^{-px_P^2}.
+\Omega_{ij}(x)\equiv g_i^\alpha(x;A_x)g_j^\beta(x;B_x)= K_{AB}x_A^ix_B^j \mathrm{e}^{-px_P^2}. \label{eq:overlapdistr}
 \end{align}
 These overlap distributions can then be expanded in terms of Hermite Gaussians, greatly simplifying the evaluation of so called \emph{two-center integrals}. We will expand on this when the Hartree-Fock implementation is discussed in section \ref{HFI}.
 

@@ -9,14 +9,14 @@ The code is object oriented and completely general in that it can compute an app
 The code consists of two mostly disjoint parts. The bulk of the program consists of code necessary to solve\textemdash in analytic fashion\textemdash one-, and two-electron integrals in terms of Gaussian orbitals. The second and more succinct part deals with setting up and solving the Roothan-Hall (Pople-Nesbet) equations. 
 
 
-The code base has been rigorously tested for first and second row atoms, with Gaussian orbitals up to and including f type, but expanding to heavier atoms and higher angular momentum basis functions is in principle straightforward. A number of basis sets are available, and adding new ones is made easy by the accompanying python script \inlinecc{basisFileParser.py}. It parses Gaussian basis set files in the Turbomole format, \inlinecc{.tm}, and outputs \CC{}  code ready for use in the Hartree-Fock program \cite{TURBOMOLE}. 
+The code base has been rigorously tested for first and second row atoms, with Gaussian orbitals up to and including \emph{f} type, but expanding to heavier atoms and higher angular momentum basis functions is in principle straightforward. A number of basis sets are available, and adding new ones is made easy by the accompanying python script \inlinecc{basisFileParser.py}. It parses Gaussian basis set files in the Turbomole format, \inlinecc{.tm}, and outputs \CC{}  code ready for use in the Hartree-Fock program \cite{TURBOMOLE}. 
 
 After calculating the energy, the \emph{Hartree-Fock basis} may be output to file for use later in e.g.\ the VMC code (see \ref{VMCimplementation}). 
 
 Before going on we present an overview of the basis sets employed. We then start off by describing simple usage of the code with some examples and then go on to expand on the implementation of some key classes and methods.
 
 \section{Basis sets used \label{basissetsused}}
-In the present work we employ a range of different basis sets for the first and second row elements. The minimal \inlinecc{3-21G} as well as the \inlinecc{3-21++G} set which adds diffuse functions to hydrogen are taken from Binkley and co-workers \cite{binkley1980}. The \inlinecc{6-31G} sets\textemdash doubling the number of contracted functions for each core electron\textemdash are taken from Hehre and co-workers and Dill and co-workers (for \ce{Li} and \ce{B}) \cite{hehre1972,dill1975}. Double zeta sets, adding another contracted function for each atomic orbital denoted \inlinecc{6-311G} originate from the work of Krishnan and co-workers \cite{krishnan1980}. The corresponding sets with added diffuse and polarization functions \inlinecc{G-311++G**}, aswell as the \inlinecc{G-311++G(2d,2p)} basis set which adds p and d polarization functions to \ce{H} is also taken from their work. Lastly, the correlation-consistent polarized triple zeta \inlinecc{cc-pVTZ} and the corresponding \emph{augmented} \inlinecc{aug-cc-pVQZ} quintuple zeta with added diffuse functions are taken from Dunning and co-workers \cite{dunning1989}.
+In the present work we employ a range of different basis sets for the first and second row elements. The minimal \inlinecc{3-21G} as well as the \inlinecc{3-21++G} set which adds diffuse functions to hydrogen are taken from Binkley and co-workers \cite{binkley1980}. The \inlinecc{6-31G} sets\textemdash doubling the number of contracted functions for each core electron\textemdash are taken from Hehre and co-workers and Dill and co-workers (for \ce{Li} and \ce{B}) \cite{hehre1972,dill1975}. Double zeta sets, adding another contracted function for each atomic orbital denoted \inlinecc{6-311G} originate from the work of Krishnan and co-workers \cite{krishnan1980}. The corresponding sets with added diffuse and polarization functions \inlinecc{G-311++G**}, aswell as the \inlinecc{G-311++G(2d,2p)} basis set which adds \emph{p} and \emph{d} polarization functions to \ce{H} is also taken from their work. Lastly, the correlation-consistent polarized triple zeta \inlinecc{cc-pVTZ} and the corresponding \emph{augmented} \inlinecc{aug-cc-pVQZ} quintuple zeta with added diffuse functions are taken from Dunning and co-workers \cite{dunning1989}.
 
 \section{Introductory examples \label{hfexample}}
 The simplest usage of the HF code requires four lines of \CC{}  code:
@@ -26,7 +26,7 @@ He.addAtom(new Helium("3-21G", vec{0,0,0}));
 RestrictedHartreeFock solver(&He);
 solver.solve();
 \end{lstlisting}
-First the \inlinecc{System} instance is created. Secondly, a \ce{He} atom is added at the origin with a minimal \inlinecc{3-21G} basis set. The vector \inlinecc{vec} parameter to the \inlinecc{System::addAtom} method determines the position of the atom. Subsequently, an \inlinecc{RestrictedHartreeFock} solver is setup and the last line solves the Roothan-Hall equations using default parameters of tollerance $\varepsilon=10^{-8}E_h$, and a maximum of $50$ iterations. Running the above code gives on the fly output shown in \fig{hfexamplefig}, and the final HF energy $E=-2.8356E_h$.
+First the \inlinecc{System} instance is created. Secondly, a \ce{He} atom is added at the origin with a minimal \inlinecc{3-21G} basis set. The vector \inlinecc{vec} parameter to the \inlinecc{System::addAtom} method determines the position of the atom. Subsequently, an \inlinecc{RestrictedHartreeFock} solver is setup and the last line solves the Roothan-Hall equations using default parameters of tolerance $\varepsilon=10^{-8}E_h$, and a maximum of $50$ iterations. Running the above code gives on the fly output shown in \fig{hfexamplefig}, and the final HF energy $E=-2.8356E_h$.
 
 More complicated molecular structures can easily be set up by simply adding more atoms. The following code sets up an un-restricted Hartree-Fock calculations of the ground state \ce{H2O} molecule
 \begin{lstlisting}[language={[std]c++}]
@@ -90,14 +90,14 @@ with the output $E=-76.0529E_h$. Using the diffuse-polarized \inlinecc{6-311++G*
 \caption{Output of the first example program shown at the start of section \ref{hfexample}. The right hand side column labeled \inlinecc{convergence} shows the average of absolute difference between eigenvalues of the Fock matrix between iterations. This is the test used to check for convergence, with $\varepsilon$ being the \inlinecc{convergence criterion} given as input to \inlinecc{RestrictedHartreeFock::solve}. If no $\varepsilon$ is provided, a default value of $10^{-8}$ is used. \label{fig:hfexamplefig}}
 \end{figure}
 
-\section{Overview of select classes}
+\section{Overview of selected classes}
 \subsection{Overlap and kinetic integral evaluation}
-The majority of the code base and the majority of the run-time of the Hartree-Fock program is taken up by integral evaluation code. The dominating factor w.r.t.\ computational complexity is the evaluation of the four-index $J$ and $K$ integrals. We will begin our discussion of integral evaluation with the \inlinecc{OverlapIntegrator} class.
+The majority of the code base and the majority of the run-time of the Hartree-Fock program is taken up by the integral evaluation code. The dominating factor w.r.t.\ computational complexity is the evaluation of the four-index $J$ and $K$ integrals. We will begin our discussion of integral evaluation with the \inlinecc{OverlapIntegrator} class.
 
 \subsubsection{Overlap integrals}
-In order to perform the overlap integrals we will employ the scheme of McMurchie and Davidson, hinted at in section \ref{section:gaussprod} \cite{mcmurchie}. Exploiting the properties of the Hermite Gaussians, we can integrate Gaussian products with relative ease. 
+In order to perform the overlap integrals we will employ the scheme of McMurchie and Davidson, hinted at in section \ref{section:gaussprod} \cite{mcmurchie}. Exploiting the properties of the Hermite Gaussians (c.f.\ section \ref{hermitegauss}), we can integrate Gaussian products with relative ease. 
 
-Recall the notation of the overlap distributions,
+Recall the notation of the overlap distributions of \eq{overlapdistr},
 \begin{align}
 \Omega_{ij}(x)=g_i^\alpha(x;A_x)g_j^\beta(x;B_x)=K_{AB}x_A^ix_B^j\mathrm{e}^{-p x_p^2},
 \end{align}
@@ -246,7 +246,7 @@ with
 T_{ij} = 4\beta^2 S_{i,j+2} - 2\beta (2j+1)S_{ij}+ j(j-1)S_{i,j-2}.
 \end{align}
 
-The implementation of the \inlinecc{KineticIntegrator} class exploits the fact that if $E^{ij}_t$ is known, then any overlap integral with $i'<i$ and/or $j'<j$ is already computed\textemdash simply extract the component of $E$ with the correspondingly lower indices. Since building $E^{ij}_t$ neccessitate the evaluation of all $E^{i'j'}_t$ with $i'<i$ and $j'<j$, these are guaranteed to already be known once the overlap $S_{i,j+2}$ is computed. 
+The implementation of the \inlinecc{KineticIntegrator} class exploits the fact that if $E^{ij}_t$ is known, then any overlap integral with $i'<i$ and/or $j'<j$ is already computed\textemdash simply extract the component of $E$ with the correspondingly lower indices. Since building $E^{ij}_t$ necessitates the evaluation of all $E^{i'j'}_t$ with $i'<i$ and $j'<j$, these are guaranteed to already be known once the overlap $S_{i,j+2}$ is computed. 
 
 An excerpt of \inlinecc{KineticIntegrator::computeIntegral} is presented in the following. Note that the \inlinecc{KineticIntegrator::computeAdjustedOverlapIntegral} simply extracts the relevant $E_t^{ij}$ indices and computes the corresponding $S_{ij}$ accordingly, without re-computing the Hermite expansion.
 \begin{lstlisting}[language={[std]c++}]
@@ -301,7 +301,7 @@ where $g_I$ and $g_J$ are primitives centered on nuclei $A$ and $B$, respectivel
 \begin{align}
 V_{IJ}=\int\mathrm{d}^3\,\r \frac{\Omega_{IJ}}{r_C}.
 \end{align}
-Unfortunately, these integrals do not factor in Cartesian coordinates, but it turns out we may find a closed form solution in terms of the lower incomplete gamma function. We may rewrite the $1/r_C$ factor in terms of the integral over a Gaussian by employing the identiy \cite{rottmann}\comment{p154}
+Unfortunately, these integrals do not factor in Cartesian coordinates, but it turns out that we may find a closed form solution in terms of the lower incomplete gamma function. We may rewrite the $1/r_C$ factor in terms of the integral over a Gaussian by employing the identiy \cite{rottmann}\comment{p154}
 \begin{align}
 \int_{-\infty}^\infty\mathrm{d}x\,\mathrm{e}^{-\lambda x^2} = \sqrt{\frac{\pi}{\lambda}}. \label{eq:gaussintegral}
 \end{align}
@@ -350,7 +350,7 @@ where the integral representation of the incomplete gamma function can be writte
 \begin{align}
 \Gamma(s,x) = \int_x^\infty \mathrm{d}t\, t^{s-1}\mathrm{e}^{-t} \ \ \text{ and } \ \ \gamma(s,x) = \int_0^x\mathrm{d}t\, t^{s-1}\mathrm{e}^{-t},
 \end{align}
-for the upper ($\Gamma$) and lower ($\gamma$) regions, respectively \cite{gamma,temme}. The gamma function proper is obviously just the sum of the lower and upper regions, $\Gamma(\alpha)=\gamma(\alpha,x)+\Gamma(\alpha,x)$. Integrating $\gamma(s,x)$ by parts yields the realation
+for the upper ($\Gamma$) and lower ($\gamma$) regions, respectively \cite{gamma,temme}. The gamma function proper is obviously just the sum of the lower and upper regions, $\Gamma(\alpha)=\gamma(\alpha,x)+\Gamma(\alpha,x)$. Integrating $\gamma(s,x)$ by parts yields the relation
 \begin{align}
 \gamma(s,x) = \int_0^x\mathrm{d}t\, t^{s-1}\mathrm{e}^{-t} = -\mathrm{e}^{-t}t^{s-1}+\int_0^x\mathrm{d}t\, t^{s-2}\mathrm{e}^{-t},
 \end{align}
@@ -400,7 +400,7 @@ Defining the {\bf Hermite integrals}
 \begin{align}
 R_{tuv}^n(p,R_{PC})\equiv (-2p)^n\pder{^{t+u+v}F_n(pR_{PC}^2)}{P_x^t\partial P_y^u \partial P_z^v},
 \end{align}
-we can rewrite the complete electron-nucleus Coulomb integral in it's final form as \cite{taylor}\comment{p817}
+we can rewrite the complete electron-nucleus Coulomb integral in its final form as \cite{taylor}\comment{p817}
 \begin{align}
 V_{IJ}=\frac{2\pi}{p}\sum_{t=0}^{i+l}\sum_{u=0}^{j+m}\sum_{v=0}^{k+n}E_{t}^{il}E^{jm}_uE^{kn}_vR^0_{tuv}(p,R_{PC}).
 \end{align}
@@ -554,13 +554,13 @@ FC=\bm{\varepsilon}SC, \label{eq:RH}
 where $F$ is the Fock matrix with eigenvalues $\bm{\varepsilon}$, $S$ is the overlap matrix relative to the orbitals, and $C$ the coefficient matrix representing the expansion of the new Hartree-Fock orbitals in the $\{\phi_i\}_i$ basis. The Fock matrix depends crucially on the coefficient matrix, $F=F(C)$, meaning we must solve the non-linear RH equations by employing some linearization scheme. The universally used scheme is the fixed-point iterative scheme referred to as self-consistent field iterations (SCF), wherein an initial guess is chosen for $C$ and the Fock matrix computed. Secondly, the RH equations are solved and a new (hopefully improved) estimate for $C$ is produced. This is then re-inserted into $F(C)$, giving an updated Fock matrix for which the RH equations are solved once again. This is reapeated until convergence is achieved. 
 
 \subsubsection{Diagonalization of the Fock matrix}
-The overlap matrix, $S$, contains the overlap integrals of all combinations of basis functions. If the basis set is orthonormal $S=\mathds{1}$ and we may simply ignore it and solve the Roothan-Hall equations at every iteration like an ordinary eigenvalue equation. However, the contracted Gaussian basis is in general not orthonormal and so we must transform \eq{RH} into an equation we are able to solve using normal linear algebra tools. In theory we could simply compute $S^{-1}$ and apply it to \eq{RH} from the left, leaving us with
+The overlap matrix, $S$, contains the overlap integrals of all combinations of basis functions. If the basis set is orthonormal, $S=\mathds{1}$, we may simply ignore it and solve the Roothan-Hall equations at every iteration like an ordinary eigenvalue equation. However, the contracted Gaussian basis is in general not orthonormal and so we must transform \eq{RH} into an equation we are able to solve using normal linear algebra tools. In theory we could simply compute $S^{-1}$ and apply it to \eq{RH} from the left, leaving us with
 \begin{align}
 S^{-1}F{\bf C}_k=\varepsilon_k S^{-1}S{\bf C}_k =\varepsilon_k C_k,
 \end{align}
 for each eigenvector indexed in $k$. However, $S^{-1}F$ is in general not Hermitian leading to potential difficulties. Instead, we will take a different route.
 
-Instead we will apply a coordinate transformation which renders $S$ an identity matrix, solve the equation, and then transform back to the original basis. Applying a basis change to a matrix constitutes a similarity transform, thus we require a matrix $V$ such that \cite{lay}
+We will apply a coordinate transformation which renders $S$ an identity matrix, solve the equation, and then transform back to the original basis. Applying a basis change to a matrix constitutes a similarity transform, thus we require a matrix $V$ such that \cite{lay}
 \begin{align}
 V^\dagger S V = \mathds{1}.
 \end{align}
@@ -577,7 +577,7 @@ This is called a whitening transform. Note carefully that $\varepsilon$ is just 
 F'{\bf C}_k' = \varepsilon_k {\bf C}_k'.
 \end{align}
 
-This leaves us still the problem of finding a suitable matrix $V$. It turns out that $S$ is guaranteed to be positive definite, meaning the set of matrices for which $V^\dagger S V=\mathds{1}$ holds is infinite. We will choose $V=Us^{-\nicefrac{1}{2}}$, with $U$ being the matrix of eigenvectors of $S$ (the columns) and $s$ holds the inverse square root of the eigenvalues on the diagonal \cite{thijssen}\comment{p37}. We note that 
+This leaves us still with the problem of finding a suitable matrix $V$. It turns out that $S$ is guaranteed to be positive definite, meaning the set of matrices for which $V^\dagger S V=\mathds{1}$ holds is infinite. We will choose $V=Us^{-\nicefrac{1}{2}}$, with $U$ being the matrix of eigenvectors of $S$ (the columns) and $s$ holds the inverse square root of the eigenvalues on the diagonal \cite{thijssen}\comment{p37}. We note that 
 \begin{align}
 V^\dagger S V &= (Us^{-\nicefrac{1}{2}})^\dagger S Us^{-\nicefrac{1}{2}} \nn\\
 &= (s^{-\nicefrac{1}{2}})^\dagger \underbrace{U^\dagger S U}_{s} s^{-\nicefrac{1}{2}} \nn\\

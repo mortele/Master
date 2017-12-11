@@ -11,7 +11,7 @@ The Hartree-Fock (HF) method is one of the most important models in all of quant
 
 The Hartree-Fock method is a \emph{mean field} method in that it treats the inter electron interaction only in an averaged way \cite{kvaal}\comment{p44}. Any single electron does not feel the effect of every other localized electron, but rather just an averaged potential from all other remaining ones. This is sometimes also called an \emph{independent-particle} model. The Hartree-Fock approximation usually \emph{defines} the dynamical coulomb correlation between electrons by saying the difference between the Hartree-Fock energy and the exact quantum mechanical energy is the correlation energy. Hartree-Fock nevertheless deals exactly with the electron correlations arising from the anti-symmetry condition of Pauli, namely the exchange correlations. 
 
-In essence, the Hartree-Fock procedure finds the most energetically favorable electronic configuration under the assumption that the full ground state wave function consists of a \emph{single} Slater determinant populated by orthonormal spin-orbitals. In older litterature, the HF method is often called \emph{self-consitent field} method due to the way the resulting equations are usually solved \cite{levine}\comment{p292}. However, the self-consistent field iterations are not the \emph{only} way to solve the HF equations, and thus not an essential part of the method itself \cite{helgaker}\comment{433}.
+In essence, the Hartree-Fock procedure finds the most energetically favorable electronic configuration under the assumption that the full ground state wave function consists of a \emph{single} Slater determinant populated by orthonormal spin-orbitals. In older litterature, the HF method is often called \emph{self-consistent field} method due to the way the resulting equations are usually solved \cite{levine}\comment{p292}. However, the self-consistent field iterations are not the \emph{only} way to solve the HF equations, and thus not an essential part of the method itself \cite{helgaker}\comment{433}.
 
 In the following we will apply the variational principle to the single Slater determinant ansatz wave function for the interacting system of $N$ electrons. We will then expand the solution in a given basis and derive the Roothan-Hall and Pople-Nesbet equations, for the closed-shell and open-shell systems respectively. 
 
@@ -117,7 +117,7 @@ with $N(N-1)$ total such terms giving finally \cite{kvaal}
 \langle \Psi|\hat W|\Psi\rangle = \sum_{i=1}^N\sum_{j=i+1}^N  \int\mathrm{d}^4\r_1\mathrm{d}^4\r_2\, \phi^*_i(\r_1)\phi_j^*(\r_2)\hat w \Big[\phi_i(\r_1)\phi_j(\r_2) - \phi_j(\r_1)\phi_i(\r_2)\Big].
 \end{align}
 
-\subsubsection{Total expression for the Hatree-Fock energy}
+\subsubsection{Total expression for the Hartree-Fock energy}
 Combining the one-, and two-body expectation values, we find
 \begin{align}
 \langle \Psi|\hat H|\Psi\rangle &= \left\langle \Psi\Bigg| \sum_{i=1}^N \left[-\frac{\nabla^2_i}{2} - \sum_{A=1}^M \frac{Z_A}{|\r_A-\r_i|} +  \sum_{j=i+1}^N \frac{1}{|\r_i-\r_j|} \right] \Bigg|\Psi\right\rangle \nn\\
@@ -316,7 +316,7 @@ The difference between the \emph{true} (non-relativistic) ground state energy an
 \begin{align}
 E_\text{corr}=E_\text{exact}-E_\text{HF (limit)}.
 \end{align}
-Calling HF an un-correlated method altogether is a bit of a misnomer, as electron-electron correlation is taken into account albeit in the mean-field sense. Also worth noting is that HF fully accounts for the exchange correlation of same-spin electrons, c.f.\ section {hfexchange}. However, so-called \emph{dynamic correlation} effects are  completely neglected at the Hartree-Fock level of theory. Dynamic correlation refers the instantaneous Coulomb repulsion of two electrons moving around in space.
+Calling HF an un-correlated method altogether is a bit of a misnomer, as electron-electron correlations are taken into account albeit in the mean-field sense. Also worth noting is that HF fully accounts for the exchange correlation of same-spin electrons, c.f.\ section {hfexchange}. However, so-called \emph{dynamic correlation} effects are  completely neglected at the Hartree-Fock level of theory. Dynamic correlation refers the instantaneous Coulomb repulsion of two electrons moving around in space.
 
 A separate correlation effect which HF fails to take into account is what is known as \emph{static correlation}. A single Slater determinant may be fundamentally unable to accurately represent the true ground state wave function of any given quantum system. In some systems, only a linear combination of (nearly-)degenerate Slater determinants may describe the state well. This may be important in certain molecular systems, for which the single-Slater HF approximation is qualitatively wrong. 
 
