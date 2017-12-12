@@ -1,0 +1,54 @@
+\documentclass[../../master.tex]{subfiles}
+
+\begin{document}
+\chapter{Full framework results}
+It is now time to put all the pieces together, and demonstrate the full workflow of the multiscale modelling framework. In the following, molecular dynamics simulations will be performed using the LAMMPS\footnote{LAMMPS is an acronym for \emph{Large-scale Atomic/Molecular Massively Parallel Simulator}, the name of an open source massively parallel molecular dynamics code base written in \CC{}. It is available for download at \url{http://lammps.sandia.gov/index.html}.} program \cite{plimpton1995fast}. Neither MD simulations, nor the usage of LAMMPS will be discussed in any significant detail in the present work. For information on the former, the book by Frenkel and Smit provides an excellent reference \cite{frenkel}. For the latter, the Masters theses of Stende and Treider provide (in some detail) an accessible introduction to the usage of the LAMMPS code \cite{stende,treider}. 
+
+It is natural to first test whether or not the ANN potential trained according to some classical effective potential parametization can reproduce the results of said potential. For this we will use one of the simplest possible MD potentials, namely 
+
+
+\begin{SCfigure}
+\centering
+\includegraphics[width=0.49\textwidth,trim=0 200 0 200, clip]{longtrainpair.pdf}
+\caption{The pair correlation function, $g(r)$, calculated during a MD simulation with LAMMPS. A total of 4\,000 atoms are simulated, using a standard shifted Lennard-Jones potential with cutoff at $2.5\sigma$, and an ANN potential trained on the LJ data.\label{fig:ljpair}}
+\end{SCfigure}
+
+
+\begin{figure}
+\centering
+\includegraphics[width=0.49\textwidth,trim=0 200 0 200, clip]{longtrain1.pdf}
+\includegraphics[width=0.49\textwidth,trim=0 200 0 200, clip]{longtrain2.pdf}
+\includegraphics[width=0.49\textwidth,trim=0 200 0 200, clip]{longtrain3.pdf}
+\includegraphics[width=0.49\textwidth,trim=0 200 0 200, clip]{longtrain.pdf}
+%\includegraphics[width=0.49\textwidth,trim=0 200 0 200, clip]{longtrain4.pdf}
+\caption{The ANN output after 80\,000 epochs of training. The training data is a shifted Lennard-Jones potential with cutoff at $2.5\sigma$. The raw network output is shown and compared to the LJ data (top left and top right), and the same comparison is made for the gradient (bottom left and bottom right). We note that the $\nabla V(r)-\nabla \text{NN}(r)$ difference is approximately one to two orders of magnitude larger than the corresponding $V(r)-\text{NN}(r)$ gap.  \label{fig:longtrain}}
+\end{figure}
+
+
+\begin{SCfigure}
+\centering
+\includegraphics[width=0.49\textwidth,trim=0 200 0 200, clip]{longtraincost.pdf}
+\caption{Evolution of the training and validation cost across 80\,000 epochs of training. We note no signs of over-training. The smoothing procedure described in section \ref{abinittrain} is used in order to make clear the behaviour of the cost, $C$, as a function of the epoch number. \label{fig:longtrainmeta}}
+\end{SCfigure}
+\begin{figure}
+\centering
+\includegraphics[width=0.79\textwidth,trim=0 200 0 200, clip]{singlepart.pdf}
+\caption{Example time evolution of the \emph{one-atom energy}, $\varepsilon$. The ANN potential mimics its LJ counterpart perfectly for more than 1\,500 time steps, but eventually the subtle gradient differences push the curves apart. After a significantly longer time, the two curves will appear completely un-correlated due to the amplifying effect of propagating gradient differences.  \label{fig:singlepart}}
+\end{figure}
+
+
+\begin{figure}
+\centering
+\includegraphics[width=0.49\textwidth]{singleovito.png}
+\caption{A snapshot of the atom for which the single particle energy $\varepsilon$ is shown in \fig{singlepart}. Particles are colored according to their distance from the camera.   \label{fig:singleovito}}
+\end{figure}
+
+
+\end{document}
+
+
+% \begin{figure}[p!]
+% \centering
+% \includegraphics[width=12cm]{<fig>.pdf}
+% \caption{\label{fig:1}}
+% \end{figure}

@@ -33,9 +33,9 @@ Throughout this thesis we express all quantities in \emph{Hartree atomic units},
 \section{A (very brief) review of classical mechanics}
 Before venturing into the land of quantum mechanics (QM), it is useful to first review the Hamiltonian formulation of classical mechanics (CM). Classical mechanics deals with the dynamics of macroscopic objects. 
 
-Hamilton's classical mechanics formalism revolves centrally around the Hamiltonian function (hereafter just refered to as \emph{the Hamiltonian}), $\H$. In order to define this function, it is necessary to first choose a set of canonical coordinates, $\q_i$ and $\p_i$. Generalized coordinate and momenta pairs are said to be canonical if they satisfy the Poisson bracket\footnote{The Poisson bracket of two functions, $f$ and $g$, w.r.t. the canonical coordinate pair $p$ and $q$, is defined as \cite{goldstein}\comment{p388}$$\{f,g\}=\pder{f}{q}\pder{g}{p}-\pder{f}{p}\pder{g}{q}.$$} $\{q_i,p_j\}=\delta_{ij}$. Examples of such canonical pairs include e.g. the cartesian position and the respective linear momentum, or the polar position and the angular momentum.
+Hamilton's classical mechanics formalism revolves centrally around the Hamiltonian function (hereafter just refered to as \emph{the Hamiltonian}), $\H$. In order to define this function, it is necessary to first choose a set of canonical coordinates, $\q_i$ and their conjugate momenta $\p_i$. Generalized coordinate and momenta pairs are said to be canonical if they satisfy the Poisson bracket\footnote{The Poisson bracket of two functions, $f$ and $g$, w.r.t. the canonical coordinate pair $p$ and $q$, is defined as \cite{goldstein}\comment{p388}$$\{f,g\}=\pder{f}{q}\pder{g}{p}-\pder{f}{p}\pder{g}{q}.$$} $\{q_i,p_j\}=\delta_{ij}$. Examples of such canonical pairs include e.g. the cartesian position and the respective linear momentum, or the polar position and the angular momentum.
 
-The \emph{phase space} of a system is the space of all possible states of the system. A system of $n$ degrees of freedom will have a cooresponding $2n$ dimensional phase space.\footnote{Although we are free to choose a set of generalized coordinates larger than the number of degrees of freedom, such a set will always be reducible to a smaller set of \emph{strictly independent} coordinates with size exactly equal to the number of degrees of freedom. Consider e.g. a point particle constrained to move along the suface of a unit sphere. We may use the three cartesian coordinates to describe the motion, however the system only has two degrees of freedom due to the constraint $x^2+y^2+z^2=r^2$, so the three are not \emph{independent}. It will thus inevitably be more convenient to use e.g. the polar and azimuthal angles, $\theta$ and $\phi$.} A point in phase space, $\xi=(\q,\p)$, specify the generalized coordinates and their respective conjugate momenta and is sufficient to uniquely determine the state of the system as a whole.
+The \emph{phase space} of a system is the space of all possible states of the system. A system of $n$ degrees of freedom will have a cooresponding $2n$ dimensional phase space.\footnote{Although we are free to choose a set of generalized coordinates larger than the number of degrees of freedom, such a set will always be reducible to a smaller set of \emph{strictly independent} coordinates with size exactly equal to the number of degrees of freedom. Consider e.g. a point particle constrained to move along the suface of a unit sphere. We may use the three cartesian coordinates to describe the motion, however the system only has two degrees of freedom due to the constraint $x^2+y^2+z^2=r^2$, so the three are not \emph{independent}. It will thus inevitably be more convenient to use e.g. the polar and azimuthal angles, $\theta$ and $\phi$.} A point in phase space, $\xi=(\q,\p)$, specifies the generalized coordinates and their respective conjugate momenta and is sufficient to uniquely determine the state of the system as a whole.
 
 Together with a choice of canonical coordinates and the resulting phase space, the Hamiltonian encodes all information about a classical dynamical system. From the Hamiltonian, we can find the equations of motion in terms of the chosen coordinates by applying the Hamilton equations,
 \begin{align}
@@ -46,7 +46,7 @@ We may also state Hamilton's equations more concisely in terms of the Poisson br
 \der{\p_i}{t} = \left\{\p_i, \H\right\}  \ \ \ \text{and} \ \ \ \der{\q_i}{t} = \left\{\q_i, \H\right\}. \label{eq:QM2}
 \end{align}
 
-It is useful to note that we may interpret the Hamiltonian as \emph{the total energy of the system}, if and only if the generalized coordinates have no explicit time dependence and the forces acting on it are derivable from a conservative potential (i.e. the work done by the force(s) are independent of the path taken) \cite{goldstein}\comment{p339}. 
+It is useful to note that we may interpret the Hamiltonian as \emph{the total energy of the system}, if and only if the generalized coordinates have no explicit time \cite{goldstein}\comment{p339}. 
 
 An important (to us at least) special case of classical Hamiltonian dymanics is the system consisting of $N$ identical particles of equal mass $m$, subject to inter-particle forces stemming from a \emph{central} potential $w(q_{ij})$ with $q_{ij}=|\q_i-\q_j|$, and moving in an external potetial $v(\r)$. We may choose generalized coordinates with no explicit time dependence, and this allows us to identify the Hamiltonian as the total energy of the system. Following \cite{kvaal}, we find that $\H=T+V+W$, with $T$, $V$, and $W$, denoting the kinetic, the potential, and the interaction energy respectively. We may write this out as
 \begin{align}
@@ -61,7 +61,7 @@ Under canonical quantization, the state of a system is no longer described by a 
 
 Abstract vectors in our Hilbert spaces are denoted using Dirac's bra-ket notation. The state vector $|\psi\rangle$ is a member of $\mathcal{L}^2$, while the corresponding Hermitian conjugate, $|\psi\rangle^\dagger= \langle \psi|$ is a member of the $\mathcal{L}^2$ dual space. In general, the dual of the Hilbert space $\mathcal{H}$ is a Banach space and the bra corresponding to ket $|\psi\rangle$ is a linear functional, $\langle \cdot|:\mathcal{H}\rightarrow \C$. Luckily, $\mathcal{L}^2$ is it's own dual space, and this is usually stated as the combination $\langle \psi|\phi\rangle$ meaning the inner product between the two abstract vectors $|\psi\rangle$ and $|\phi\rangle$. Since the $\mathcal{L}^2$ inner product is the familiar integral over space, we have $\langle \psi | \phi \rangle =\int_\mathbb{R} \psi(x)^\dagger \phi(x)\dx$. 
 
-In a finite dimensional space, we may employ an orthonormal basis and express the general vectors in terms of this basis. We can always represent the basis vectors as ordinary $\mathbb{R}^n$ column vectors\footnote{Since the mapping $f:\mathcal{H}\rightarrow \mathbb{R}^n$ defined by $f(|\phi\rangle)=f(c_1|v_1\rangle+c_2|v_2\rangle+\dots+c_n|v_n\rangle) = (c_1,c_2,\dots,c_n)^T$ (with the set $\{|v_i\rangle\}_{i=1}^n$ being a basis for $\mathcal{H}$) is a linear, injective map \emph{onto} $\R^n$ and thus define an isomorphism between $\mathcal{H}$ and $\mathbb{R}^n$.}, $|e_1\rangle=(1,0,\dots,0)^T$, $|e_2\rangle=(0,1,0,\dots,0)^T$, $\dots$. In this case, bra-vectors are simply row vectors with the bra-ket composition understood to be matrix multiplication. It is important to note that \emph{any} vector in such a space can be represented in terms of this basis, $|\psi\rangle = \sum_{i=1}^n c_i |e_1\rangle$ and employing this we may compute any inner product $\langle \psi | \phi\rangle$ as a series of matrix multiplications of the unit colum/row vectors.
+In a finite dimensional Hilbert space, we may employ an orthonormal basis and express the general vectors in terms of this basis. We can always represent the basis vectors as ordinary $\mathbb{R}^n$ column vectors\footnote{Since the mapping $f:\mathcal{H}\rightarrow \mathbb{R}^n$ defined by $f(|\phi\rangle)=f(c_1|v_1\rangle+c_2|v_2\rangle+\dots+c_n|v_n\rangle) = (c_1,c_2,\dots,c_n)^T$ (with the set $\{|v_i\rangle\}_{i=1}^n$ being a basis for $\mathcal{H}$) is a linear, injective map \emph{onto} $\R^n$ and thus define an isomorphism between $\mathcal{H}$ and $\mathbb{R}^n$.}, $|e_1\rangle=(1,0,\dots,0)^T$, $|e_2\rangle=(0,1,0,\dots,0)^T$, $\dots$. In this case, bra-vectors are simply row vectors with the bra-ket composition understood to be matrix multiplication. It is important to note that \emph{any} vector in such a space can be represented in terms of this basis, $|\psi\rangle = \sum_{i=1}^n c_i |e_1\rangle$ and employing this we may compute any inner product $\langle \psi | \phi\rangle$ as a series of matrix multiplications of the unit colum/row vectors.
 
 When we are not fortunate enough to be able to work in a finite dimensional subspace of $\mathcal{L}^2$, we will assume that the infinite space is \emph{separable}. This means there exists a countably infinite set $D=\{|e_i\rangle\}_{i=1}^\infty$ of orthonormal functions which form a basis for $\mathcal{H}$ \cite{fys4110}\comment{p9}. In more mathematical terms, we say that $D$ is a countable \emph{dense} subset of $\mathcal H$, the closure of which span $\mathcal{H}$. The existence of such a set is (perhaps anti-intuitively)  not at all obvious. Although we are guaranteed that \emph{any} Hilbert space (not neccessarily finite dimensional) contains at least one orthonormal sequence, so we can write for any $|\psi\rangle \in \mathcal H$: $|\psi\rangle = \sum_{i=1}^\infty \langle \psi|e_i\rangle |e_i\rangle$. However, we are in no way guaranteed that this converges in $\mathcal{H}$ and if it does, we are in no way guaranteed that it converges to $|\psi\rangle\in \mathcal H$ \cite{rynne}\comment{p73}. As it turns out, the assumption that $\mathcal H$ be separable is exactly the necessary and sufficient condition for this sum to behave like we are used to in the finite dimensional case. Perhaps the most important consequence of separability is that we can \emph{realize unity} in terms of this basis, that is the following equation holds \cite{hassani}\comment{p148}$$\sum_i |e_i\rangle \langle e_i|=\mathds{1}.$$ This is sometimes called the \emph{Parseval relation} \cite{rynne}\comment{p81}.
 
@@ -93,7 +93,7 @@ Taking the expectation value (relative to some quantum state vector) of the Heis
 As usual, we will denote by $\langle \cdot| \cdot\rangle$ the integral $\mathcal{L}^2$ inner product, while $\langle \cdot \rangle=\langle \psi | \cdot | \psi\rangle$ will denote the expectation value. 
 
 \section{Schrödinger picture}
-The straight forward application of canonical quantization, starting from Hamiltonian classical mechanics, landed us in the Heisenberg picture of quantum mechanics. This is the formulation of quantum theory in which the operators carry the time dependence, with state vectors being constant in time with the equation governing the evolution being the Heisenberg equation, \eq{QM3}. This is the quantum mechanics formalism that behaves the most like classical mechanics does; classically, the observables themselves, $q$ and $p$ (and derived quantities), evolve in time (the phase space point moves along a trajectory according to the Hamilton equations of motion).
+The straightforward application of canonical quantization, starting from Hamiltonian classical mechanics, landed us in the Heisenberg picture of quantum mechanics. This is the formulation of quantum theory in which the operators carry the time dependence, with state vectors being constant in time with the equation governing the evolution being the Heisenberg equation, \eq{QM3}. This is the quantum mechanics formalism that behaves the most like classical mechanics does; classically, the observables themselves, $q$ and $p$ (and derived quantities), evolve in time (the phase space point moves along a trajectory according to the Hamilton equations of motion).
 
 But there is another, more familiar, formulation of quantum mechanics in which the operators are constant in time but the state vectors carry the time dependence. This is called the Schrödinger picture, with the corresponding equation of motion being the \emph{Schrödinger equation}. 
 
@@ -132,7 +132,7 @@ It is a central postulate of quantum mechanics that any observable is associated
 \begin{align}
 \sum_i |O_i\rangle\langle O_i| = \mathds{1}. \label{eq:QM8}
 \end{align}
-Let us now consider the energy, with corresponding Hermitian operator $\hat H$. The spectrum, the energy-eigenstates, are labeled by $|E_i\rangle$. Inserting the unity of \eq{QM8} realized in terms of the energy eigen-states on both sides of the exponential expression for $\hat{\mathcal{U}}(t,t_0)$ yields 
+Let us now consider the energy, with corresponding Hermitian operator $\hat H$. The spectrum, the energyeigenstates, are labeled by $|E_i\rangle$. Inserting the unity of \eq{QM8} realized in terms of the energy eigenstates on both sides of the exponential expression for $\hat{\mathcal{U}}(t,t_0)$ yields 
 \begin{align}
 e^{-it\hat H/\hbar} &= \sum_i \sum_j |E_i\rangle \langle E_i| e^{-it\hat H/\hbar} |E_j\rangle \langle E_j| \nn\\
 %
@@ -151,12 +151,12 @@ This shows that if we can somehow find the energy-eigenstates and expand our wav
 \begin{align}
 \Psi(\R;t) &= \hat{\mathcal{U}}(t,t_0)\Psi(\R) = e^{-it\hat H/\hbar} \Psi(\R) \nn\\
 %
-&= \sum_i | E_i\rangle e^{-it E_i /\hbar} \langle E_i|\left(\sum_j|E_j\rangle\langle E_j|\Psi\rangle\right) \nn\\
+&= \langle \R|\sum_i | E_i\rangle e^{-it E_i /\hbar} \langle E_i|\left(\sum_j|E_j\rangle\langle E_j|\Psi\rangle\right) \nn\\
 %
-&= \sum_i \sum_j| E_i\rangle e^{-it E_i /\hbar} \underbrace{\langle E_i|E_j\rangle}_{\delta_{ij}}\langle E_j|\Psi\rangle = \sum_i |E_i\rangle e^{-it E_i /\hbar} \langle E_i|\Psi\rangle.
+&= \sum_i \sum_j| \langle \R|E_i\rangle e^{-it E_i /\hbar} \underbrace{\langle E_i|E_j\rangle}_{\delta_{ij}}\langle E_j|\Psi\rangle = \sum_i \langle \R||E_i\rangle e^{-it E_i /\hbar} \langle E_i|\Psi\rangle.
 \end{align}
 
-As illustrated above, the problem of computing the time evolution of a state when the eigen-states of the Hamiltonian are known consists of calculating a series of integrals ($\langle E_i|\Psi\rangle$). For us, however, finding the eigen-states and the corresponding eigenvalues will be the fundamental task. The governing equation is simply the eigenvalue equation 
+As illustrated above, the problem of computing the time evolution of a state when the eigenstates of the Hamiltonian are known consists of calculating a series of integrals ($\langle E_i|\Psi\rangle$). For us, however, finding the eigenstates and the corresponding eigenvalues will be the fundamental task. The governing equation is simply the eigenvalue equation 
 \begin{align}
 \hat H |\Psi\rangle &= E |\Psi\rangle, \label{eq:TISE}
 \end{align}
@@ -197,11 +197,11 @@ A general assumption is that the surrounding system is \emph{large} enough to be
 \section{The quantum Hamiltonian}
 Since the Hamiltonian is the fundamental quantity which governs the dynamics of any quantum mechanical system, the natural question is now: What does it look like? In the simplest possible case, a free particle of mass $m$ constrained to move in one spatial dimension, it takes the form 
 \begin{align}
-\hat H_\text{free} &= -\frac{\hbar^2}{2m}\pder{}{x},
+\hat H_\text{free} &= -\frac{\hbar^2}{2m}\pder{^2}{x^2},
 \end{align}
 after a straight forward to application of the operator promotion scheme for $p\rightarrow \hat p=-i\hbar(\partial /\partial x)$. For a particle of mass $m$ moving in a position dependent potential $V(x)$, the Hamiltonian takes the form 
 \begin{align}
-\hat H = -\frac{\hbar^2}{2m}\pder{}{x} + V(x).
+\hat H = -\frac{\hbar^2}{2m}\pder{^2}{x^2} + V(x).
 \end{align}
 
 In the present work, we will focus on systems of interacting electrons in the presence of one or more positively charged nuclei. Under first quantization, the classical Hamiltonian of $N$ particles of mass $m_e$ moving in an external potential  changes from that shown in \eq{QM4}. The total kinetic energy of all $N$ electrons with masses $m_e$ becomes
@@ -240,7 +240,7 @@ Evidently, the first order relativistic correction to the Hamiltonian is on the 
 
 We may also consider the charged nuclei moving (in the frame of refence of an electron) setting up a magnetic field ${\bf B}$. The energy involved in the interaction between this magnetic field and the dipole moment of the electron, ${\bf \mu}_e$, is $\hat H_\text{spin-orbit}={\bf \mu}_e\cdot {\bf B}$. This is called spin-orbit coupling. The electron magnetic dipole moment has the magnitude 
 \begin{align}
-{\bf \mu}_e=-\frac{e}{m_e}{\bf S},
+{\bf \mu}_e=-\frac{e}{m_e}{|\bf S|},
 \end{align}
 with ${\bf S}$ being the electron's spin angular momentum. The magnetic field strenght set up by the (apparen't) motion of the nucleus (relative to the electron) is
 \begin{align}
@@ -264,7 +264,7 @@ Furthermore we may take into account the Lamb shift, that is the splitting of 2s
 \end{align}
 with $\alpha=k_ee^2/\hbar c\simeq 1/137$ denoting the \emph{fine structure constant}.
 
-Finally, let us consider the interaction between the electrons and the magnetic dipoles of the protons. The proton has a magnetic dipole of magnitude ${\bf \mu}_p = (g_pe/2m_p){\bf S}_p$ and sets up the magnetic field (according to classical electrodynamics) \cite{griffiths}\comment{p283}
+Finally, let us consider the interaction between the electrons and the magnetic dipoles of the protons. The proton has a magnetic dipole of magnitude ${\bf \mu}_p = (g_pe/2m_p)|{\bf S}_p|$ and sets up the magnetic field (according to classical electrodynamics) \cite{griffiths}\comment{p283}
 \begin{align}
 {\bf B}&= \frac{k_e\mu_0}{r^3}\left[ 3({\bf \mu} \cdot \hat r)\hat r-{\bf \mu} \right] + \frac{2\mu_0}{3}{\bf \mu}\delta^3(\r-\r_A),
 \end{align}
@@ -339,7 +339,7 @@ If we are able to somehow find a solution to the electronic Schrödinger equatio
 &= -\sum_{A=1}^M \frac{\hbar^2}{2m_A}\nabla^2_A  + \sum_{A=1}^M\sum_{B=A+1}^M \frac{k_ee^2Z_AZ_B}{|\r_A-\r_B|} + E_\text{electronic}(\R_A).
 \end{align}
 
-The key insight to glean from this is that the electronic energy acts as an effective potential for the nucleonic motion: in the words of Szabo \& Ostlund "the nuclei in the Born-Oppenheimer approximation move on the potential energy surface obtained by solving the electronic problem" \cite{szabo,weinberg}\comment{p44}. This lies at the heart of, and forms the foundation for, most of quantum chemistry. Note carefully that all we need to find is the energy, in principle we dont need to concern ourselves with the elctronic wave function. All molecular dynamics (disregarding vibration and rotation) emerge effectively from $E_\text{electronic}(\R_A)$.
+The key insight to glean from this is that the electronic energy acts as an effective potential for the nucleonic motion: in the words of Szabo \& Ostlund "the nuclei in the Born-Oppenheimer approximation move on the potential energy surface obtained by solving the electronic problem" \cite{szabo,weinberg}\comment{p44}. This lies at the heart of, and forms the foundation for, most of quantum chemistry. Note carefully that all we need to find is the energy, in principle we don't need to concern ourselves with the elctronic wave function. All molecular dynamics (disregarding vibration and rotation) emerge effectively from $E_\text{electronic}(\R_A)$.
 
 \subsubsection{Accuracy of the Born-Oppenheimer approximation}
 In somewhat more tehcnical terms, the Born-Oppenheimer approximation can be stated as: Assuming the full molecular Schrödinger equation has a solution on the form $\psi(\R,\R_A)\equiv \Psi(\R)\Phi(\R_A)$, with $\Psi(\R)$ being the solution of the electronic problem, then insertion of this total wave function into the full Hamiltonian yields
@@ -464,10 +464,10 @@ The Slater determinant is normalized whenever the spin-orbitals are normalized. 
 The $\x$ coordinate here denotes the collection of spatial and spin coordinates for each electron, $\x=\{\r,\sigma\}$, and position in the string of orbitals\textemdash $|\psi_1\psi_2\dots\psi_N\rangle$\textemdash determines which electron occupies which state. For example in the state $|\psi_i\psi_j\psi_k\rangle$, spin-orbital $i$ is evaluated at the coordinates of electron one, the $j$ orbital at electron two, and the $k$ orbital at the coordinates of electron three. The last equality follows from the spin-orbitals being orthonormal. In terms of the total Slater, this means\footnote{Using for the moment a permutation operator acting on the orbital indices as opposed to the prior permutations which acted on the electron indices.}
 \begin{align}
 \langle \Psi(\R,\bm\sigma)|\Psi(\R,\bm\sigma)\rangle &= \left\langle \frac{1}{\sqrt{N!}}\sum_{\gamma_1 \in S_N}(-1)^{|\gamma_1|} \hat P_{\gamma_1} \psi_{a_1}\psi_{a_2}\cdots \psi_{a_N} \right| \nn\\
-& \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \  \left.\frac{1}{\sqrt{N!}}\sum_{\gamma_2 \in S_N}(-1)^{|\gamma_2|} \hat P_{\gamma_2} \psi_{b_1}\psi_{b_2}\cdots \psi_{b_N}\right\rangle \nn\\
+& \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \  \left|\frac{1}{\sqrt{N!}}\sum_{\gamma_2 \in S_N}(-1)^{|\gamma_2|} \hat P_{\gamma_2} \psi_{b_1}\psi_{b_2}\cdots \psi_{b_N}\right\rangle \nn\\
 %
 &= \left(\frac{1}{\sqrt{N!}}\right)^2 \left\langle \sum_{\gamma_1 \in S_N}(-1)^{|\gamma_1|} \psi_{\gamma_1(a_1)}\psi_{\gamma_1(a_2)}\cdots \psi_{\gamma_1(a_N)} \right| \nn\\
-& \phantom{\left(\frac{1}{\sqrt{N!}}\right)^2} \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \  \left. \sum_{\gamma_2 \in S_N}(-1)^{|\gamma_2|} \psi_{\gamma_2(b_1)}\psi_{\gamma_2(b_2)}\cdots \psi_{\gamma_2(b_N)} \right\rangle \nn\\
+& \phantom{\left(\frac{1}{\sqrt{N!}}\right)^2} \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \  \left| \sum_{\gamma_2 \in S_N}(-1)^{|\gamma_2|} \psi_{\gamma_2(b_1)}\psi_{\gamma_2(b_2)}\cdots \psi_{\gamma_2(b_N)} \right\rangle \nn\\
 %
 &= \frac{1}{N!} N!=1,
 \end{align}
