@@ -108,8 +108,8 @@ if N < dataSize :
 		# the set at random.
 		toRemove = dataSize - N
 		toRemove = np.random.choice.(	np.arange(dataSize), 
-																	toRemove, 
-																	replace=False)
+										toRemove, 
+										replace=False)
 		xData = np.delete(xData, toRemove)
 \end{lstlisting}
 This ensures we are still training on a representative subset of the full data set. 

@@ -291,7 +291,7 @@ Lastly: Showcasing the full usage of the computational framework developed, we p
 
 \tableofcontents
 
-\chapter{Introduction}
+\chapter{Introduction \label{chap1}}
 After being deveolped and pioneered around the middle of the last century, computer modelling and numerical experiments have become ubiquitous in the natural sciences. The list of areas in which simulations have been used to produce significant new results encompass now pretty much all of them. Today computer simulations play as natural a part of the hard sciences as laboratory experiments and theory. In most cases all three are used in order to glean new scientific insight. Without massive scale computational efforts, the existence of e.g.\ the Higgs boson and gravitational waves would still be undetermined.
 
 %In particular, the advent of computers simulations have had a profound impact on researchers ability to 
@@ -410,8 +410,11 @@ The theory section on DFT is intentionally left in the thesis\textemdash as a ch
 
 \part{Conclusions and future work \label{future}}
 \section{Conclusions and perspectives}
-the aims ...
-why is this interesting
+The aims of this project were to implement a general multiscale modelling framework capable of bridging QM and microscopic physics by using artificial neural networks. This has been done, and the framework validated. Although the scheme has not been applied to a physically realistic system in the present work, this is in principle straightforward to with the combined code base the current state. As LAMMPS permits working directly in atomic units (by the \inlinecc{units electron} command), ANN potentials fitted to HF, DFT, or VMC calculations can \emph{quite literally} be used \emph{directly} in MD simulations of thousands of atoms. 
+
+As explained in chapter \ref{chap1}, schemes allowing the quantum mechanical accuracy to be brought into the domain of the microscopic\textemdash without the crippling computational scaling of direct quantum methods\textemdash are of enormous scientific value. As many modern problems in the natural sciences involve phenomena 
+
+
 
 
 In this thesis we have demonstrated the feasibility of performing multiscale simulations\textemdash by bridging first principles quantum mechanics and machine learning\textemdash and implemented a general computational framework in which such simulations can be run. Crucially, our framework is (nearly) parameter-free in the sense that the resulting simulations depend very weakly on any parameter directly put in "by hand." The one significant human input used is the choice of orbital basis sets and\textemdash in the case of the quantum Monte Carlo scheme\textemdash the form the correlation part of the wave function ansatz. For both HF and VMC, the basis size and wave function ansatz effect on the resulting PES is in principle possible to account for in that there exists a hierarchy of more and more accurate wave function bases to employ. 
