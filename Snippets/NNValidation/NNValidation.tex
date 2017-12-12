@@ -88,7 +88,7 @@ The training data set is shown in \fig{sw}. We use a grid of $r_{ij}$ and $r_{ik
 \section{Training on \emph{ab initio} data \label{abinittrain}}
 Out first foray into the use of \emph{ab initio} data will be a case study of the required amount of data. Since QM calculations are exceedingly expensive from a computational perspective, it is interesting to explore how many calculations we \emph{need} to perform in order to have enough data to train a ANN adequately. For this test we employ the \ce{H2+} data set\textemdash  presented in section \ref{hfvalid}\textemdash at the 6-311++G** level. 
 
-In order to explore the training behaviour of the NN on small data sets, we train different networks using only parts of the complete data set, but retain\textemdash crucially\textemdash the complete set for validation. In \fig{smallsets} we present data from training runs using $N=50,75,100,\dots,475,500$ total data points. The removal of training pairs is done by excluding a given number of data points at random:
+In order to explore the training behaviour of the NN on small data sets, we train different networks using only parts of the complete data set, but retain\textemdash crucially\textemdash the complete set for validation. In \fig{sizes} we present data from training runs using $N=50,75,100,\dots,475,500$ total data points. The removal of training pairs is done by excluding a given number of data points at random:
 \begin{lstlisting}[
 language=Python,
 classoffset=4, % CLASSES
